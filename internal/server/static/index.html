@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freecode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .logo {
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            color: #00ff88;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .status {
+            background: #16161f;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #2a2a3a;
+        }
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        .label {
+            color: #888;
+        }
+        .value {
+            color: #00ff88;
+            font-family: monospace;
+        }
+        .value.error {
+            color: #ff4444;
+        }
+        .info {
+            background: #16161f;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .info h2 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        .endpoint {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .endpoint path {
+            color: #888;
+        }
+        .endpoint method {
+            color: #00ccff;
+        }
+        .note {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1a1a2a;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <pre class="logo">
+██╗     ██╗ ██████╗ ██████╗ ███████╗██████╗ ███╗   ██╗██╗███╗   ██╗ ██████╗
+██║     ██║██╔════╝██╔═══██╗██╔════╝██╔══██╗████╗  ██║██║████╗  ██║██╔════╝
+██║     ██║██║     ██║   ██║█████╗  ██████╔╝██╔██╗ ██║██║██╔██╗ ██║██║  ███╗
+██║     ██║██║     ██║   ██║██╔══╝  ██╔══██╗██║╚██╗██║██║██║╚██╗██║██║   ██║
+███████╗██║╚██████╗╚██████╔╝███████╗██║  ██║██║ ╚████║██║██║ ╚████║╚██████╔╝
+╚══════╝╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚═════╝</pre>
+
+        <div class="status">
+            <h1>Server Status</h1>
+            <div class="status-item">
+                <span class="label">Status</span>
+                <span class="value" id="status">Checking...</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Version</span>
+                <span class="value" id="version">-</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Sessions</span>
+                <span class="value" id="sessions">-</span>
+            </div>
+        </div>
+
+        <div class="info">
+            <h2>API Endpoints</h2>
+            <div class="endpoint">
+                <span><span class="method">GET</span> <span class="path">/health</span></span>
+                <span class="desc">Health check</span>
+            </div>
+            <div class="endpoint">
+                <span><span class="method">GET</span> <span class="path">/api/v1/sessions</span></span>
+                <span class="desc">List sessions</span>
+            </div>
+            <div class="endpoint">
+                <span><span class="method">GET</span> <span class="path">/api/v1/agents</span></span>
+                <span class="desc">List agents</span>
+            </div>
+            <div class="endpoint">
+                <span><span class="method">GET</span> <span class="path">/api/v1/tools</span></span>
+                <span class="desc">List tools</span>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Note:</strong> Freecode is a TUI application. This web interface is for API access only.
+            For the full interactive experience, use the terminal application.
+        </div>
+    </div>
+
+    <script>
+        async function updateStatus() {
+            try {
+                const res = await fetch('/health');
+                const data = await res.json();
+                document.getElementById('status').textContent = 'Online';
+                document.getElementById('status').classList.remove('error');
+                document.getElementById('version').textContent = data.time || 'v0.1.0';
+            } catch (e) {
+                document.getElementById('status').textContent = 'Offline';
+                document.getElementById('status').classList.add('error');
+            }
+        }
+
+        async function updateSessions() {
+            try {
+                const res = await fetch('/api/v1/sessions');
+                const data = await res.json();
+                document.getElementById('sessions').textContent = Array.isArray(data.sessions) ? data.sessions.length : 0;
+            } catch (e) {
+                document.getElementById('sessions').textContent = 'Error';
+            }
+        }
+
+        updateStatus();
+        updateSessions();
+        setInterval(updateStatus, 30000);
+    </script>
+</body>
+</html>

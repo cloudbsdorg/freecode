@@ -35,10 +35,12 @@ type Request struct {
 }
 
 type Response struct {
-	SessionID string
-	Message  Message
-	ToolCalls []ToolCall
-	Error    error
+	SessionID    string
+	Message      Message
+	ToolCalls    []ToolCall
+	Error        error
+	AgentName    string
+	SystemPrompt string
 }
 
 type Message struct {

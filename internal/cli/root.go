@@ -57,4 +57,5 @@ func init() {
 	rootCmd.AddCommand(doctorCmd)
 	rootCmd.AddCommand(upgradeCmd)
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(accountCmd)
 }

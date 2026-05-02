@@ -8,21 +8,23 @@ This document details all features built into freecode. These are native feature
 
 ## 2.0 Built-in Agents (11 Total)
 
+**Implementation Status:** Agents are documented here but currently exist as stubs in `internal/agent/sisyphus.go`. Full agent prompting and behavior needs implementation.
+
 ### 2.1 Agent Definitions
 
-| Agent | Mode | Default Model | Purpose |
-|-------|------|---------------|---------|
-| Sisyphus | primary | claude-opus-4-7 | Main orchestrator |
-| Hephaestus | primary | gpt-5.4 | Code generation |
-| Oracle | subagent | gpt-5.4 | Architecture consultation |
-| Librarian | subagent | gpt-5.4-mini-fast | Research/library |
-| Explore | subagent | gpt-5.4-mini-fast | Exploration |
-| Prometheus | all | claude-opus-4-7 | Planning |
-| Metis | all | claude-opus-4-7 | Plan consultation |
-| Momus | all | gpt-5.4 | Code review |
-| Atlas | primary | claude-sonnet-4-6 | Session tracking |
-| Multimodal-Looker | subagent | gpt-5.4 | Multimodal |
-| Sisyphus-Junior | all | (inherited) | Simpler tasks |
+| Agent | Mode | Default Model | Purpose | Status |
+|-------|------|---------------|---------|--------|
+| Sisyphus | primary | claude-opus-4-7 | Main orchestrator | Stub |
+| Hephaestus | primary | gpt-5.4 | Code generation | Stub |
+| Oracle | subagent | gpt-5.4 | Architecture consultation | Stub |
+| Librarian | subagent | gpt-5.4-mini-fast | Research/library | Stub |
+| Explore | subagent | gpt-5.4-mini-fast | Exploration | Stub |
+| Prometheus | all | claude-opus-4-7 | Planning | Stub |
+| Metis | all | claude-opus-4-7 | Plan consultation | Stub |
+| Momus | all | gpt-5.4 | Code review | Stub |
+| Atlas | primary | claude-sonnet-4-6 | Session tracking | Stub |
+| Multimodal-Looker | subagent | gpt-5.4 | Multimodal | Stub |
+| Sisyphus-Junior | all | (inherited) | Simpler tasks | Stub |
 
 ### 2.2 Agent System Prompts
 

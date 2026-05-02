@@ -1,12 +1,55 @@
 # Provider Architecture
 
-## Status: IN PROGRESS
+## Status: COMPLETE
 
 **Last Updated:** 2026-05-02
 
 ## Overview
 
-Freecode implements native Go connectors for 75+ LLM providers matching opencode's coverage. All providers follow a decorator pattern for OpenAI-compatible APIs.
+Freecode implements native Go connectors for 48 LLM providers matching opencode's coverage. Additionally, freecode integrates with models.dev for dynamic model metadata.
+
+### Key Architecture Decisions
+
+1. **Native Go Connectors** - Each provider has a dedicated Go file implementing the Provider interface
+2. **models.dev Integration** - Provider registry and model metadata fetched from models.dev/api.json
+3. **Generator Tool** - `cmd/generate/main.go` fetches and caches models.dev data as `internal/provider/registry.json`
+4. **Factory Pattern** - `NewProvider()` routes model strings to appropriate providers
+
+### Generated Registry
+
+The `cmd/generate` tool produces `internal/provider/registry.json` containing:
+- 116 providers from models.dev
+- Model metadata (context limits, costs, capabilities)
+
+### Registry Loader
+
+`internal/provider/registry.go` provides:
+- `LoadRegistry()` - loads and caches the registry
+- `GetModelInfo(providerID, modelID)` - get model metadata
+- `GetProviderInfo(providerID)` - get provider metadata
+- `GetProviderByModelPrefix(prefix)` - find provider by model prefix
+- `ListProviders()` - list all available providers
+
+### Provider File Structure
+
+```
+internal/provider/
+├── types.go           # Provider interface
+├── models.go          # Model types, catalog service
+├── factory.go         # Provider factory routing
+├── registry.go        # Registry loader
+├── registry.json      # Generated from models.dev (1.2MB)
+├── openai.go          # OpenAI native connector
+├── anthropic.go       # Anthropic native connector
+├── minimax.go         # Minimax native connector
+├── ollama.go          # Ollama native connector
+├── litellm.go         # LiteLLM provider
+├── groq.go            # Groq (OpenAI-compatible)
+├── perplexity.go       # Perplexity (OpenAI-compatible)
+... (48 provider files total)
+```
+
+## Provider Coverage
 
 ---
 
@@ -358,69 +401,88 @@ type Config struct {
 
 ## Progress Tracker
 
-### Phase 1: Core Providers (DONE)
+### Core Providers (DONE)
 - [x] OpenAI
 - [x] Anthropic
 - [x] Minimax
 - [x] Ollama
 - [x] LiteLLM
 
-### Phase 2: Major OpenAI-Compatible (IN PROGRESS)
-- [ ] Groq
-- [ ] Perplexity
-- [ ] Mistral
-- [ ] Cohere
-- [ ] Together AI
-- [ ] DeepInfra
-- [ ] Cerebras
-- [ ] xAI
-- [ ] Alibaba
-- [ ] Hugging Face
-- [ ] DeepSeek
-- [ ] Fireworks AI
-- [ ] Moonshot AI
-- [ ] Nebius
-- [ ] OpenRouter
+### OpenAI-Compatible Providers (DONE)
+- [x] Groq
+- [x] Perplexity
+- [x] Mistral
+- [x] Cohere
+- [x] Together AI
+- [x] DeepInfra
+- [x] Cerebras
+- [x] xAI
+- [x] Alibaba
+- [x] Hugging Face
+- [x] DeepSeek
+- [x] Fireworks AI
+- [x] Moonshot AI
+- [x] Nebius
+- [x] OpenRouter
 
-### Phase 3: Cloud/Enterprise (TODO)
-- [ ] Google Gemini
-- [ ] Azure OpenAI
-- [ ] Google Vertex AI
-- [ ] AWS Bedrock
+### Cloud/Enterprise (DONE)
+- [x] Google Gemini
+- [x] Azure OpenAI
+- [x] Google Vertex AI
+- [x] AWS Bedrock
 
-### Phase 4: DevOps/Git Integration (TODO)
-- [ ] GitLab Duo
-- [ ] GitHub Copilot
-- [ ] Vercel AI
+### DevOps/Git Integration (DONE)
+- [x] GitLab Duo
+- [x] GitHub Copilot
+- [x] Vercel AI
 
-### Phase 5: Regional/Specialty (TODO)
-- [ ] Venice AI
-- [ ] Z.AI
-- [ ] ZenMux
-- [ ] Baseten
-- [ ] Cortecs
-- [ ] Firmware AI
-- [ ] IO.NET
-- [ ] 302.AI
-- [ ] NVIDIA
-- [ ] Ollama Cloud
+### Regional/Specialty (DONE)
+- [x] Venice AI
+- [x] Z.AI
+- [x] ZenMux
+- [x] Baseten
+- [x] Cortecs
+- [x] Firmware AI
+- [x] IO.NET
+- [x] 302.AI
+- [x] NVIDIA
+- [x] Ollama Cloud
 
-### Phase 6: Gateway/Proxy (TODO)
-- [ ] Cloudflare AI Gateway
-- [ ] Cloudflare Workers AI
-- [ ] Helicone
+### Gateway/Proxy (DONE)
+- [x] Cloudflare AI Gateway
+- [x] Cloudflare Workers AI
+- [x] Helicone
 
-### Phase 7: Local Models (TODO)
-- [ ] llama.cpp
-- [ ] LM Studio
-- [ ] Atomic Chat
+### Local Models (DONE)
+- [x] llama.cpp
+- [x] LM Studio
+- [x] Atomic Chat
 
-### Phase 8: Enterprise Cloud (TODO)
-- [ ] SAP AI Core
-- [ ] STACKIT
-- [ ] OVHcloud AI
-- [ ] Scaleway
-- [ ] Azure Cognitive Services
+### Enterprise Cloud (DONE)
+- [x] SAP AI Core
+- [x] STACKIT
+- [x] OVHcloud AI
+- [x] Scaleway
+- [x] Azure Cognitive Services
+
+### models.dev Integration (DONE)
+- [x] Registry generator (`cmd/generate/main.go`)
+- [x] Generated registry (`internal/provider/registry.json`)
+- [x] 116 providers from models.dev
+
+## Optimization Notes
+
+### Known Duplication
+25+ OpenAI-compatible providers have identical 90-line implementations differing only in:
+- Provider struct name
+- Provider name string
+- Base URL
+
+**Opportunity**: Create a single `OpenAICompatibleProvider` that takes name, baseURL, apiKey as parameters.
+
+### Not Done (Acceptable)
+- models.dev runtime fetching (build-time generation only)
+- Full model metadata in ProviderModels (only basic info)
 
 ---
 

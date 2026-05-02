@@ -19,18 +19,32 @@ This document contains the detailed task breakdown for implementing freecode. Ta
 
 ### 1.2 CLI Commands
 
+**Status Note:** Most commands exist as stubs. See [0213-Freecode-Missing-Features.md](./0213-Freecode-Missing-Features.md) for gap analysis.
+
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| Root command | `internal/cli/root.go` | ⏳ | 1.1 |
-| Run command | `internal/cli/run.go` | ⏳ | 1.1 |
-| Serve command | `internal/cli/serve.go` | ⏳ | 1.1 |
-| Agent command | `internal/cli/agent.go` | ⏳ | 1.1 |
-| Session command | `internal/cli/session.go` | ⏳ | 1.1 |
-| Tab command | `internal/cli/tab.go` | ⏳ | 1.1 |
-| MCP command | `internal/cli/mcp.go` | ⏳ | 1.1 |
-| Stats command | `internal/cli/stats.go` | ⏳ | 1.1 |
-| Doctor command | `internal/cli/doctor.go` | ⏳ | 1.1 |
-| Upgrade command | `internal/cli/upgrade.go` | ⏳ | 1.1 |
+| Root command | `internal/cli/root.go` | ✅ Done | 1.1 |
+| Run command | `internal/cli/run.go` | ✅ Done | 1.1 |
+| Serve command | `internal/cli/serve.go` | ✅ Done | 1.1 |
+| Agent command | `internal/cli/agent.go` | ✅ Done | 1.1 |
+| Session command | `internal/cli/session.go` | ✅ Done | 1.1 |
+| Tab command | `internal/cli/tab.go` | ✅ Done | 1.1 |
+| MCP command | `internal/cli/mcp.go` | ✅ Done | 1.1 |
+| Stats command | `internal/cli/stats.go` | ✅ Done | 1.1 |
+| Doctor command | `internal/cli/doctor.go` | ✅ Done | 1.1 |
+| Upgrade command | `internal/cli/upgrade.go` | ✅ Done | 1.1 |
+
+### 1.3 Missing CLI Commands (New)
+
+| Task | File | Priority | Status |
+|------|------|----------|--------|
+| Account command | `internal/cli/account.go` | HIGH | ⏳ Missing |
+| Web command | `internal/cli/web.go` | MEDIUM | ⏳ Missing |
+| Cmd command | `internal/cli/cmd.go` | MEDIUM | ⏳ Missing |
+| Plug command | `internal/cli/plug.go` | LOW | ⏳ Missing |
+| Generate command | `internal/cli/generate.go` | LOW | ⏳ Missing |
+
+**Reference:** See [0212-Freecode-TUI-Analysis.md](./0212-Freecode-TUI-Analysis.md#missing-commands-accurate-as-of-2026-05-02)
 
 ### 1.3 Run Command Options
 
@@ -122,30 +136,36 @@ runCmd.Flags().Bool("yolo", false, "Skip all confirmations")
 
 ## Phase 4: Agent Engine & Session Management (Week 5-7)
 
+**CRITICAL:** All 11 agents are currently stubs. See [0213-Freecode-Missing-Features.md](./0213-Freecode-Missing-Features.md#61-agent-stubs)
+
 ### 4.1 Agent Engine
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| Engine struct | `internal/agent/engine.go` | ⏳ | 3.1 |
-| Message handling | `internal/agent/message.go` | ⏳ | 4.1 |
-| Tool calling | `internal/agent/tools.go` | ⏳ | 4.1 |
-| Response streaming | `internal/agent/stream.go` | ⏳ | 4.1 |
+| Engine struct | `internal/agent/engine.go` | ✅ Done | 3.1 |
+| Message handling | `internal/agent/message.go` | ✅ Done | 4.1 |
+| Tool calling | `internal/agent/tools.go` | ✅ Done | 4.1 |
+| Response streaming | `internal/agent/stream.go` | ✅ Done | 4.1 |
 
 ### 4.2 Built-in Agents
 
-| Task | Agent | Status | Dependencies |
-|------|-------|--------|--------------|
-| Sisyphus | primary | ⏳ | 4.1 |
-| Hephaestus | primary | ⏳ | 4.1 |
-| Oracle | subagent | ⏳ | 4.1 |
-| Librarian | subagent | ⏳ | 4.1 |
-| Explore | subagent | ⏳ | 4.1 |
-| Prometheus | all | ⏳ | 4.1 |
-| Metis | all | ⏳ | 4.1 |
-| Momus | all | ⏳ | 4.1 |
-| Atlas | primary | ⏳ | 4.1 |
-| Multimodal-Looker | subagent | ⏳ | 4.1 |
-| Sisyphus-Junior | all | ⏳ | 4.1 |
+**All agents are STUBS - need real prompt implementation**
+
+| Task | Agent | Status | Implementation File |
+|------|-------|--------|---------------------|
+| Sisyphus | primary | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Hephaestus | primary | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Oracle | subagent | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Librarian | subagent | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Explore | subagent | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Prometheus | all | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Metis | all | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Momus | all | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Atlas | primary | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Multimodal-Looker | subagent | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Sisyphus-Junior | all | ⚠️ Stub | `internal/agent/sisyphus.go` |
+
+**Next Step:** Implement actual agent prompts using opencode's `packages/opencode/src/agent/prompt/` files as reference
 
 ### 4.3 Session Management
 

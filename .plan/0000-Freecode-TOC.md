@@ -31,7 +31,7 @@
 | `0105-Freecode-Security-Audit.md` | Security Audit | ✅ ACTIVE | oh-my-openagent security analysis |
 | `0106-Freecode-Security-Additional.md` | Additional Analysis | ✅ ACTIVE | Audit logging, supply chain |
 
-### Overview & Architecture (0200-0212)
+### Overview & Architecture (0200-0213)
 
 | File | Title | Status | Description |
 |------|-------|--------|-------------|
@@ -43,6 +43,7 @@
 | `0210-Freecode-Architecture-Design.md` | Architecture Design | ✅ ACTIVE | Go architecture, packages |
 | `0211-Freecode-LiteLLM-Integration.md` | LiteLLM Integration | ✅ ACTIVE | Provider consolidation |
 | `0212-Freecode-TUI-Analysis.md` | TUI Analysis | ✅ ACTIVE | OpenCode vs Freecode TUI parity |
+| `0213-Freecode-Missing-Features.md` | Missing Features | ✅ ACTIVE | Gap analysis vs opencode |
 
 ### Implementation (0300-0301)
 
@@ -99,15 +100,16 @@
                       │         ├──► 0105 (Security Audit)
                       │         └──► 0106 (Security Additional)
                       │
-                      ├──► 0200 (Overview)
-                      │         │
-                      │         ├──► 0201 (Current Architecture)
-                      │         ├──► 0202 (Platform-Specific)
-                      │         ├──► 0203 (Feature Inventory)
-                      │         ├──► 0204 (Features)
-                      │         ├──► 0210 (Architecture Design)
-                      │         ├──► 0211 (LiteLLM Integration)
-                      │         └──► 0212 (TUI Analysis)
+                       ├──► 0200 (Overview)
+                       │         │
+                       │         ├──► 0201 (Current Architecture)
+                       │         ├──► 0202 (Platform-Specific)
+                       │         ├──► 0203 (Feature Inventory)
+                       │         ├──► 0204 (Features)
+                       │         ├──► 0210 (Architecture Design)
+                       │         ├──► 0211 (LiteLLM Integration)
+                       │         ├──► 0212 (TUI Analysis)
+                       │         └──► 0213 (Missing Features)
                       │
                       ├──► 0300 (Implementation Tasks)
                       │         │
@@ -144,7 +146,8 @@ For new contributors:
 5. **[`0100-Freecode-Security-Overview.md`](./0100-Freecode-Security-Overview.md)** — Security strategy
 6. **[`0201-Freecode-Current-Architecture.md`](./0201-Freecode-Current-Architecture.md)** — Current state
 7. **[`0210-Freecode-Architecture-Design.md`](./0210-Freecode-Architecture-Design.md)** — Target design
-8. **[`0300-Freecode-Implementation-Tasks.md`](./0300-Freecode-Implementation-Tasks.md)** — What to build
+8. **[`0213-Freecode-Missing-Features.md`](./0213-Freecode-Missing-Features.md)** — Gap analysis vs opencode
+9. **[`0300-Freecode-Implementation-Tasks.md`](./0300-Freecode-Implementation-Tasks.md)** — What to build
 
 ---
 
@@ -200,6 +203,7 @@ make test && make fmt && make tidy
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
+| 2.1 | 2026-05-02 | Mark LaPointe | Add 0213 Missing Features; update 0204 agents as stubs, 0212 TUI Analysis, 0300 tasks |
 | 2.0 | 2026-05-02 | Mark LaPointe | Migrate to CloudBSD 4-digit numbering |
 | 1.0 | 2026-05-01 | Mark LaPointe | Initial TOC |
 

@@ -49,6 +49,14 @@ func (s *Server) Mount(pattern string, handler http.Handler) {
 	s.Router.Mount(pattern, handler)
 }
 
+func (s *Server) SetupRoutes() {
+	SetupRoutesWithUI(s.Router, false)
+}
+
+func (s *Server) SetupWebRoutes() {
+	SetupRoutesWithUI(s.Router, true)
+}
+
 func (s *Server) Start(ctx context.Context) error {
 	go func() {
 		<-ctx.Done()
