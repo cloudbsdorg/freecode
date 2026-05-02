@@ -32,7 +32,6 @@ Examples:
 }
 
 func init() {
-	rootCmd.AddCommand(modelsCmd)
 	modelsCmd.Flags().StringVar(&modelProvider, "provider", "", "Filter by provider (openai, anthropic, minimax)")
 	modelsCmd.Flags().BoolVar(&modelRefresh, "refresh", false, "Force refresh model cache")
 	modelsCmd.Flags().BoolVar(&modelList, "list", false, "List models in simple format")
