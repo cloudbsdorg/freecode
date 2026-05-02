@@ -7,6 +7,7 @@ import (
 type Provider interface {
 	Name() string
 	Generate(ctx context.Context, req *Request) (*Response, error)
+	ListModels(ctx context.Context) ([]Model, error)
 }
 
 type Request struct {

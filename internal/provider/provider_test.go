@@ -239,3 +239,288 @@ func TestOpenAIProviderGenerateNoChoices(t *testing.T) {
 		t.Error("Generate() expected error for no choices")
 	}
 }
+
+func TestOpenAIProviderGenerateBadJSON(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("not json"))
+	}))
+	defer server.Close()
+
+	p := &OpenAIProvider{
+		APIKey:  "test-key",
+		BaseURL: server.URL,
+		Client:  server.Client(),
+	}
+
+	req := &Request{
+		Model: "gpt-4",
+		Messages: []Message{
+			{Role: "user", Content: "hi"},
+		},
+	}
+
+	_, err := p.Generate(context.Background(), req)
+	if err == nil {
+		t.Error("Generate() expected error for bad JSON")
+	}
+}
+
+func TestOpenAIProviderGenerateHTTPError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "server error", 500)
+	}))
+	defer server.Close()
+
+	p := &OpenAIProvider{
+		APIKey:  "test-key",
+		BaseURL: server.URL,
+		Client:  server.Client(),
+	}
+
+	req := &Request{
+		Model: "gpt-4",
+		Messages: []Message{
+			{Role: "user", Content: "hi"},
+		},
+	}
+
+	_, err := p.Generate(context.Background(), req)
+	if err == nil {
+		t.Error("Generate() expected error for HTTP error")
+	}
+}
+
+func TestMinimaxProviderGenerateBadJSON(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("not json"))
+	}))
+	defer server.Close()
+
+	p := &MinimaxProvider{
+		APIKey:  "test-key",
+		BaseURL: server.URL,
+		Client:  server.Client(),
+	}
+
+	req := &Request{
+		Model: "MiniMax-M2.7",
+		Messages: []Message{
+			{Role: "user", Content: "hi"},
+		},
+	}
+
+	_, err := p.Generate(context.Background(), req)
+	if err == nil {
+		t.Error("Generate() expected error for bad JSON")
+	}
+}
+
+func TestMinimaxProviderGenerateHTTPError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "server error", 500)
+	}))
+	defer server.Close()
+
+	p := &MinimaxProvider{
+		APIKey:  "test-key",
+		BaseURL: server.URL,
+		Client:  server.Client(),
+	}
+
+	req := &Request{
+		Model: "MiniMax-M2.7",
+		Messages: []Message{
+			{Role: "user", Content: "hi"},
+		},
+	}
+
+	_, err := p.Generate(context.Background(), req)
+	if err == nil {
+		t.Error("Generate() expected error for HTTP error")
+	}
+}
+
+func TestAnthropicProviderGenerateBadJSON(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("not json"))
+	}))
+	defer server.Close()
+
+	p := &AnthropicProvider{
+		APIKey:  "test-key",
+		BaseURL: server.URL,
+		Client:  server.Client(),
+	}
+
+	req := &Request{
+		Model: "claude-3",
+		Messages: []Message{
+			{Role: "user", Content: "hi"},
+		},
+	}
+
+	_, err := p.Generate(context.Background(), req)
+	if err == nil {
+		t.Error("Generate() expected error for bad JSON")
+	}
+}
+
+func TestAnthropicProviderGenerateHTTPError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "server error", 500)
+	}))
+	defer server.Close()
+
+	p := &AnthropicProvider{
+		APIKey:  "test-key",
+		BaseURL: server.URL,
+		Client:  server.Client(),
+	}
+
+	req := &Request{
+		Model: "claude-3",
+		Messages: []Message{
+			{Role: "user", Content: "hi"},
+		},
+	}
+
+	_, err := p.Generate(context.Background(), req)
+	if err == nil {
+		t.Error("Generate() expected error for HTTP error")
+	}
+}
+
+func TestLiteLLMProviderGenerateBadJSON(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("not json"))
+	}))
+	defer server.Close()
+
+	p := &LiteLLMProvider{
+		APIKey:  "test-key",
+		BaseURL: server.URL,
+		Client:  server.Client(),
+	}
+
+	req := &Request{
+		Model: "gpt-4",
+		Messages: []Message{
+			{Role: "user", Content: "hi"},
+		},
+	}
+
+	_, err := p.Generate(context.Background(), req)
+	if err == nil {
+		t.Error("Generate() expected error for bad JSON")
+	}
+}
+
+func TestNewMinimaxProvider(t *testing.T) {
+	p := NewMinimaxProvider("test-key")
+	if p == nil {
+		t.Fatal("NewMinimaxProvider returned nil")
+	}
+	if p.APIKey != "test-key" {
+		t.Errorf("APIKey = %q, want %q", p.APIKey, "test-key")
+	}
+	if p.BaseURL != "https://api.minimax.chat/v1" {
+		t.Errorf("BaseURL = %q, want %q", p.BaseURL, "https://api.minimax.chat/v1")
+	}
+}
+
+func TestMinimaxProviderName(t *testing.T) {
+	p := NewMinimaxProvider("test-key")
+	if p.Name() != "minimax" {
+		t.Errorf("Name() = %q, want %q", p.Name(), "minimax")
+	}
+}
+
+func TestMinimaxProviderGenerate(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.Contains(r.Header.Get("Authorization"), "test-key") {
+			t.Errorf("Missing or wrong Authorization header")
+		}
+
+		resp := `{"choices":[{"message":{"content":"hello"},"finish_reason":"stop"}],"usage":{"prompt_tokens":10,"completion_tokens":20}}`
+		w.Write([]byte(resp))
+	}))
+	defer server.Close()
+
+	p := &MinimaxProvider{
+		APIKey:  "test-key",
+		BaseURL: server.URL,
+		Client:  server.Client(),
+	}
+
+	req := &Request{
+		Model: "MiniMax-M2.7",
+		Messages: []Message{
+			{Role: "user", Content: "hi"},
+		},
+		Temperature: 0.7,
+		MaxTokens:   100,
+	}
+
+	resp, err := p.Generate(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Generate() error = %v", err)
+	}
+	if resp.Content != "hello" {
+		t.Errorf("Content = %q, want %q", resp.Content, "hello")
+	}
+	if resp.StopReason != "stop" {
+		t.Errorf("StopReason = %q, want %q", resp.StopReason, "stop")
+	}
+	if resp.Usage.InputTokens != 10 {
+		t.Errorf("InputTokens = %d, want %d", resp.Usage.InputTokens, 10)
+	}
+	if resp.Usage.OutputTokens != 20 {
+		t.Errorf("OutputTokens = %d, want %d", resp.Usage.OutputTokens, 20)
+	}
+}
+
+func TestMinimaxProviderGenerateNoChoices(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := `{"choices":[],"usage":{"prompt_tokens":10,"completion_tokens":20}}`
+		w.Write([]byte(resp))
+	}))
+	defer server.Close()
+
+	p := &MinimaxProvider{
+		APIKey:  "test-key",
+		BaseURL: server.URL,
+		Client:  server.Client(),
+	}
+
+	req := &Request{
+		Model: "MiniMax-M2.7",
+		Messages: []Message{
+			{Role: "user", Content: "hi"},
+		},
+	}
+
+	_, err := p.Generate(context.Background(), req)
+	if err == nil {
+		t.Error("Generate() expected error for no choices")
+	}
+}
+
+func TestMinimaxProviderGenerateRequestError(t *testing.T) {
+	p := &MinimaxProvider{
+		APIKey:  "test-key",
+		BaseURL: "http://localhost:99999",
+		Client:  &http.Client{Timeout: 1},
+	}
+
+	req := &Request{
+		Model: "MiniMax-M2.7",
+		Messages: []Message{
+			{Role: "user", Content: "hi"},
+		},
+	}
+
+	_, err := p.Generate(context.Background(), req)
+	if err == nil {
+		t.Error("Generate() expected error for invalid URL")
+	}
+}

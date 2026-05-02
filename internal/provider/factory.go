@@ -13,6 +13,11 @@ func NewProvider(model string) Provider {
 		return NewAnthropicProvider(apiKey)
 	}
 
+	if strings.HasPrefix(model, "minimax/") || strings.HasPrefix(model, "minimax") {
+		apiKey := os.Getenv("MINIMAX_API_KEY")
+		return NewMinimaxProvider(apiKey)
+	}
+
 	if strings.HasPrefix(model, "openai/") || strings.HasPrefix(model, "gpt") || strings.HasPrefix(model, "o1") || strings.HasPrefix(model, "o3") {
 		apiKey := os.Getenv("OPENAI_API_KEY")
 		return NewOpenAIProvider(apiKey)
@@ -23,7 +28,8 @@ func NewProvider(model string) Provider {
 		if baseURL == "" {
 			baseURL = "http://localhost:11434"
 		}
-		return NewLiteLLMProvider(baseURL, "local")
+		apiKey := os.Getenv("OLLAMA_API_KEY")
+		return NewOllamaProvider(baseURL, apiKey)
 	}
 
 	if strings.HasPrefix(model, "google/") || strings.HasPrefix(model, "gemini/") {
@@ -70,11 +76,18 @@ func NewProviderWithConfig(providerType, apiKey, baseURL string) Provider {
 		p := NewAnthropicProvider(apiKey)
 		p.BaseURL = baseURL
 		return p
+	case "minimax":
+		if baseURL == "" {
+			baseURL = "https://api.minimax.chat/v1"
+		}
+		p := NewMinimaxProvider(apiKey)
+		p.BaseURL = baseURL
+		return p
 	case "ollama":
 		if baseURL == "" {
 			baseURL = "http://localhost:11434"
 		}
-		return NewLiteLLMProvider(baseURL, "local")
+		return NewOllamaProvider(baseURL, apiKey)
 	default:
 		if baseURL == "" {
 			baseURL = "http://localhost:4000"
@@ -88,6 +101,9 @@ func GetModelProvider(model string) string {
 
 	if strings.HasPrefix(model, "anthropic/") || strings.HasPrefix(model, "claude") {
 		return "anthropic"
+	}
+	if strings.HasPrefix(model, "minimax/") || strings.HasPrefix(model, "minimax") {
+		return "minimax"
 	}
 	if strings.HasPrefix(model, "openai/") || strings.HasPrefix(model, "gpt") || strings.HasPrefix(model, "o1") || strings.HasPrefix(model, "o3") {
 		return "openai"
