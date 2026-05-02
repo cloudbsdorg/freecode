@@ -36,10 +36,281 @@ type Config struct {
 	Platform    PlatformConfig   `mapstructure:"platform"`
 	Session     SessionConfig    `mapstructure:"session"`
 	LiteLLM     LiteLLMConfig    `mapstructure:"litellm"`
+	OpenAI      OpenAIConfig     `mapstructure:"openai"`
+	Anthropic  AnthropicConfig  `mapstructure:"anthropic"`
+	Ollama      OllamaConfig     `mapstructure:"ollama"`
+	Azure       AzureConfig      `mapstructure:"azure"`
+	Google      GoogleConfig     `mapstructure:"google"`
+	Vertex      VertexConfig     `mapstructure:"vertex"`
+	AWS         AWSConfig        `mapstructure:"aws"`
+	GitLab      GitLabConfig     `mapstructure:"gitlab"`
+	GitHubCopilot GitHubCopilotConfig `mapstructure:"github_copilot"`
+	Vercel      VercelConfig     `mapstructure:"vercel"`
+	Groq        GroqConfig        `mapstructure:"groq"`
+	Perplexity  PerplexityConfig  `mapstructure:"perplexity"`
+	Mistral     MistralConfig     `mapstructure:"mistral"`
+	Cohere      CohereConfig      `mapstructure:"cohere"`
+	TogetherAI  TogetherAIConfig  `mapstructure:"togetherai"`
+	DeepInfra   DeepInfraConfig  `mapstructure:"deepinfra"`
+	Cerebras    CerebrasConfig    `mapstructure:"cerebras"`
+	XAI         XAIConfig        `mapstructure:"xai"`
+	Alibaba     AlibabaConfig     `mapstructure:"alibaba"`
+	HuggingFace HuggingFaceConfig `mapstructure:"huggingface"`
+	DeepSeek    DeepSeekConfig    `mapstructure:"deepseek"`
+	Fireworks   FireworksConfig   `mapstructure:"fireworks"`
+	Moonshot    MoonshotConfig    `mapstructure:"moonshot"`
+	Nebius      NebiusConfig      `mapstructure:"nebius"`
+	OpenRouter  OpenRouterConfig  `mapstructure:"openrouter"`
+	Venice      VeniceConfig      `mapstructure:"venice"`
+	ZAI         ZAIConfig        `mapstructure:"zai"`
+	ZenMux      ZenMuxConfig     `mapstructure:"zenmux"`
+	Baseten     BasetenConfig    `mapstructure:"baseten"`
+	Cortecs     CortecsConfig     `mapstructure:"cortecs"`
+	Firmware    FirmwareConfig    `mapstructure:"firmware"`
+	Ionet       IonetConfig       `mapstructure:"ionet"`
+	NVIDIA      NVIDIAConfig      `mapstructure:"nvidia"`
+	OllamaCloud OllamaCloudConfig `mapstructure:"ollamacloud"`
+	Cloudflare  CloudflareConfig   `mapstructure:"cloudflare"`
+	Helicone    HeliconeConfig    `mapstructure:"helicone"`
+	LlamaCpp    LlamaCppConfig   `mapstructure:"llamacpp"`
+	LMStudio    LMStudioConfig   `mapstructure:"lmstudio"`
+	AtomicChat  AtomicChatConfig  `mapstructure:"atomic_chat"`
+	Provider302AI Provider302AIConfig `mapstructure:"302ai"`
+	SAPAI       SAPAIConfig      `mapstructure:"sap_ai_core"`
+	STACKIT     STACKITConfig    `mapstructure:"stackit"`
+	OVHcloud    OVHcloudConfig  `mapstructure:"ovhcloud"`
+	Scaleway    ScalewayConfig   `mapstructure:"scaleway"`
 	Minimax     MinimaxConfig    `mapstructure:"minimax"`
 }
 
 type LiteLLMConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type OpenAIConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type AnthropicConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type OllamaConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type AzureConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type GoogleConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type VertexConfig struct {
+	ProjectID   string `mapstructure:"project_id"`
+	Location    string `mapstructure:"location"`
+	BaseURL     string `mapstructure:"base_url"`
+	AccessToken string `mapstructure:"access_token"`
+}
+
+type AWSConfig struct {
+	Region    string `mapstructure:"region"`
+	Profile   string `mapstructure:"profile"`
+	Endpoint  string `mapstructure:"endpoint"`
+	AccessKey string `mapstructure:"access_key_id"`
+	SecretKey string `mapstructure:"secret_access_key"`
+}
+
+type GitLabConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	Token   string `mapstructure:"token"`
+}
+
+type GitHubCopilotConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	Token   string `mapstructure:"token"`
+}
+
+type VercelConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	Token   string `mapstructure:"token"`
+}
+
+type GroqConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type PerplexityConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type MistralConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type CohereConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type TogetherAIConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type DeepInfraConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type CerebrasConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type XAIConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type AlibabaConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type HuggingFaceConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type DeepSeekConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type FireworksConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type MoonshotConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type NebiusConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type OpenRouterConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type VeniceConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type ZAIConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type ZenMuxConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type BasetenConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type CortecsConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type FirmwareConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type IonetConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type NVIDIAConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type OllamaCloudConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type CloudflareConfig struct {
+	AccountID  string `mapstructure:"account_id"`
+	GatewayID  string `mapstructure:"gateway_id"`
+	APIKey     string `mapstructure:"api_key"`
+	BaseURL    string `mapstructure:"base_url"`
+}
+
+type HeliconeConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type LlamaCppConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type LMStudioConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type AtomicChatConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type Provider302AIConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type SAPAIConfig struct {
+	ServiceKey string `mapstructure:"service_key"`
+	BaseURL    string `mapstructure:"base_url"`
+}
+
+type STACKITConfig struct {
+	Token   string `mapstructure:"token"`
+	BaseURL string `mapstructure:"base_url"`
+}
+
+type OVHcloudConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type ScalewayConfig struct {
 	BaseURL string `mapstructure:"base_url"`
 	APIKey  string `mapstructure:"api_key"`
 }
@@ -289,6 +560,189 @@ func DefaultConfig() *Config {
 		LiteLLM: LiteLLMConfig{
 			BaseURL: "http://localhost:4000",
 			APIKey:  "local",
+		},
+		OpenAI: OpenAIConfig{
+			BaseURL: "https://api.openai.com/v1",
+			APIKey:  "",
+		},
+		Anthropic: AnthropicConfig{
+			BaseURL: "https://api.anthropic.com/v1",
+			APIKey:  "",
+		},
+		Ollama: OllamaConfig{
+			BaseURL: "http://localhost:11434",
+			APIKey:  "",
+		},
+		Azure: AzureConfig{
+			BaseURL: "",
+			APIKey:  "",
+		},
+		Google: GoogleConfig{
+			BaseURL: "https://generativelanguage.googleapis.com",
+			APIKey:  "",
+		},
+		Vertex: VertexConfig{
+			ProjectID:   "",
+			Location:    "us-central1",
+			BaseURL:     "",
+			AccessToken: "",
+		},
+		AWS: AWSConfig{
+			Region:    "",
+			Profile:   "",
+			Endpoint:  "",
+			AccessKey: "",
+			SecretKey: "",
+		},
+		GitLab: GitLabConfig{
+			BaseURL: "https://gitlab.com",
+			Token:   "",
+		},
+		GitHubCopilot: GitHubCopilotConfig{
+			BaseURL: "https://api.github.com",
+			Token:   "",
+		},
+		Vercel: VercelConfig{
+			BaseURL: "https://api.vercel.com",
+			Token:   "",
+		},
+		Groq: GroqConfig{
+			BaseURL: "https://api.groq.com/openai/v1",
+			APIKey:  "",
+		},
+		Perplexity: PerplexityConfig{
+			BaseURL: "https://api.perplexity.ai",
+			APIKey:  "",
+		},
+		Mistral: MistralConfig{
+			BaseURL: "https://api.mistral.ai/v1",
+			APIKey:  "",
+		},
+		Cohere: CohereConfig{
+			BaseURL: "https://api.cohere.ai/v1",
+			APIKey:  "",
+		},
+		TogetherAI: TogetherAIConfig{
+			BaseURL: "https://api.together.xyz/v1",
+			APIKey:  "",
+		},
+		DeepInfra: DeepInfraConfig{
+			BaseURL: "https://api.deepinfra.com/v1",
+			APIKey:  "",
+		},
+		Cerebras: CerebrasConfig{
+			BaseURL: "https://api.cerebras.ai/v1",
+			APIKey:  "",
+		},
+		XAI: XAIConfig{
+			BaseURL: "https://api.x.ai/v1",
+			APIKey:  "",
+		},
+		Alibaba: AlibabaConfig{
+			BaseURL: "https://dashscope.aliyuncs.com",
+			APIKey:  "",
+		},
+		HuggingFace: HuggingFaceConfig{
+			BaseURL: "https://api.endpoints.huggingface.cloud/v1",
+			APIKey:  "",
+		},
+		DeepSeek: DeepSeekConfig{
+			BaseURL: "https://api.deepseek.com/v1",
+			APIKey:  "",
+		},
+		Fireworks: FireworksConfig{
+			BaseURL: "https://api.fireworks.ai/v1",
+			APIKey:  "",
+		},
+		Moonshot: MoonshotConfig{
+			BaseURL: "https://api.moonshot.cn/v1",
+			APIKey:  "",
+		},
+		Nebius: NebiusConfig{
+			BaseURL: "https://api.nebius.ai/v1",
+			APIKey:  "",
+		},
+		OpenRouter: OpenRouterConfig{
+			BaseURL: "https://openrouter.ai/api/v1",
+			APIKey:  "",
+		},
+		Venice: VeniceConfig{
+			BaseURL: "https://api.venice.ai/api/v1",
+			APIKey:  "",
+		},
+		ZAI: ZAIConfig{
+			BaseURL: "https://api.z-ai.ai/v1",
+			APIKey:  "",
+		},
+		ZenMux: ZenMuxConfig{
+			BaseURL: "https://api.zenmux.ai/v1",
+			APIKey:  "",
+		},
+		Baseten: BasetenConfig{
+			BaseURL: "https://app.baseten.co/v1",
+			APIKey:  "",
+		},
+		Cortecs: CortecsConfig{
+			BaseURL: "https://api.cortecs.ai/v1",
+			APIKey:  "",
+		},
+		Firmware: FirmwareConfig{
+			BaseURL: "https://api.firmware.ai/v1",
+			APIKey:  "",
+		},
+		Ionet: IonetConfig{
+			BaseURL: "https://api.ionet.ai/v1",
+			APIKey:  "",
+		},
+		NVIDIA: NVIDIAConfig{
+			BaseURL: "https://ai.api.nvidia.com/v1",
+			APIKey:  "",
+		},
+		OllamaCloud: OllamaCloudConfig{
+			BaseURL: "https://cloud.ollama.ai",
+			APIKey:  "",
+		},
+		Cloudflare: CloudflareConfig{
+			AccountID:  "",
+			GatewayID:  "",
+			APIKey:     "",
+			BaseURL:    "",
+		},
+		Helicone: HeliconeConfig{
+			BaseURL: "https://ai-gateway.helicone.ai",
+			APIKey:  "",
+		},
+		LlamaCpp: LlamaCppConfig{
+			BaseURL: "http://127.0.0.1:8080/v1",
+			APIKey:  "",
+		},
+		LMStudio: LMStudioConfig{
+			BaseURL: "http://127.0.0.1:1234/v1",
+			APIKey:  "",
+		},
+		AtomicChat: AtomicChatConfig{
+			BaseURL: "http://127.0.0.1:1337/v1",
+			APIKey:  "",
+		},
+		Provider302AI: Provider302AIConfig{
+			BaseURL: "https://api.302.ai/v1",
+			APIKey:  "",
+		},
+		SAPAI: SAPAIConfig{
+			ServiceKey: "",
+			BaseURL:    "",
+		},
+		STACKIT: STACKITConfig{
+			Token:   "",
+			BaseURL: "",
+		},
+		OVHcloud: OVHcloudConfig{
+			BaseURL: "https://endpoints.ai.cloud.ovh.net/v1",
+			APIKey:  "",
+		},
+		Scaleway: ScalewayConfig{
+			BaseURL: "https://api.scaleway.ai/v1",
+			APIKey:  "",
 		},
 		Minimax: MinimaxConfig{
 			BaseURL: "https://api.minimax.chat/v1",
