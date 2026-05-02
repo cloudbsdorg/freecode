@@ -2,6 +2,7 @@ package i18n
 
 import (
 	"embed"
+	"io/fs"
 	"os"
 	"strings"
 
@@ -20,6 +21,10 @@ type Loader struct {
 }
 
 func NewLoader(defaultLang string) (*Loader, error) {
+	return newLoaderWithFS(defaultLang, LocaleFS)
+}
+
+func newLoaderWithFS(defaultLang string, files fs.FS) (*Loader, error) {
 	tag, err := language.Parse(defaultLang)
 	if err != nil {
 		tag = language.English
@@ -33,7 +38,7 @@ func NewLoader(defaultLang string) (*Loader, error) {
 		language: tag,
 	}
 
-	if err := l.loadLocales(); err != nil {
+	if err := l.loadLocales(files); err != nil {
 		return nil, err
 	}
 
@@ -41,26 +46,27 @@ func NewLoader(defaultLang string) (*Loader, error) {
 	return l, nil
 }
 
-func (l *Loader) loadLocales() error {
-	entries, err := LocaleFS.ReadDir("locales")
+func (l *Loader) loadLocales(files fs.FS) error {
+	entries, err := fs.ReadDir(files, "locales")
 	if err != nil {
 		return err
 	}
 
 	for _, entry := range entries {
-		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".toml") {
+		name := entry.Name()
+		if entry.IsDir() || !strings.HasSuffix(name, ".toml") {
 			continue
 		}
-		if strings.HasPrefix(entry.Name(), "translate.") {
+		if strings.HasPrefix(name, "translate.") {
 			continue
 		}
 
-		data, err := LocaleFS.ReadFile("locales/" + entry.Name())
+		data, err := fs.ReadFile(files, "locales/"+name)
 		if err != nil {
 			continue
 		}
 
-		if _, err := l.bundle.ParseMessageFileBytes(data, entry.Name()); err != nil {
+		if _, err := l.bundle.ParseMessageFileBytes(data, name); err != nil {
 			continue
 		}
 	}

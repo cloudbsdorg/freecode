@@ -79,3 +79,27 @@ func TestExecutorExecWithArgs(t *testing.T) {
 		t.Errorf("ExitCode = %d, want 0", result.ExitCode)
 	}
 }
+
+func TestExecutorExecNonexistent(t *testing.T) {
+	e := NewExecutor()
+
+	result, err := e.Exec("/nonexistent/command/that/does/not/exist")
+	if err != nil {
+		t.Fatalf("Exec() error = %v", err)
+	}
+	if result.ExitCode == 0 {
+		t.Error("ExitCode = 0, want nonzero for nonexistent command")
+	}
+}
+
+func TestExecutorExecExitError(t *testing.T) {
+	e := NewExecutor()
+
+	result, err := e.Exec("sh", "-c", "exit 42")
+	if err != nil {
+		t.Fatalf("Exec() error = %v", err)
+	}
+	if result.ExitCode != 42 {
+		t.Errorf("ExitCode = %d, want 42", result.ExitCode)
+	}
+}

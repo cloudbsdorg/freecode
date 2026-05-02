@@ -230,6 +230,16 @@ func TestManagerCloseTab(t *testing.T) {
 	}
 }
 
+func TestManagerCloseTabNotFound(t *testing.T) {
+	cfg := config.DefaultConfig()
+	m := NewManager(cfg)
+
+	err := m.CloseTab("nonexistent-tab-id")
+	if err == nil {
+		t.Error("CloseTab() should error for nonexistent tab")
+	}
+}
+
 func TestSessionTimestamps(t *testing.T) {
 	cfg := config.DefaultConfig()
 	m := NewManager(cfg)
