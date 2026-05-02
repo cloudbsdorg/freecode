@@ -120,72 +120,69 @@ var BuiltinAgents = map[string]AgentConfig{
 | `session.ultrawork_start` | Ultrawork mode entered |
 | `session.ultrawork_end` | Ultrawork mode exited |
 
-### 3.3 Tool Hooks (14)
+### 3.3 Tool Hooks (9 Implemented) ✅
 
-| Hook | Description |
-|------|-------------|
-| `tool.execute.before` | Before tool execution |
-| `tool.execute.after` | After tool execution |
-| `tool.execute.error` | Tool execution error |
-| `tool.execute.timeout` | Tool timeout |
-| `tool.register` | Tool registered |
-| `tool.unregister` | Tool unregistered |
-| `tool.schema` | Tool schema accessed |
-| `tool.validate` | Tool input validated |
-| `tool.output.truncate` | Tool output truncated |
-| `tool.output.expand` | Tool output expanded |
-| `tool.confirm` | Tool confirmation requested |
-| `tool.confirm.deny` | Tool confirmation denied |
-| `tool.confirm.allow` | Tool confirmation allowed |
-| `tool.rate_limit` | Tool rate limited |
+| Hook | Description | Status |
+|------|-------------|--------|
+| `tool.execute.before` | Before tool execution | ✅ Done |
+| `tool.execute.after` | After tool execution | ✅ Done |
+| `tool.execute.error` | Tool execution error | ✅ Done |
+| `tool.execute.timeout` | Tool timeout | ✅ Done |
+| `tool.register` | Tool registered | ✅ Done |
+| `tool.unregister` | Tool unregistered | ✅ Done |
+| `tool.schema` | Tool schema accessed | ✅ Done |
+| `tool.validate` | Tool input validated | ✅ Done |
+| `tool.output.truncate` | Tool output truncated | ✅ Done |
 
-### 3.4 Transform Hooks (5)
+**Note:** Additional hooks (confirm, rate_limit, expand) planned for future implementation.
 
-| Hook | Description |
-|------|-------------|
-| `transform.message` | Transform message content |
-| `transform.response` | Transform response |
-| `transform.prompt` | Transform prompt before send |
-| `transform.tool_result` | Transform tool result |
-| `transform.error` | Transform error response |
+### 3.4 Transform Hooks (5) - Planned
 
-### 3.5 Continuation Hooks (10)
+| Hook | Description | Status |
+|------|-------------|--------|
+| `transform.message` | Transform message content | ⏳ Planned |
+| `transform.response` | Transform response | ⏳ Planned |
+| `transform.prompt` | Transform prompt before send | ⏳ Planned |
+| `transform.tool_result` | Transform tool result | ⏳ Planned |
+| `transform.error` | Transform error response | ⏳ Planned |
 
-| Hook | Description |
-|------|-------------|
-| `continuation.auto` | Auto-continue enabled |
-| `continuation.manual` | Manual continue |
-| `continuation.think` | Thinking mode |
-| `continuation.until_done` | Continue until complete |
-| `continuation.max_turns` | Max turns reached |
-| `continuation.idle_timeout` | Idle timeout |
-| `continuation.budget_exhausted` | Budget exhausted |
-| `continuation.ralph_loop` | Ralph self-reference loop |
-| `continuation.preemptive_compaction` | Compaction before limit |
-| `continuation.atlas` | Master orchestrator for boulder |
+### 3.5 Continuation Hooks (10) - Planned
 
-### 3.6 Ralph Loop Hooks (3)
+| Hook | Description | Status |
+|------|-------------|--------|
+| `continuation.auto` | Auto-continue enabled | ⏳ Planned |
+| `continuation.manual` | Manual continue | ⏳ Planned |
+| `continuation.think` | Thinking mode | ⏳ Planned |
+| `continuation.until_done` | Continue until complete | ⏳ Planned |
+| `continuation.max_turns` | Max turns reached | ⏳ Planned |
+| `continuation.idle_timeout` | Idle timeout | ⏳ Planned |
+| `continuation.budget_exhausted` | Budget exhausted | ⏳ Planned |
+| `continuation.ralph_loop` | Ralph self-reference loop | ⏳ Planned |
+| `continuation.preemptive_compaction` | Compaction before limit | ⏳ Planned |
+| `continuation.atlas` | Master orchestrator for boulder | ⏳ Planned |
 
-| Hook | Description |
-|------|-------------|
-| `ralph.think` | Self-review thought triggered |
-| `ralph.step_back` | Agent stepping back to re-plan |
-| `ralph.detected` | Self-contradiction detected |
+### 3.6 Ralph Loop Hooks (3) - Planned
 
-### 3.7 Skill Hooks (2)
+| Hook | Description | Status |
+|------|-------------|--------|
+| `ralph.think` | Self-review thought triggered | ⏳ Planned |
+| `ralph.step_back` | Agent stepping back to re-plan | ⏳ Planned |
+| `ralph.detected` | Self-contradiction detected | ⏳ Planned |
 
-| Hook | Description |
-|------|-------------|
-| `skill.invoked` | Skill invoked |
-| `skill.completed` | Skill completed |
+### 3.7 Skill Hooks (2) - Planned
 
-### 3.8 Additional Hooks
+| Hook | Description | Status |
+|------|-------------|--------|
+| `skill.invoked` | Skill invoked | ⏳ Planned |
+| `skill.completed` | Skill completed | ⏳ Planned |
 
-| Hook | Description |
-|------|-------------|
-| `todo.continuation_enforcer` | Forces todo completion |
-| `keyword.detector` | Ultrawork/search/analyze mode |
-| `preemptive.compaction` | Context before limit hit |
+### 3.8 Additional Hooks - Planned
+
+| Hook | Description | Status |
+|------|-------------|--------|
+| `todo.continuation_enforcer` | Forces todo completion | ⏳ Planned |
+| `keyword.detector` | Ultrawork/search/analyze mode | ⏳ Planned |
+| `preemptive.compaction` | Context before limit hit | ⏳ Planned |
 
 ### 3.7 Hook Registry
 

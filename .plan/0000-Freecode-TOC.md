@@ -204,6 +204,7 @@ make test && make fmt && make tidy
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
+| 2.3 | 2026-05-02 | Mark LaPointe | Fix 0204 hook status, update 0213 modules, session management done |
 | 2.2 | 2026-05-02 | Mark LaPointe | Add skills, update status (agents prompts done, hooks done, account/web done) |
 | 2.1 | 2026-05-02 | Mark LaPointe | Add 0213 Missing Features; update 0204 agents as stubs, 0212 TUI Analysis, 0300 tasks |
 | 2.0 | 2026-05-02 | Mark LaPointe | Migrate to CloudBSD 4-digit numbering |

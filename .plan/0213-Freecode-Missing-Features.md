@@ -216,18 +216,18 @@ Opencode has extensive context management in `packages/opencode/src/cli/cmd/tui/
 
 ---
 
-## 5.0 Missing Modules
+## 5.0 Modules Status
 
-### 5.1 Opencode Modules with No Freecode Equivalent
+### 5.1 Opencode Modules Comparison
 
 Opencode has 45+ modules in `packages/opencode/src/`:
 
 | Module | opencode | freecode | Status |
 |--------|----------|----------|--------|
-| `account` | ✅ | ❌ | Missing |
+| `account` | ✅ | ✅ | Done - CLI command implemented |
 | `acp` | ✅ | ⚠️ Stub | ACP protocol stub |
 | `audio` | ✅ | ❌ | Missing |
-| `bus` | ✅ | ❌ | Missing |
+| `bus` | ✅ | ❌ | Missing - Event bus system |
 | `command` | ✅ | ❌ | Missing |
 | `control-plane` | ✅ | ❌ | Missing |
 | `effect` | ✅ | ❌ | Missing |
@@ -241,15 +241,15 @@ Opencode has 45+ modules in `packages/opencode/src/`:
 | `lsp` | ✅ | ❌ | Missing |
 | `patch` | ✅ | ❌ | Missing |
 | `permission` | ✅ | ❌ | Missing |
-| `plugin` | ✅ | ❌ | Missing |
+| `plugin` | ✅ | ⚠️ Partial | CLI exists, hooks done |
 | `project` | ✅ | ❌ | Missing |
 | `pty` | ✅ | ❌ | Missing |
 | `question` | ✅ | ❌ | Missing |
 | `share` | ✅ | ❌ | Missing |
-| `skill` | ✅ | ❌ | Missing |
+| `skill` | ✅ | ✅ | Done - Skills defined in .skills/ |
 | `snapshot` | ✅ | ❌ | Missing |
 | `storage` | ✅ | ❌ | Missing |
-| `sync` | ✅ | ❌ | Missing |
+| `sync` | ✅ | ❌ | Missing - Session sync |
 | `temporary` | ✅ | ❌ | Missing |
 | `util` | ✅ (36 files) | ⚠️ Partial | Some utils present |
 | `v2` | ✅ | ❌ | Missing |

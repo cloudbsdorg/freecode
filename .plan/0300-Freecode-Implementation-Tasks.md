@@ -171,10 +171,10 @@ runCmd.Flags().Bool("yolo", false, "Skip all confirmations")
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| Session manager | `internal/session/manager.go` | ⏳ | 2.1 |
-| Session store | `internal/session/store.go` | ⏳ | 4.3.1 |
-| Session compaction | `internal/session/compaction.go` | ⏳ | 4.3.1 |
-| Message history | `internal/session/history.go` | ⏳ | 4.3.1 |
+| Session manager | `internal/session/manager.go` | ✅ Done | 2.1 |
+| Session store | `internal/session/store.go` | ✅ Done | 4.3.1 |
+| Session compaction | `internal/session/compaction.go` | ✅ Done | 4.3.1 |
+| Message history | `internal/session/history.go` | ⏳ Planned | 4.3.1 |
 
 ---
 
