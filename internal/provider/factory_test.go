@@ -101,8 +101,8 @@ func TestNewProvider_Google(t *testing.T) {
 	defer os.Unsetenv("GOOGLE_API_KEY")
 
 	p := NewProvider("google/gemini-pro")
-	if p.Name() != "litellm" {
-		t.Errorf("Name() = %q, want %q", p.Name(), "litellm")
+	if p.Name() != "google" {
+		t.Errorf("Name() = %q, want %q", p.Name(), "google")
 	}
 }
 
@@ -111,8 +111,8 @@ func TestNewProvider_Cohere(t *testing.T) {
 	defer os.Unsetenv("COHERE_API_KEY")
 
 	p := NewProvider("cohere/command")
-	if p.Name() != "litellm" {
-		t.Errorf("Name() = %q, want %q", p.Name(), "litellm")
+	if p.Name() != "cohere" {
+		t.Errorf("Name() = %q, want %q", p.Name(), "cohere")
 	}
 }
 
@@ -123,22 +123,22 @@ func TestNewProvider_Azure(t *testing.T) {
 	defer os.Unsetenv("AZURE_BASE_URL")
 
 	p := NewProvider("azure/gpt-4")
-	if p.Name() != "litellm" {
-		t.Errorf("Name() = %q, want %q", p.Name(), "litellm")
+	if p.Name() != "azure" {
+		t.Errorf("Name() = %q, want %q", p.Name(), "azure")
 	}
 }
 
 func TestNewProvider_AWS(t *testing.T) {
 	p := NewProvider("aws/bedrock")
-	if p.Name() != "litellm" {
-		t.Errorf("Name() = %q, want %q", p.Name(), "litellm")
+	if p.Name() != "bedrock" {
+		t.Errorf("Name() = %q, want %q", p.Name(), "bedrock")
 	}
 }
 
 func TestNewProvider_Bedrock(t *testing.T) {
 	p := NewProvider("bedrock/anthropic")
-	if p.Name() != "litellm" {
-		t.Errorf("Name() = %q, want %q", p.Name(), "litellm")
+	if p.Name() != "bedrock" {
+		t.Errorf("Name() = %q, want %q", p.Name(), "bedrock")
 	}
 }
 
@@ -268,8 +268,8 @@ func TestGetModelProvider(t *testing.T) {
 		{"gemini/gemini-1.5-pro", "google"},
 		{"cohere/command-r", "cohere"},
 		{"azure/gpt-4", "azure"},
-		{"aws/bedrock/claude", "aws"},
-		{"bedrock/anthropic/claude", "aws"},
+		{"aws/bedrock/claude", "bedrock"},
+		{"bedrock/anthropic/claude", "bedrock"},
 		{"unknown/model", "unknown"},
 		{"some-random-model", "unknown"},
 		{"", "unknown"},
