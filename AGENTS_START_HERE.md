@@ -255,18 +255,14 @@ See [`.plan/6.0-Session-Tabbing.md`](.plan/6.0-Session-Tabbing.md) for details.
 
 ## YOLO Mode
 
-YOLO mode (`yolo: true`) skips all confirmations:
+YOLO mode is **ON by default** (this is intentional). Toggle in TUI with `Ctrl+Y` or via commands menu.
 
-```yaml
-yolo:
-  skipEditConfirmations: true
-  skipBashConfirmations: true
-  skipDeleteConfirmations: true
-  skipPermissionPrompts: true
-  skipToolConfirmations: true
+```bash
+# Disable YOLO to get confirmations
+yolo: false
 ```
 
-Toggle in TUI with `Ctrl+Y` or via commands menu.
+When YOLO is on (default), freecode executes without asking for confirmation.
 
 ---
 
