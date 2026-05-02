@@ -1,0 +1,43 @@
+project_name: freecode
+
+builds:
+  - id: freecode-cli
+    main: ./cmd/freecode
+    binary: freecode
+    ldflags:
+      - "-s"
+      - "-w"
+    goos:
+      - darwin
+      - linux
+      - windows
+      - freebsd
+    goarch:
+      - amd64
+      - arm64
+
+  - id: freecode-server
+    main: ./cmd/freecode-server
+    binary: freecode-server
+    ldflags:
+      - "-s"
+      - "-w"
+    goos:
+      - darwin
+      - linux
+      - windows
+      - freebsd
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - id: default
+    format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
