@@ -1,8 +1,10 @@
 # AGENTS START HERE — Freecode
 
-> **Purpose:** This is the primary entry point for autonomous agents working on the **Freecode** project — a Go-based AI coding assistant converted from opencode (TypeScript).
+> **Purpose:** This is the primary entry point for autonomous agents working on the **Freecode** project.
 
-> **Platform:** Freecode is designed to run on FreeBSD 16, Linux, macOS, and IllumOS (OpenSolaris). Windows is explicitly **NOT** supported.
+> **What is Freecode?** A unified, platform-independent AI coding assistant that combines the best of opencode with enhanced agents, hooks, and workflow features—all as a single cohesive product.
+
+> **Platform:** Freecode runs on FreeBSD 16, Linux, macOS, and IllumOS (OpenSolaris). Windows is explicitly **NOT** supported.
 
 ---
 
@@ -11,18 +13,16 @@
 A **platform-independent AI coding assistant** that provides:
 
 - **Go-based CLI** — Single static binary, no runtime dependencies
-- **OpenCode compatible** — Reads opencode configurations and creates freecode configs
-- **oh-my-openagent integration** — All 11 agents, 52 hooks, 8 categories
+- **Migration from opencode** — Reads opencode configs, creates freecode configs
+- **11 Built-in Agents** — Sisyphus, Hephaestus, Oracle, Librarian, Explore, Prometheus, Metis, Momus, Atlas, Multimodal-Looker, Sisyphus-Junior
+- **52 Lifecycle Hooks** — Session, tool, transform, continuation, and skill hooks
+- **8 Task Categories** — visual-engineering, ultrabrain, deep, artistry, quick, writing, etc.
 - **Session tabbing** — Multiple concurrent sessions in TUI with split views
 - **Security-first** — All services bound to localhost only (127.0.0.1, ::1)
 - **MCP protocol support** — Model Context Protocol client
-- **Cross-platform** — FreeBSD 16 primary, Linux Flatpak, macOS Homebrew, IllumOS tarball
+- **NO TELEMETRY** — Zero analytics or tracking
 
-The project converts the opencode TypeScript monorepo to Go while:
-- Preserving ALL features from opencode
-- Integrating ALL configurables from oh-my-openagent
-- Adding session tabbing for multi-session workflows
-- Maintaining security (localhost-only services)
+This is a conversion of opencode (TypeScript) to Go, with all features built directly into freecode—not as plugins.
 
 ---
 
@@ -32,14 +32,14 @@ All plan documents are in the `.plan/` directory:
 
 | # | File | What It Covers |
 |---|------|----------------|
-| 0.0 | [`0.0-TOC.md`](.plan/0.0-TOC.md) | Master table of contents with clickable links |
-| 0.1 | [`0.1-Workflow.md`](.plan/0.1-Workflow.md) | Task claiming, completion, merge conflict handling |
+| 0.0 | [`0.0-TOC.md`](.plan/0.0-TOC.md) | Master table of contents |
+| 0.1 | [`0.1-Workflow.md`](.plan/0.1-Workflow.md) | Task claiming, completion, merge handling |
 | 1.0 | [`1.0-Overview.md`](.plan/1.0-Overview.md) | Executive summary, phases, architecture |
 | 1.1 | [`1.1-Architecture.md`](.plan/1.1-Architecture.md) | TypeScript → Go mapping |
 | 2.0 | [`2.0-Design.md`](.plan/2.0-Design.md) | Go architecture, packages, concurrency |
 | 3.0 | [`3.0-Implementation-Tasks.md`](.plan/3.0-Implementation-Tasks.md) | Phase-by-phase task breakdown |
-| 4.0 | [`4.0-Configuration.md`](.plan/4.0-Configuration.md) | Config schema, migration, OMO integration |
-| 5.0 | [`5.0-oh-my-openagent-Integration.md`](.plan/5.0-oh-my-openagent-Integration.md) | All 11 agents, 52 hooks, 8 categories |
+| 4.0 | [`4.0-Configuration.md`](.plan/4.0-Configuration.md) | Unified config schema, migration |
+| 5.0 | [`5.0-Features.md`](.plan/5.0-Features.md) | All features: agents, hooks, categories |
 | 6.0 | [`6.0-Session-Tabbing.md`](.plan/6.0-Session-Tabbing.md) | TUI tabs, split view, YOLO toggle |
 | 7.0 | [`7.0-Packaging.md`](.plan/7.0-Packaging.md) | FreeBSD, Linux, macOS, IllumOS packages |
 | 8.0 | [`8.0-Dependencies.md`](.plan/8.0-Dependencies.md) | Homebrew dependencies, admin requirements |
@@ -47,6 +47,7 @@ All plan documents are in the `.plan/` directory:
 | 10.0 | [`10.0-Platform-Specific.md`](.plan/10.0-Platform-Specific.md) | FreeBSD, macOS, Linux, IllumOS specifics |
 | 11.0 | [`11.0-Validation.md`](.plan/11.0-Validation.md) | Task completion tracking |
 | 12.0 | [`12.0-Risks.md`](.plan/12.0-Risks.md) | Risks, TODO tracker |
+| 13.0 | [`13.0-oh-my-openagent-Audit.md`](.plan/13.0-oh-my-openagent-Audit.md) | Audit of oh-my-openagent |
 
 ---
 
@@ -54,7 +55,7 @@ All plan documents are in the `.plan/` directory:
 
 ### 1. Feature Parity
 - **Every opencode feature** must exist in freecode
-- **Every oh-my-openagent configurable** must be represented
+- **All freecode features are native** — Not plugins, not integrations
 - **Backward compatibility** — Read opencode configs, generate freecode configs
 
 ### 2. Security First
@@ -62,6 +63,7 @@ All plan documents are in the `.plan/` directory:
 - **No remote access** — Freecode is a local-only tool
 - **Permission system** — Configurable tool permissions per agent
 - **YOLO mode** — Optional skip-all-confirmations for automation
+- **NO TELEMETRY** — Zero analytics, tracking, or third-party data collection
 
 ### 3. Platform Independence
 - **Same code, all platforms** — Minimize platform-specific code
@@ -199,13 +201,13 @@ GOOS=freebsd GOARCH=amd64 go build -o freecode-freebsd ./cmd/freecode
 | 3 | Tool Implementations | 25 | ⏳ PENDING |
 | 4 | Agent Engine & Sessions | 20 | ⏳ PENDING |
 | 5 | TUI & Session Tabs | 15 | ⏳ PENDING |
-| 6 | oh-my-openagent Integration | 20 | ⏳ PENDING |
+| 6 | MCP & Background Tasks | 20 | ⏳ PENDING |
 | 7 | Polish & Packaging | 15 | ⏳ PENDING |
 | **Total** | | **130** | **0%** |
 
 ---
 
-## oh-my-openagent Feature Map
+## Freecode Feature Map
 
 ### 11 Built-in Agents
 | Agent | Mode | Purpose |
@@ -290,7 +292,7 @@ If you encounter issues:
 4. Commit and push so other agents know
 5. Ask for guidance
 
-> **Remember:** The goal is to build a platform-independent AI coding assistant that rivals opencode in capability while being written in Go with better cross-platform support. Every task should bring us closer to that goal.
+> **Remember:** The goal is to build freecode—a unified, platform-independent AI coding assistant with all features built in. Every task should bring us closer to that goal.
 
 ---
 
