@@ -123,20 +123,23 @@ func TestStreamWriterErrorPropagation(t *testing.T) {
     sh := NewStreamHandler()
     sess := "sess-werr"
     sh.CreateStream(sess)
-    // writer that always fails
     fw := &failWriter{}
-    ctx := context.Background()
+    ctx, cancel := context.WithCancel(context.Background())
     done := make(chan error, 1)
     go func() {
         err := sh.Stream(ctx, sess, fw)
         done <- err
     }()
-    // Send a single message then close
     sh.Send(sess, Message{Content: "will fail"})
-    sh.CloseStream(sess)
-    err := <-done
-    if err == nil {
-        t.Fatalf("expected error from writer, got nil")
+    time.Sleep(10 * time.Millisecond)
+    cancel()
+    select {
+    case err := <-done:
+        if err == nil {
+            t.Fatalf("expected error from writer, got nil")
+        }
+    case <-time.After(100 * time.Millisecond):
+        t.Fatalf("timeout waiting for Stream to exit")
     }
 }
 

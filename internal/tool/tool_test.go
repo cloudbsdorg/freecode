@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 func TestBashToolName(t *testing.T) {
@@ -1491,6 +1492,85 @@ func TestWebSearchToolExecuteWithNumResults(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatalf("Execute() error = %v", err)
+	}
+}
+
+func TestWebFetchToolExecuteWithServer(t *testing.T) {
+	tool := NewWebFetchTool()
+	ctx := context.Background()
+
+	_, err := tool.Execute(ctx, Request{
+		Arguments: map[string]interface{}{
+			"url": "http://localhost:99999",
+		},
+	})
+	if err == nil {
+		t.Error("Execute() should error for unreachable URL")
+	}
+}
+
+func TestBashToolExecuteContextCancel(t *testing.T) {
+	tool := NewBashTool()
+	ctx, cancel := context.WithCancel(context.Background())
+
+	done := make(chan struct{})
+	go func() {
+		_, _ = tool.Execute(ctx, Request{
+			Arguments: map[string]interface{}{
+				"command": "sleep 10",
+			},
+		})
+		close(done)
+	}()
+
+	time.Sleep(50 * time.Millisecond)
+	cancel()
+
+	select {
+	case <-done:
+	case <-time.After(2 * time.Second):
+		t.Error("Execute did not return after context cancel")
+	}
+}
+
+func TestEditToolExecuteNonExistentFile(t *testing.T) {
+	tool := NewEditTool()
+	_, err := tool.Execute(context.Background(), Request{
+		Arguments: map[string]interface{}{
+			"file": "/nonexistent/path/file.txt",
+			"edits": []map[string]string{},
+		},
+	})
+	if err == nil {
+		t.Error("Execute() should error for non-existent file")
+	}
+}
+
+func TestGlobToolExecuteNonExistentPattern(t *testing.T) {
+	tool := NewGlobTool()
+	resp, err := tool.Execute(context.Background(), Request{
+		Arguments: map[string]interface{}{
+			"pattern": "/nonexistent/**/file.txt",
+		},
+	})
+	if err != nil {
+		t.Fatalf("Execute() error = %v", err)
+	}
+	if resp.Result == "" {
+		t.Log("Result is empty for non-matching pattern (expected)")
+	}
+}
+
+func TestWriteToolExecuteWithMissingDir(t *testing.T) {
+	tool := NewWriteTool()
+	_, err := tool.Execute(context.Background(), Request{
+		Arguments: map[string]interface{}{
+			"path":    "/nonexistent/dir/file.txt",
+			"content": "hello world",
+		},
+	})
+	if err == nil {
+		t.Error("Execute() should error when parent directory doesn't exist")
 	}
 }
 

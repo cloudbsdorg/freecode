@@ -190,3 +190,99 @@ func TestKeyHandlerHandleCtrlT(t *testing.T) {
 		t.Error("Handle() should return nil cmd for unknown key")
 	}
 }
+
+func TestTabStateView(t *testing.T) {
+	m := New()
+	m.AddTab("Tab 1")
+
+	view := m.View()
+	if view == "" {
+		t.Error("View() returned empty string")
+	}
+}
+
+func TestTabStateViewEmpty(t *testing.T) {
+	m := New()
+
+	view := m.View()
+	if view == "" {
+		t.Error("View() returned empty string for empty tab state")
+	}
+}
+
+func TestTabStateTabBar(t *testing.T) {
+	m := New()
+	m.AddTab("Tab 1")
+	m.AddTab("Tab 2")
+
+	bar := m.tabBar()
+	if bar == "" {
+		t.Error("tabBar() returned empty string")
+	}
+}
+
+func TestTabStateTabBarEmpty(t *testing.T) {
+	m := New()
+
+	bar := m.tabBar()
+	if bar == "" {
+		t.Error("tabBar() returned empty string")
+	}
+}
+
+func TestTabStateContent(t *testing.T) {
+	m := New()
+	m.AddTab("Tab 1")
+	m.AddSession(m.List()[0].ID, "session-1")
+
+	content := m.content()
+	if content == "" {
+		t.Error("content() returned empty string")
+	}
+}
+
+func TestTabStateContentNoSessions(t *testing.T) {
+	m := New()
+	m.AddTab("Tab 1")
+
+	content := m.content()
+	if content != "(no session)" {
+		t.Errorf("content() = %q, want %q", content, "(no session)")
+	}
+}
+
+func TestTabStateStatusLine(t *testing.T) {
+	m := New()
+	m.AddTab("Tab 1")
+	m.AddSession(m.List()[0].ID, "session-1")
+
+	status := m.statusLine()
+	if status == "" {
+		t.Error("statusLine() returned empty string")
+	}
+}
+
+func TestTabStateSetSize(t *testing.T) {
+	m := New()
+	m.SetSize(100, 50)
+
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if m.width != 100 {
+		t.Errorf("width = %d, want 100", m.width)
+	}
+	if m.height != 50 {
+		t.Errorf("height = %d, want 50", m.height)
+	}
+}
+
+func TestTabStateStatusLineHSplit(t *testing.T) {
+	m := New()
+	m.AddTab("Tab 1")
+	m.SetSplit(m.List()[0].ID, false, 0.5)
+
+	status := m.statusLine()
+	if status == "" {
+		t.Error("statusLine() returned empty string")
+	}
+}

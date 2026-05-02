@@ -1,6 +1,8 @@
 package i18n
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 	"testing/fstest"
 )
@@ -147,5 +149,97 @@ func TestLoaderLoadLocalesError(t *testing.T) {
 	_, err := newLoaderWithFS("en", badFS)
 	if err == nil {
 		t.Error("expected error with non-existent locales dir")
+	}
+}
+
+func TestNewLoaderInvalidLangFallsBackToEnglish(t *testing.T) {
+	tmpDir := t.TempDir()
+	localesDir := filepath.Join(tmpDir, "locales")
+	_ = os.MkdirAll(localesDir, 0755)
+
+	fs := os.DirFS(tmpDir)
+	l, err := newLoaderWithFS("invalid-lang", fs)
+	if err != nil {
+		t.Fatalf("newLoaderWithFS() should not fail for invalid lang, should fallback to English")
+	}
+
+	lang := l.Language()
+	if lang.String() != "en" {
+		t.Errorf("Language() = %v, want en (fallback)", lang)
+	}
+}
+
+func TestLoaderLanguage(t *testing.T) {
+	tmpDir := t.TempDir()
+	localesDir := filepath.Join(tmpDir, "locales")
+	_ = os.MkdirAll(localesDir, 0755)
+
+	fs := os.DirFS(tmpDir)
+	l, err := newLoaderWithFS("en", fs)
+	if err != nil {
+		t.Fatalf("newLoaderWithFS() error = %v", err)
+	}
+
+	lang := l.Language()
+	if lang.String() != "en" {
+		t.Errorf("Language() = %v, want en", lang)
+	}
+}
+
+func TestNewLoaderWithValidLangFallback(t *testing.T) {
+	tmpDir := t.TempDir()
+	localesDir := filepath.Join(tmpDir, "locales")
+	_ = os.MkdirAll(localesDir, 0755)
+
+	fs := os.DirFS(tmpDir)
+	_, err := newLoaderWithFS("xyz-invalid", fs)
+	if err != nil {
+		t.Fatalf("newLoaderWithFS() should not fail for invalid lang, should fallback to English")
+	}
+}
+
+func TestLoaderLoadLocalesWithTomlFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	localesDir := filepath.Join(tmpDir, "locales")
+	_ = os.MkdirAll(localesDir, 0755)
+	_ = os.WriteFile(filepath.Join(localesDir, "en.toml"), []byte(`[hello]
+other = "Hello World!"`), 0644)
+
+	fs := os.DirFS(tmpDir)
+	l, err := newLoaderWithFS("en", fs)
+	if err != nil {
+		t.Fatalf("newLoaderWithFS() error = %v", err)
+	}
+
+	result := l.T("hello")
+	if result == "" {
+		t.Error("T() returned empty string")
+	}
+}
+
+func TestLoaderLoadLocalesSkipsTranslateToml(t *testing.T) {
+	tmpDir := t.TempDir()
+	localesDir := filepath.Join(tmpDir, "locales")
+	_ = os.MkdirAll(localesDir, 0755)
+	_ = os.WriteFile(filepath.Join(localesDir, "translate.en.toml"), []byte(`[hello]
+other = "Hello"`), 0644)
+
+	fs := os.DirFS(tmpDir)
+	_, err := newLoaderWithFS("en", fs)
+	if err != nil {
+		t.Fatalf("newLoaderWithFS() error = %v", err)
+	}
+}
+
+func TestLoaderLoadLocalesSkipsNonToml(t *testing.T) {
+	tmpDir := t.TempDir()
+	localesDir := filepath.Join(tmpDir, "locales")
+	_ = os.MkdirAll(localesDir, 0755)
+	_ = os.WriteFile(filepath.Join(localesDir, "en.json"), []byte(`{"hello": "World"}`), 0644)
+
+	fs := os.DirFS(tmpDir)
+	_, err := newLoaderWithFS("en", fs)
+	if err != nil {
+		t.Fatalf("newLoaderWithFS() error = %v", err)
 	}
 }

@@ -3,6 +3,9 @@ package cli
 import (
 	"bytes"
 	"testing"
+
+	"github.com/freecode/freecode/internal/config"
+	"github.com/freecode/freecode/internal/provider"
 )
 
 func TestExecute(t *testing.T) {
@@ -138,5 +141,266 @@ func TestStatsFlags(t *testing.T) {
 				t.Errorf("Failed to set %s flag: %v", tt.name, err)
 			}
 		})
+	}
+}
+
+func TestRunRun(t *testing.T) {
+	buf := &bytes.Buffer{}
+	runCmd.SetOut(buf)
+	runCmd.SetErr(buf)
+
+	err := runRun(runCmd, []string{"hello"})
+	if err != nil {
+		t.Errorf("runRun() error = %v", err)
+	}
+}
+
+func TestRunServe(t *testing.T) {
+	buf := &bytes.Buffer{}
+	serveCmd.SetOut(buf)
+	serveCmd.SetErr(buf)
+
+	err := runServe(serveCmd, []string{})
+	if err != nil {
+		t.Errorf("runServe() error = %v", err)
+	}
+}
+
+func TestRunSessionRead(t *testing.T) {
+	buf := &bytes.Buffer{}
+	sessionCmd.SetOut(buf)
+	sessionCmd.SetErr(buf)
+
+	err := runSessionRead(sessionCmd, []string{})
+	if err != nil {
+		t.Errorf("runSessionRead() error = %v", err)
+	}
+}
+
+func TestRunSessionSearch(t *testing.T) {
+	buf := &bytes.Buffer{}
+	sessionCmd.SetOut(buf)
+	sessionCmd.SetErr(buf)
+
+	err := runSessionSearch(sessionCmd, []string{"test"})
+	if err != nil {
+		t.Errorf("runSessionSearch() error = %v", err)
+	}
+}
+
+func TestRunSessionExport(t *testing.T) {
+	buf := &bytes.Buffer{}
+	sessionCmd.SetOut(buf)
+	sessionCmd.SetErr(buf)
+
+	err := runSessionExport(sessionCmd, []string{})
+	if err != nil {
+		t.Errorf("runSessionExport() error = %v", err)
+	}
+}
+
+func TestRunSessionImport(t *testing.T) {
+	buf := &bytes.Buffer{}
+	sessionCmd.SetOut(buf)
+	sessionCmd.SetErr(buf)
+
+	err := runSessionImport(sessionCmd, []string{})
+	if err != nil {
+		t.Errorf("runSessionImport() error = %v", err)
+	}
+}
+
+func TestRunSessionDelete(t *testing.T) {
+	buf := &bytes.Buffer{}
+	sessionCmd.SetOut(buf)
+	sessionCmd.SetErr(buf)
+
+	err := runSessionDelete(sessionCmd, []string{})
+	if err != nil {
+		t.Errorf("runSessionDelete() error = %v", err)
+	}
+}
+
+func TestRunSessionInfo(t *testing.T) {
+	buf := &bytes.Buffer{}
+	sessionCmd.SetOut(buf)
+	sessionCmd.SetErr(buf)
+
+	err := runSessionInfo(sessionCmd, []string{})
+	if err != nil {
+		t.Errorf("runSessionInfo() error = %v", err)
+	}
+}
+
+func TestRunTabNew(t *testing.T) {
+	buf := &bytes.Buffer{}
+	tabCmd.SetOut(buf)
+	tabCmd.SetErr(buf)
+
+	err := runTabNew(tabCmd, []string{})
+	if err != nil {
+		t.Errorf("runTabNew() error = %v", err)
+	}
+}
+
+func TestRunTabClose(t *testing.T) {
+	buf := &bytes.Buffer{}
+	tabCmd.SetOut(buf)
+	tabCmd.SetErr(buf)
+
+	err := runTabClose(tabCmd, []string{})
+	if err != nil {
+		t.Errorf("runTabClose() error = %v", err)
+	}
+}
+
+func TestRunTabMove(t *testing.T) {
+	buf := &bytes.Buffer{}
+	tabCmd.SetOut(buf)
+	tabCmd.SetErr(buf)
+
+	err := runTabMove(tabCmd, []string{})
+	if err != nil {
+		t.Errorf("runTabMove() error = %v", err)
+	}
+}
+
+func TestRunTabRename(t *testing.T) {
+	buf := &bytes.Buffer{}
+	tabCmd.SetOut(buf)
+	tabCmd.SetErr(buf)
+
+	err := runTabRename(tabCmd, []string{})
+	if err != nil {
+		t.Errorf("runTabRename() error = %v", err)
+	}
+}
+
+func TestRunMCPInstall(t *testing.T) {
+	buf := &bytes.Buffer{}
+	mcpCmd.SetOut(buf)
+	mcpCmd.SetErr(buf)
+
+	err := runMCPInstall(mcpCmd, []string{})
+	if err != nil {
+		t.Errorf("runMCPInstall() error = %v", err)
+	}
+}
+
+func TestRunMCPUninstall(t *testing.T) {
+	buf := &bytes.Buffer{}
+	mcpCmd.SetOut(buf)
+	mcpCmd.SetErr(buf)
+
+	err := runMCPUninstall(mcpCmd, []string{})
+	if err != nil {
+		t.Errorf("runMCPUninstall() error = %v", err)
+	}
+}
+
+func TestRunMCPStart(t *testing.T) {
+	buf := &bytes.Buffer{}
+	mcpCmd.SetOut(buf)
+	mcpCmd.SetErr(buf)
+
+	err := runMCPStart(mcpCmd, []string{})
+	if err != nil {
+		t.Errorf("runMCPStart() error = %v", err)
+	}
+}
+
+func TestRunMCPStop(t *testing.T) {
+	buf := &bytes.Buffer{}
+	mcpCmd.SetOut(buf)
+	mcpCmd.SetErr(buf)
+
+	err := runMCPStop(mcpCmd, []string{})
+	if err != nil {
+		t.Errorf("runMCPStop() error = %v", err)
+	}
+}
+
+func TestRunUpgradeInstall(t *testing.T) {
+	buf := &bytes.Buffer{}
+	upgradeCmd.SetOut(buf)
+	upgradeCmd.SetErr(buf)
+
+	err := runUpgradeInstall(upgradeCmd, []string{})
+	if err != nil {
+		t.Errorf("runUpgradeInstall() error = %v", err)
+	}
+}
+
+func TestRunModels(t *testing.T) {
+	buf := &bytes.Buffer{}
+	modelsCmd.SetOut(buf)
+	modelsCmd.SetErr(buf)
+
+	err := runModels(modelsCmd, []string{})
+	if err != nil {
+		t.Errorf("runModels() error = %v", err)
+	}
+}
+
+func TestRunModelsWithProvider(t *testing.T) {
+	buf := &bytes.Buffer{}
+	modelsCmd.SetOut(buf)
+	modelsCmd.SetErr(buf)
+	modelsCmd.Flags().Set("provider", "openai")
+
+	err := runModels(modelsCmd, []string{})
+	if err != nil {
+		t.Errorf("runModels(--provider openai) error = %v", err)
+	}
+
+	modelsCmd.Flags().Set("provider", "")
+}
+
+func TestRunModelsWithRefresh(t *testing.T) {
+	buf := &bytes.Buffer{}
+	modelsCmd.SetOut(buf)
+	modelsCmd.SetErr(buf)
+	modelsCmd.Flags().Set("refresh", "true")
+
+	err := runModels(modelsCmd, []string{})
+	if err != nil {
+		t.Errorf("runModels(--refresh) error = %v", err)
+	}
+
+	modelsCmd.Flags().Set("refresh", "false")
+}
+
+func TestDiscoverConnectedProviders(t *testing.T) {
+	cfg := config.DefaultConfig()
+	providers := discoverConnectedProviders(cfg)
+	if providers == nil {
+		t.Log("discoverConnectedProviders returned nil (no API keys set)")
+	}
+}
+
+func TestRefreshProviders(t *testing.T) {
+	cfg := config.DefaultConfig()
+	svc := provider.NewCatalogService()
+	err := refreshProviders(cfg, svc)
+	if err != nil {
+		t.Logf("refreshProviders returned error (expected with no API keys): %v", err)
+	}
+}
+
+func TestDisplayModels(t *testing.T) {
+	providers := map[string]*provider.ProviderModels{}
+	displayModels(providers, false)
+	displayModels(providers, true)
+}
+
+func TestModelsCmdHasFlags(t *testing.T) {
+	if modelsCmd.Flags().Lookup("provider") == nil {
+		t.Error("modelsCmd should have --provider flag")
+	}
+	if modelsCmd.Flags().Lookup("refresh") == nil {
+		t.Error("modelsCmd should have --refresh flag")
+	}
+	if modelsCmd.Flags().Lookup("list") == nil {
+		t.Error("modelsCmd should have --list flag")
 	}
 }

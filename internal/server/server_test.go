@@ -1,12 +1,32 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/freecode/freecode/internal/agent"
+	"github.com/freecode/freecode/internal/config"
 )
+
+type mockAgent struct {
+	name   string
+	result *agent.Response
+	err    error
+}
+
+func (m *mockAgent) Name() string { return m.name }
+
+func (m *mockAgent) Run(ctx context.Context, req agent.Request) (*agent.Response, error) {
+	if m.err != nil {
+		return nil, m.err
+	}
+	return m.result, nil
+}
 
 func TestNewServer(t *testing.T) {
 	s := New("localhost:18792")
@@ -165,5 +185,46 @@ func TestAgentHandlerPostInvalidJSON(t *testing.T) {
 }
 
 func TestAgentHandlerPostWithEngine(t *testing.T) {
-	t.Skip("requires non-nil Engine")
+	mock := &mockAgent{
+		name: "test",
+		result: &agent.Response{
+			SessionID: "test-session",
+			Message:   agent.Message{Role: "assistant", Content: "hello"},
+		},
+	}
+
+	engine := agent.NewEngine(config.DefaultConfig())
+	engine.RegisterAgent(mock)
+
+	h := NewAgentHandler(engine, nil)
+	body := `{"session_id":"test-session","prompt":"hello","agent":"test","tools":[]}`
+	req := httptest.NewRequest("POST", "/agents", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	h.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("Status = %d, want %d", rr.Code, http.StatusOK)
+	}
+}
+
+func TestAgentHandlerPostWithEngineError(t *testing.T) {
+	mock := &mockAgent{
+		name: "test",
+		err:  fmt.Errorf("agent error"),
+	}
+
+	engine := agent.NewEngine(config.DefaultConfig())
+	engine.RegisterAgent(mock)
+
+	h := NewAgentHandler(engine, nil)
+	body := `{"session_id":"test-session","prompt":"hello","agent":"test","tools":[]}`
+	req := httptest.NewRequest("POST", "/agents", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	h.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("Status = %d, want %d", rr.Code, http.StatusInternalServerError)
+	}
 }

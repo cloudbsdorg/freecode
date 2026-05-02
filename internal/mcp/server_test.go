@@ -3,6 +3,7 @@ package mcp
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -236,5 +237,141 @@ func TestServerHTTPHandler(t *testing.T) {
 
 	if rr.Code != http.StatusOK {
 		t.Errorf("Status = %d, want %d", rr.Code, http.StatusOK)
+	}
+}
+
+func TestServerHandleToolsCallUnknownTool(t *testing.T) {
+	s := NewServer(8080)
+	s.RegisterTool("existing", "Existing", func(args map[string]interface{}) (interface{}, error) {
+		return "ok", nil
+	})
+
+	params := `{"name":"nonexistent","arguments":{}}`
+	req := ServerRequest{
+		JSONRPC: "2.0",
+		Method:  "tools/call",
+		Params:  json.RawMessage(params),
+		ID:      1,
+	}
+
+	resp := s.processRequest(&req)
+
+	if resp.Error == nil {
+		t.Error("resp.Error = nil, want error for unknown tool")
+	}
+
+	if resp.Error.Code != -32602 {
+		t.Errorf("resp.Error.Code = %d, want %d", resp.Error.Code, -32602)
+	}
+}
+
+func TestServerHandleToolsCallHandlerError(t *testing.T) {
+	s := NewServer(8080)
+	s.RegisterTool("fail", "Failing tool", func(args map[string]interface{}) (interface{}, error) {
+		return nil, fmt.Errorf("handler error")
+	})
+
+	params := `{"name":"fail","arguments":{}}`
+	req := ServerRequest{
+		JSONRPC: "2.0",
+		Method:  "tools/call",
+		Params:  json.RawMessage(params),
+		ID:      1,
+	}
+
+	resp := s.processRequest(&req)
+
+	if resp.Error != nil {
+		t.Errorf("resp.Error = %v, want nil (errors are returned in result)", resp.Error)
+	}
+
+	result, ok := resp.Result.(map[string]interface{})
+	if !ok {
+		t.Fatal("resp.Result is not a map")
+	}
+
+	isError, ok := result["isError"].(bool)
+	if !ok || !isError {
+		t.Errorf("isError = %v, want true", result["isError"])
+	}
+}
+
+func TestServerHandleToolsCallInvalidParams(t *testing.T) {
+	s := NewServer(8080)
+
+	params := `not valid json`
+	req := ServerRequest{
+		JSONRPC: "2.0",
+		Method:  "tools/call",
+		Params:  json.RawMessage(params),
+		ID:      1,
+	}
+
+	resp := s.processRequest(&req)
+
+	if resp.Error == nil {
+		t.Error("resp.Error = nil, want error for invalid params")
+	}
+
+	if resp.Error.Code != -32602 {
+		t.Errorf("resp.Error.Code = %d, want %d", resp.Error.Code, -32602)
+	}
+}
+
+func TestServerHandleBadJSON(t *testing.T) {
+	s := NewServer(8080)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		s.Handle(w, r)
+	})
+
+	req := httptest.NewRequest("POST", "/", strings.NewReader(`not json`))
+	rr := httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Status = %d, want %d", rr.Code, http.StatusBadRequest)
+	}
+}
+
+func TestServerHandleMethodNotAllowed(t *testing.T) {
+	s := NewServer(8080)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		s.Handle(w, r)
+	})
+
+	req := httptest.NewRequest("GET", "/", nil)
+	rr := httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("Status = %d, want %d", rr.Code, http.StatusMethodNotAllowed)
+	}
+}
+
+func TestServerStartWithCanceledContext(t *testing.T) {
+	s := NewServer(18793)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	err := s.Start(ctx)
+	if err != nil && err.Error() != "http: Server closed" {
+		t.Errorf("Start() error = %v, want http: Server closed", err)
+	}
+}
+
+func TestClientCallToolServerNotFoundContextCanceled(t *testing.T) {
+	c := NewClient()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	_, err := c.CallTool(ctx, "test-server", "test-tool", nil)
+	if err == nil {
+		t.Error("CallTool() should error for canceled context")
 	}
 }
