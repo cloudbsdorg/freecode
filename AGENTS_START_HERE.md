@@ -2,7 +2,7 @@
 
 > **Purpose:** This is the primary entry point for autonomous agents working on the **Freecode** project.
 
-> **What is Freecode?** A unified, platform-independent AI coding assistant that combines the best of opencode with enhanced agents, hooks, and workflow features—all as a single cohesive product.
+> **What is Freecode?** A unified, platform-independent AI coding assistant that combines the best of opencode with enhanced agents, hooks, fleet management, and workflow features—all as a single cohesive product.
 
 > **Platform:** Freecode runs on FreeBSD 16, Linux, macOS, and IllumOS (OpenSolaris). Windows is explicitly **NOT** supported.
 
@@ -15,11 +15,12 @@ A **platform-independent AI coding assistant** that provides:
 - **Go-based CLI** — Single static binary, no runtime dependencies
 - **Migration from opencode** — Reads opencode configs, creates freecode configs
 - **11 Built-in Agents** — Sisyphus, Hephaestus, Oracle, Librarian, Explore, Prometheus, Metis, Momus, Atlas, Multimodal-Looker, Sisyphus-Junior
-- **52 Lifecycle Hooks** — Session, tool, transform, continuation, and skill hooks
+- **60+ Lifecycle Hooks** — Session, tool, transform, continuation, skill, and Ralph hooks
 - **8 Task Categories** — visual-engineering, ultrabrain, deep, artistry, quick, writing, etc.
 - **Session tabbing** — Multiple concurrent sessions in TUI with split views
+- **Fleet Management** — Head/agent/client modes for multi-instance coordination
+- **Built-in MCPs** — Exa websearch, Context7 docs, Grep.app
 - **Security-first** — All services bound to localhost only (127.0.0.1, ::1)
-- **MCP protocol support** — Model Context Protocol client
 - **NO TELEMETRY** — Zero analytics or tracking
 
 This is a conversion of opencode (TypeScript) to Go, with all features built directly into freecode—not as plugins.
@@ -28,46 +29,48 @@ This is a conversion of opencode (TypeScript) to Go, with all features built dir
 
 ## Document Structure
 
-All plan documents are in the `.plan/` directory:
+All plan documents are in the `.plan/` directory (sorted for easy navigation):
 
 | # | File | What It Covers |
 |---|------|----------------|
-| 0.0 | [`0.0-TOC.md`](.plan/0.0-TOC.md) | Master table of contents |
-| 0.1 | [`0.1-Workflow.md`](.plan/0.1-Workflow.md) | Task claiming, completion, merge handling |
-| 1.0 | [`1.0-Overview.md`](.plan/1.0-Overview.md) | Executive summary, phases, architecture |
-| 1.1 | [`1.1-Architecture.md`](.plan/1.1-Architecture.md) | TypeScript → Go mapping |
-| 2.0 | [`2.0-Design.md`](.plan/2.0-Design.md) | Go architecture, packages, concurrency |
-| 3.0 | [`3.0-Implementation-Tasks.md`](.plan/3.0-Implementation-Tasks.md) | Phase-by-phase task breakdown |
-| 4.0 | [`4.0-Configuration.md`](.plan/4.0-Configuration.md) | Unified config schema, migration |
-| 5.0 | [`5.0-Features.md`](.plan/5.0-Features.md) | All features: agents, hooks, categories |
-| 6.0 | [`6.0-Session-Tabbing.md`](.plan/6.0-Session-Tabbing.md) | TUI tabs, split view, YOLO toggle |
-| 7.0 | [`7.0-Packaging.md`](.plan/7.0-Packaging.md) | FreeBSD, Linux, macOS, IllumOS packages |
-| 8.0 | [`8.0-Dependencies.md`](.plan/8.0-Dependencies.md) | Homebrew dependencies, admin requirements |
-| 9.0 | [`9.0-Security.md`](.plan/9.0-Security.md) | Localhost binding, permissions, service security |
-| 10.0 | [`10.0-Platform-Specific.md`](.plan/10.0-Platform-Specific.md) | FreeBSD, macOS, Linux, IllumOS specifics |
-| 11.0 | [`11.0-Validation.md`](.plan/11.0-Validation.md) | Task completion tracking |
-| 12.0 | [`12.0-Risks.md`](.plan/12.0-Risks.md) | Risks, TODO tracker |
-| 13.0 | [`13.0-oh-my-openagent-Audit.md`](.plan/13.0-oh-my-openagent-Audit.md) | Audit of oh-my-openagent |
+| 0.0 | [`000.0-TOC.md`](.plan/000.0-TOC.md) | Master table of contents |
+| 0.1 | [`001.0-Workflow.md`](.plan/001.0-Workflow.md) | Task claiming, completion, merge handling |
+| 1.0 | [`002.0-Overview.md`](.plan/002.0-Overview.md) | Executive summary, phases, architecture |
+| 1.1 | [`003.0-Architecture.md`](.plan/003.0-Architecture.md) | TypeScript → Go mapping |
+| 2.0 | [`010.0-Design.md`](.plan/010.0-Design.md) | Go architecture, packages, concurrency |
+| 3.0 | [`011.0-Implementation-Tasks.md`](.plan/011.0-Implementation-Tasks.md) | Phase-by-phase task breakdown |
+| 4.0 | [`012.0-Configuration.md`](.plan/012.0-Configuration.md) | Unified config schema, migration |
+| 5.0 | [`013.0-Features.md`](.plan/013.0-Features.md) | All features: agents, hooks, MCP, fleet, tools |
+| 6.0 | [`014.0-Session-Tabbing.md`](.plan/014.0-Session-Tabbing.md) | TUI tabs, split view, command palette, mouse |
+| 7.0 | [`015.0-Packaging.md`](.plan/015.0-Packaging.md) | FreeBSD, Linux, macOS, IllumOS packages |
+| 8.0 | [`016.0-Dependencies.md`](.plan/016.0-Dependencies.md) | Build dependencies per platform |
+| 9.0 | [`017.0-Security.md`](.plan/017.0-Security.md) | Localhost binding, permissions, YubiKey |
+| - | [`004.0-Platform-Specific.md`](.plan/004.0-Platform-Specific.md) | Platform-specific details |
+| - | [`005.0-Validation.md`](.plan/005.0-Validation.md) | Task completion tracking, validation checklists |
+| - | [`006.0-Risks.md`](.plan/006.0-Risks.md) | Risks, TODO tracker |
+| - | [`007.0-oh-my-openagent-Audit.md`](.plan/007.0-oh-my-openagent-Audit.md) | Audit of oh-my-openagent |
+| - | [`008.0-Development-Guide.md`](.plan/008.0-Development-Guide.md) | Dev setup, testing, contributions |
+| - | [`009.0-Feature-Inventory.md`](.plan/009.0-Feature-Inventory.md) | 88 features tracked with task IDs |
 
 ---
 
 ## Primary Directives
 
 ### 1. Feature Parity
-- **Every opencode feature** must exist in freecode
+- **Every opencode/oh-my-openagent feature** must exist in freecode
 - **All freecode features are native** — Not plugins, not integrations
 - **Backward compatibility** — Read opencode configs, generate freecode configs
 
 ### 2. Security First
 - **Localhost only** — All services bind to 127.0.0.1 and ::1
-- **No remote access** — Freecode is a local-only tool
+- **Fleet can be exposed** — Explicit opt-in with TLS + auth
 - **Permission system** — Configurable tool permissions per agent
 - **YOLO mode** — Optional skip-all-confirmations for automation
 - **NO TELEMETRY** — Zero analytics, tracking, or third-party data collection
 
 ### 3. Platform Independence
 - **Same code, all platforms** — Minimize platform-specific code
-- **FreeBSD primary** — Designed for FreeBSD 16 first
+- **FreeBSD primary** — Designed for FreeBSD 16 first (Go 1.25 in ports)
 - **Progressive enhancement** — Use platform features when available
 
 ### 4. Go Idioms
@@ -88,9 +91,9 @@ All plan documents are in the `.plan/` directory:
 
 ### Picking a Task
 1. Pull latest: `git pull --rebase`
-2. Open [`.plan/0.0-TOC.md`](.plan/0.0-TOC.md) for the master index
-3. Find a task in [`.plan/3.0-Implementation-Tasks.md`](.plan/3.0-Implementation-Tasks.md)
-4. Check that all `Dependencies` are marked ✅ DONE
+2. Open [`.plan/000.0-TOC.md`](.plan/000.0-TOC.md) for the master index
+3. Find a task in [`.plan/009.0-Feature-Inventory.md`](.plan/009.0-Feature-Inventory.md)
+4. Check that all dependencies are marked ✅ DONE
 5. Mark your task as `in_progress` in the todo list
 6. Create a branch: `git checkout -b freecode/<task-name>`
 7. Commit: `git add .plan/ && git commit -m "Claim task <name>" && git push`
@@ -104,12 +107,12 @@ All plan documents are in the `.plan/` directory:
 6. Create pull request
 
 ### Handling Merge Conflicts
-1. Check if your task was taken by another agent
-2. If taken, abandon and pick a different task
-3. If not taken, resolve the conflict, keep both changes if they affect different tasks
+1. Check if your task was cited by another agent
+2. If cited, abandon and pick a different task
+3. If not cited, resolve the conflict, keep both changes if they affect different tasks
 4. `git add <file> && git rebase --continue && git push`
 
-> **Full details:** See [`.plan/0.1-Workflow.md`](.plan/0.1-Workflow.md)
+> **Full details:** See [`.plan/001.0-Workflow.md`](.plan/001.0-Workflow.md)
 
 ---
 
@@ -118,13 +121,12 @@ All plan documents are in the `.plan/` directory:
 For a new agent, read the documents in this order:
 
 1. **This file** (`AGENTS_START_HERE.md`) — You are here
-2. **[`0.1-Workflow.md`](.plan/0.1-Workflow.md)** — How to work on tasks
-3. **[`1.0-Overview.md`](.plan/1.0-Overview.md)** — The big picture
-4. **[`1.1-Architecture.md`](.plan/1.1-Architecture.md)** — Current state analysis
-5. **[`2.0-Design.md`](.plan/2.0-Design.md)** — Go architecture proposal
-6. **[`3.0-Implementation-Tasks.md`](.plan/3.0-Implementation-Tasks.md)** — Task breakdown
-7. **[`4.0-Configuration.md`](.plan/4.0-Configuration.md)** — Config system
-8. **[`5.0-oh-my-openagent-Integration.md`](.plan/5.0-oh-my-openagent-Integration.md)** — OMO features
+2. **[`001.0-Workflow.md`](.plan/001.0-Workflow.md)** — How to work on tasks
+3. **[`002.0-Overview.md`](.plan/002.0-Overview.md)** — The big picture
+4. **[`003.0-Architecture.md`](.plan/003.0-Architecture.md)** — Current state analysis
+5. **[`009.0-Feature-Inventory.md`](.plan/009.0-Feature-Inventory.md)** — 88 features with task IDs
+6. **[`010.0-Design.md`](.plan/010.0-Design.md)** — Go architecture proposal
+7. **[`013.0-Features.md`](.plan/013.0-Features.md)** — All features documented
 
 Then dive into the specific phase you're working on.
 
@@ -156,10 +158,11 @@ Then dive into the specific phase you're working on.
 | `internal/config/` | Configuration loading/migration |
 | `internal/agent/` | Agent engine, 11 built-in agents |
 | `internal/tool/` | Tool registry and implementations |
-| `internal/hook/` | Hook system (52 hooks) |
+| `internal/hook/` | Hook system (60+ hooks) |
 | `internal/session/` | Session management, tabs |
 | `internal/ui/` | Bubble Tea TUI |
 | `internal/server/` | HTTP server (localhost only) |
+| `internal/fleet/` | Fleet head/agent/client |
 | `internal/platform/` | Platform-specific code |
 
 ### Build Commands
@@ -177,11 +180,23 @@ go test ./...
 # Run linting
 golangci-lint run
 
-# Cross-compile for FreeBSD
+# Cross-compile for FreeBSD (Go 1.25 compatible)
 GOOS=freebsd GOARCH=amd64 go build -o freecode-freebsd ./cmd/freecode
 ```
 
-### Ports (All Localhost Only)
+### Installed Tools (macOS)
+
+```bash
+go version        # go1.26.2 darwin/arm64
+git --version    # git 2.50.1
+gcc --version    # Apple clang 21.0.0
+golangci-lint run # Linting
+staticcheck      # Static analysis
+goreleaser       # Cross-compilation
+shellcheck       # Shell validation
+```
+
+### Ports (All Localhost Only by Default)
 
 | Service | Port | Protocol |
 |---------|------|----------|
@@ -189,21 +204,7 @@ GOOS=freebsd GOARCH=amd64 go build -o freecode-freebsd ./cmd/freecode
 | API Server | 18792 | TCP (127.0.0.1, ::1) |
 | MCP Server | 18793 | TCP (127.0.0.1, ::1) |
 | Web UI | 18791 | TCP (127.0.0.1, ::1) |
-
----
-
-## Implementation Phases
-
-| Phase | Description | Tasks | Status |
-|-------|-------------|-------|--------|
-| 1 | Core CLI Foundation | 20 | ⏳ PENDING |
-| 2 | Configuration System | 15 | ⏳ PENDING |
-| 3 | Tool Implementations | 25 | ⏳ PENDING |
-| 4 | Agent Engine & Sessions | 20 | ⏳ PENDING |
-| 5 | TUI & Session Tabs | 15 | ⏳ PENDING |
-| 6 | MCP & Background Tasks | 20 | ⏳ PENDING |
-| 7 | Polish & Packaging | 15 | ⏳ PENDING |
-| **Total** | | **130** | **0%** |
+| **Fleet Head** | **7842** | **TCP (opt-in, LAN preferred)** |
 
 ---
 
@@ -224,45 +225,45 @@ GOOS=freebsd GOARCH=amd64 go build -o freecode-freebsd ./cmd/freecode
 | Multimodal-Looker | subagent | Multimodal |
 | Sisyphus-Junior | all | Simpler tasks |
 
-### 52 Lifecycle Hooks
+### 60+ Lifecycle Hooks
 | Tier | Count | Examples |
 |------|-------|----------|
-| Session | 24 | `session.start`, `session.end`, `session.error` |
+| Session | 26 | `session.start`, `session.end`, `session.error` |
 | Tool | 14 | `tool.execute.before`, `tool.execute.after` |
 | Transform | 5 | `transform.message`, `transform.response` |
-| Continuation | 7 | `continuation.auto`, `continuation.until_done` |
+| Continuation | 10 | `continuation.auto`, `ralph_loop`, `atlas` |
+| Ralph | 3 | `ralph.think`, `ralph.step_back` |
 | Skill | 2 | `skill.invoked`, `skill.completed` |
 
 ### 8 Categories
 `visual-engineering`, `ultrabrain`, `deep`, `artistry`, `quick`, `unspecified-low`, `unspecified-high`, `writing`
 
+### Fleet Management
+| Mode | Description |
+|------|-------------|
+| head | Control plane - accepts connections from agents |
+| agent | Worker - connects to head, receives tasks |
+| both | Hybrid - can be head for some, agent for others |
+| client | Thin client - connect from laptop to view/manage |
+
 ---
 
-## Session Tabbing
+## Session Tabbing & TUI
 
-Freecode supports multiple concurrent sessions organized in tabs:
+Freecode supports multiple concurrent sessions with full mouse support:
 
 - `Ctrl+T` — New tab
 - `Ctrl+W` — Close tab
 - `Ctrl+Tab` — Next tab
+- `Ctrl+P` — Command palette
+- `Ctrl+\` — Fleet panel
 - `Ctrl+Shift+V` — Vertical split
 - `Ctrl+Shift+H` — Horizontal split
 - `Ctrl+Y` — Toggle YOLO mode
 
-See [`.plan/6.0-Session-Tabbing.md`](.plan/6.0-Session-Tabbing.md) for details.
+**Mouse support:** All interactive elements are clickable. Right-click for context menus.
 
----
-
-## YOLO Mode
-
-YOLO mode is **ON by default** (this is intentional). Toggle in TUI with `Ctrl+Y` or via commands menu.
-
-```bash
-# Disable YOLO to get confirmations
-yolo: false
-```
-
-When YOLO is on (default), freecode executes without asking for confirmation.
+See [`.plan/014.0-Session-Tabbing.md`](.plan/014.0-Session-Tabbing.md) for details.
 
 ---
 
@@ -275,7 +276,7 @@ When YOLO is on (default), freecode executes without asking for confirmation.
 | macOS | Homebrew | `packaging/macos/` |
 | IllumOS | tarball | `packaging/illuminos/` |
 
-See [`.plan/7.0-Packaging.md`](.plan/7.0-Packaging.md) for details.
+See [`.plan/015.0-Packaging.md`](.plan/015.0-Packaging.md) for details.
 
 ---
 
