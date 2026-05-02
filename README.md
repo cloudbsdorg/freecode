@@ -101,4 +101,4 @@ All commits are authored by Mark LaPointe. No co-authors, no sponsorships.
 
 ## License
 
-Unlimited license granted to the project.
+BSD 3-Clause License. See [LICENSE](LICENSE) for details.
