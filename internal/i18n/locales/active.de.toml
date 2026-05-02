@@ -1,0 +1,342 @@
+# German locale strings for freecode
+
+[[messages]]
+id = "app.name"
+other = "Freecode"
+
+[[messages]]
+id = "app.description"
+other = "Einheitlicher, plattformunabhängiger KI-Codierassistent"
+
+[[messages]]
+id = "cmd.help.usage"
+other = "Verwendung: {{.Command}} [Optionen]"
+
+[[messages]]
+id = "cmd.help.description"
+other = "Beschreibung:"
+
+[[messages]]
+id = "cmd.help.examples"
+other = "Beispiele:"
+
+[[messages]]
+id = "error.generic"
+other = "Ein Fehler ist aufgetreten: {{.Error}}"
+
+[[messages]]
+id = "error.not_found"
+other = "{{.Resource}} nicht gefunden"
+
+[[messages]]
+id = "error.invalid_input"
+other = "Ungültige Eingabe: {{.Input}}"
+
+[[messages]]
+id = "error.permission_denied"
+other = "Zugriff verweigert"
+
+[[messages]]
+id = "error.connection_failed"
+other = "Verbindung fehlgeschlagen: {{.Reason}}"
+
+[[messages]]
+id = "confirm.prompt"
+other = "Möchten Sie fortfahren?"
+
+[[messages]]
+id = "confirm.yes"
+other = "ja"
+
+[[messages]]
+id = "confirm.no"
+other = "nein"
+
+[[messages]]
+id = "status.saving"
+other = "Speichern..."
+
+[[messages]]
+id = "status.saved"
+other = "Gespeichert"
+
+[[messages]]
+id = "status.loading"
+other = "Laden..."
+
+[[messages]]
+id = "status.error"
+other = "Fehler"
+
+[[messages]]
+id = "status.ready"
+other = "Bereit"
+
+[[messages]]
+id = "session.new"
+other = "Neue Sitzung"
+
+[[messages]]
+id = "session.open"
+other = "Sitzung öffnen"
+
+[[messages]]
+id = "session.close"
+other = "Sitzung schließen"
+
+[[messages]]
+id = "session.switch"
+other = "Sitzung wechseln"
+
+[[messages]]
+id = "tab.new"
+other = "Neuer Tab"
+
+[[messages]]
+id = "tab.close"
+other = "Tab schließen"
+
+[[messages]]
+id = "tab.next"
+other = "Nächster Tab"
+
+[[messages]]
+id = "tab.previous"
+other = "Vorheriger Tab"
+
+[[messages]]
+id = "menu.file"
+other = "Datei"
+
+[[messages]]
+id = "menu.edit"
+other = "Bearbeiten"
+
+[[messages]]
+id = "menu.view"
+other = "Ansicht"
+
+[[messages]]
+id = "menu.help"
+other = "Hilfe"
+
+[[messages]]
+id = "menu.quit"
+other = "Beenden"
+
+[[messages]]
+id = "key.ctrl_c"
+other = "Strg+C zum Abbrechen"
+
+[[messages]]
+id = "key.ctrl_d"
+other = "Strg+D zum Beenden"
+
+[[messages]]
+id = "key.ctrl_t"
+other = "Strg+T für neuen Tab"
+
+[[messages]]
+id = "key.ctrl_w"
+other = "Strg+W zum Schließen"
+
+[[messages]]
+id = "fleet.head"
+other = "Fleet Head"
+
+[[messages]]
+id = "fleet.agent"
+other = "Fleet Agent"
+
+[[messages]]
+id = "fleet.client"
+other = "Fleet Client"
+
+[[messages]]
+id = "fleet.connecting"
+other = "Verbindung zu Fleet..."
+
+[[messages]]
+id = "fleet.connected"
+other = "Mit Fleet verbunden"
+
+[[messages]]
+id = "fleet.disconnected"
+other = "Von Fleet getrennt"
+
+[[messages]]
+id = "fleet.discover"
+other = "Instanzen finden"
+
+[[messages]]
+id = "agent.sisyphus"
+other = "Sisyphus"
+
+[[messages]]
+id = "agent.oracle"
+other = "Oracle"
+
+[[messages]]
+id = "agent.librarian"
+other = "Bibliothekar"
+
+[[messages]]
+id = "agent.explore"
+other = "Erkunden"
+
+[[messages]]
+id = "config.loaded"
+other = "Konfiguration geladen"
+
+[[messages]]
+id = "config.saved"
+other = "Konfiguration gespeichert"
+
+[[messages]]
+id = "config.reset"
+other = "Konfiguration auf Standardwerte zurückgesetzt"
+
+[[messages]]
+id = "log.starting"
+other = "{{.App}} wird gestartet..."
+
+[[messages]]
+id = "log.started"
+other = "{{.App}} gestartet"
+
+[[messages]]
+id = "log.stopping"
+other = "{{.App}} wird gestoppt..."
+
+[[messages]]
+id = "log.stopped"
+other = "{{.App}} gestoppt"
+
+[[messages]]
+id = "log.error"
+other = "Fehler: {{.Message}}"
+
+[[messages]]
+id = "log.info"
+other = "Info: {{.Message}}"
+
+[[messages]]
+id = "log.debug"
+other = "Debug: {{.Message}}"
+
+[[messages]]
+id = "log.verbose"
+other = "Ausführlich: {{.Message}}"
+
+[[messages]]
+id = "server.starting"
+other = "Server wird auf {{.Address}} gestartet"
+
+[[messages]]
+id = "server.started"
+other = "Server lauscht auf {{.Address}}"
+
+[[messages]]
+id = "server.stopping"
+other = "Server wird gestoppt..."
+
+[[messages]]
+id = "server.stopped"
+other = "Server gestoppt"
+
+[[messages]]
+id = "mcp.starting"
+other = "MCP-Server wird auf {{.Address}} gestartet"
+
+[[messages]]
+id = "mcp.started"
+other = "MCP-Server lauscht auf {{.Address}}"
+
+[[messages]]
+id = "hook.invoked"
+other = "Hook {{.Name}} aufgerufen"
+
+[[messages]]
+id = "hook.error"
+other = "Hook {{.Name}} Fehler: {{.Error}}"
+
+[[messages]]
+id = "tool.executing"
+other = "Werkzeug {{.Tool}} wird ausgeführt..."
+
+[[messages]]
+id = "tool.executed"
+other = "Werkzeug {{.Tool}} ausgeführt"
+
+[[messages]]
+id = "tool.error"
+other = "Werkzeug {{.Tool}} Fehler: {{.Error}}"
+
+[[messages]]
+id = "task.claimed"
+other = "Aufgabe {{.Task}} beansprucht von {{.Agent}}"
+
+[[messages]]
+id = "task.completed"
+other = "Aufgabe {{.Task}} abgeschlossen"
+
+[[messages]]
+id = "task.failed"
+other = "Aufgabe {{.Task}} fehlgeschlagen: {{.Error}}"
+
+[[messages]]
+id = "task.blocked"
+other = "Aufgabe {{.Task}} blockiert: {{.Reason}}"
+
+[[messages]]
+id = "validation.start"
+other = "Validierung wird gestartet..."
+
+[[messages]]
+id = "validation.complete"
+other = "Validierung abgeschlossen: {{.Passed}} bestanden, {{.Failed}} fehlgeschlagen"
+
+[[messages]]
+id = "validation.pass"
+other = "PASS: {{.Check}}"
+
+[[messages]]
+id = "validation.fail"
+other = "FAIL: {{.Check}} - {{.Reason}}"
+
+[[messages]]
+id = "yolo.enabled"
+other = "YOLO-Modus aktiviert"
+
+[[messages]]
+id = "yolo.disabled"
+other = "YOLO-Modus deaktiviert"
+
+[[messages]]
+id = "rtl.not_supported"
+other = "RTL in diesem Terminal nicht unterstützt. LTR-Layout wird verwendet."
+
+[[messages]]
+id = "rtl.enabled"
+other = "RTL-Modus aktiviert"
+
+[[messages]]
+id = "locale.detected"
+other = "Locale erkannt: {{.Locale}}"
+
+[[messages]]
+id = "locale.changed"
+other = "Locale geändert zu {{.Locale}}"
+
+[[messages]]
+id = "locale.not_found"
+other = "Locale {{.Locale}} nicht gefunden, verwende Englisch"
+
+[[messages]]
+id = "i18n.not_available"
+other = "Übersetzung nicht verfügbar für: {{.String}}"
+
+[[messages]]
+id = "strings.count"
+one = "{{.Count}} Zeichenkette"
+other = "{{.Count}} Zeichenketten"

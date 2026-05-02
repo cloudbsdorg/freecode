@@ -1,0 +1,342 @@
+# Spanish locale strings for freecode
+
+[[messages]]
+id = "app.name"
+other = "Freecode"
+
+[[messages]]
+id = "app.description"
+other = "Asistente de codificación AI unificado e independiente de la plataforma"
+
+[[messages]]
+id = "cmd.help.usage"
+other = "Uso: {{.Command}} [opciones]"
+
+[[messages]]
+id = "cmd.help.description"
+other = "Descripción:"
+
+[[messages]]
+id = "cmd.help.examples"
+other = "Ejemplos:"
+
+[[messages]]
+id = "error.generic"
+other = "Ocurrió un error: {{.Error}}"
+
+[[messages]]
+id = "error.not_found"
+other = "{{.Resource}} no encontrado"
+
+[[messages]]
+id = "error.invalid_input"
+other = "Entrada inválida: {{.Input}}"
+
+[[messages]]
+id = "error.permission_denied"
+other = "Permiso denegado"
+
+[[messages]]
+id = "error.connection_failed"
+other = "Conexión fallida: {{.Reason}}"
+
+[[messages]]
+id = "confirm.prompt"
+other = "¿Desea continuar?"
+
+[[messages]]
+id = "confirm.yes"
+other = "sí"
+
+[[messages]]
+id = "confirm.no"
+other = "no"
+
+[[messages]]
+id = "status.saving"
+other = "Guardando..."
+
+[[messages]]
+id = "status.saved"
+other = "Guardado"
+
+[[messages]]
+id = "status.loading"
+other = "Cargando..."
+
+[[messages]]
+id = "status.error"
+other = "Error"
+
+[[messages]]
+id = "status.ready"
+other = "Listo"
+
+[[messages]]
+id = "session.new"
+other = "Nueva Sesión"
+
+[[messages]]
+id = "session.open"
+other = "Abrir Sesión"
+
+[[messages]]
+id = "session.close"
+other = "Cerrar Sesión"
+
+[[messages]]
+id = "session.switch"
+other = "Cambiar Sesión"
+
+[[messages]]
+id = "tab.new"
+other = "Nueva Pestaña"
+
+[[messages]]
+id = "tab.close"
+other = "Cerrar Pestaña"
+
+[[messages]]
+id = "tab.next"
+other = "Pestaña Siguiente"
+
+[[messages]]
+id = "tab.previous"
+other = "Pestaña Anterior"
+
+[[messages]]
+id = "menu.file"
+other = "Archivo"
+
+[[messages]]
+id = "menu.edit"
+other = "Editar"
+
+[[messages]]
+id = "menu.view"
+other = "Ver"
+
+[[messages]]
+id = "menu.help"
+other = "Ayuda"
+
+[[messages]]
+id = "menu.quit"
+other = "Salir"
+
+[[messages]]
+id = "key.ctrl_c"
+other = "Ctrl+C para cancelar"
+
+[[messages]]
+id = "key.ctrl_d"
+other = "Ctrl+D para salir"
+
+[[messages]]
+id = "key.ctrl_t"
+other = "Ctrl+T para nueva pestaña"
+
+[[messages]]
+id = "key.ctrl_w"
+other = "Ctrl+W para cerrar"
+
+[[messages]]
+id = "fleet.head"
+other = "Fleet Head"
+
+[[messages]]
+id = "fleet.agent"
+other = "Fleet Agent"
+
+[[messages]]
+id = "fleet.client"
+other = "Fleet Client"
+
+[[messages]]
+id = "fleet.connecting"
+other = "Conectando a fleet..."
+
+[[messages]]
+id = "fleet.connected"
+other = "Conectado a fleet"
+
+[[messages]]
+id = "fleet.disconnected"
+other = "Desconectado de fleet"
+
+[[messages]]
+id = "fleet.discover"
+other = "Descubrir Instancias"
+
+[[messages]]
+id = "agent.sisyphus"
+other = "Sisyphus"
+
+[[messages]]
+id = "agent.oracle"
+other = "Oracle"
+
+[[messages]]
+id = "agent.librarian"
+other = "Bibliotecario"
+
+[[messages]]
+id = "agent.explore"
+other = "Explorar"
+
+[[messages]]
+id = "config.loaded"
+other = "Configuración cargada"
+
+[[messages]]
+id = "config.saved"
+other = "Configuración guardada"
+
+[[messages]]
+id = "config.reset"
+other = "Configuración restaurada a valores predeterminados"
+
+[[messages]]
+id = "log.starting"
+other = "Iniciando {{.App}}..."
+
+[[messages]]
+id = "log.started"
+other = "{{.App}} iniciado"
+
+[[messages]]
+id = "log.stopping"
+other = "Deteniendo {{.App}}..."
+
+[[messages]]
+id = "log.stopped"
+other = "{{.App}} detenido"
+
+[[messages]]
+id = "log.error"
+other = "Error: {{.Message}}"
+
+[[messages]]
+id = "log.info"
+other = "Info: {{.Message}}"
+
+[[messages]]
+id = "log.debug"
+other = "Debug: {{.Message}}"
+
+[[messages]]
+id = "log.verbose"
+other = "Detallado: {{.Message}}"
+
+[[messages]]
+id = "server.starting"
+other = "Iniciando servidor en {{.Address}}"
+
+[[messages]]
+id = "server.started"
+other = "Servidor escuchando en {{.Address}}"
+
+[[messages]]
+id = "server.stopping"
+other = "Deteniendo servidor..."
+
+[[messages]]
+id = "server.stopped"
+other = "Servidor detenido"
+
+[[messages]]
+id = "mcp.starting"
+other = "Iniciando servidor MCP en {{.Address}}"
+
+[[messages]]
+id = "mcp.started"
+other = "Servidor MCP escuchando en {{.Address}}"
+
+[[messages]]
+id = "hook.invoked"
+other = "Hook {{.Name}} invocado"
+
+[[messages]]
+id = "hook.error"
+other = "Error en hook {{.Name}}: {{.Error}}"
+
+[[messages]]
+id = "tool.executing"
+other = "Ejecutando herramienta {{.Tool}}..."
+
+[[messages]]
+id = "tool.executed"
+other = "Herramienta {{.Tool}} ejecutada"
+
+[[messages]]
+id = "tool.error"
+other = "Error en herramienta {{.Tool}}: {{.Error}}"
+
+[[messages]]
+id = "task.claimed"
+other = "Tarea {{.Task}} reclamada por {{.Agent}}"
+
+[[messages]]
+id = "task.completed"
+other = "Tarea {{.Task}} completada"
+
+[[messages]]
+id = "task.failed"
+other = "Tarea {{.Task}} fallida: {{.Error}}"
+
+[[messages]]
+id = "task.blocked"
+other = "Tarea {{.Task}} bloqueada: {{.Reason}}"
+
+[[messages]]
+id = "validation.start"
+other = "Iniciando validación..."
+
+[[messages]]
+id = "validation.complete"
+other = "Validación completa: {{.Passed}} pasadas, {{.Failed}} fallidas"
+
+[[messages]]
+id = "validation.pass"
+other = "PASS: {{.Check}}"
+
+[[messages]]
+id = "validation.fail"
+other = "FAIL: {{.Check}} - {{.Reason}}"
+
+[[messages]]
+id = "yolo.enabled"
+other = "Modo YOLO habilitado"
+
+[[messages]]
+id = "yolo.disabled"
+other = "Modo YOLO deshabilitado"
+
+[[messages]]
+id = "rtl.not_supported"
+other = "RTL no soportado en este terminal. Usando diseño LTR."
+
+[[messages]]
+id = "rtl.enabled"
+other = "Modo RTL habilitado"
+
+[[messages]]
+id = "locale.detected"
+other = "Locale detectada: {{.Locale}}"
+
+[[messages]]
+id = "locale.changed"
+other = "Locale cambiada a {{.Locale}}"
+
+[[messages]]
+id = "locale.not_found"
+other = "Locale {{.Locale}} no encontrada, usando inglés"
+
+[[messages]]
+id = "i18n.not_available"
+other = "Traducción no disponible para: {{.String}}"
+
+[[messages]]
+id = "strings.count"
+one = "{{.Count}} cadena"
+other = "{{.Count}} cadenas"

@@ -1,0 +1,341 @@
+# Japanese locale strings for freecode
+
+[[messages]]
+id = "app.name"
+other = "Freecode"
+
+[[messages]]
+id = "app.description"
+other = "統合されたクロスプラットフォームAIコーディングアシスタント"
+
+[[messages]]
+id = "cmd.help.usage"
+other = "使用法: {{.Command}} [オプション]"
+
+[[messages]]
+id = "cmd.help.description"
+other = "説明:"
+
+[[messages]]
+id = "cmd.help.examples"
+other = "例:"
+
+[[messages]]
+id = "error.generic"
+other = "エラーが発生しました: {{.Error}}"
+
+[[messages]]
+id = "error.not_found"
+other = "{{.Resource}} が見つかりません"
+
+[[messages]]
+id = "error.invalid_input"
+other = "無効な入力: {{.Input}}"
+
+[[messages]]
+id = "error.permission_denied"
+other = "権限が拒否されました"
+
+[[messages]]
+id = "error.connection_failed"
+other = "接続に失敗しました: {{.Reason}}"
+
+[[messages]]
+id = "confirm.prompt"
+other = "続行しますか?"
+
+[[messages]]
+id = "confirm.yes"
+other = "はい"
+
+[[messages]]
+id = "confirm.no"
+other = "いいえ"
+
+[[messages]]
+id = "status.saving"
+other = "保存中..."
+
+[[messages]]
+id = "status.saved"
+other = "保存済み"
+
+[[messages]]
+id = "status.loading"
+other = "読み込み中..."
+
+[[messages]]
+id = "status.error"
+other = "エラー"
+
+[[messages]]
+id = "status.ready"
+other = "準備完了"
+
+[[messages]]
+id = "session.new"
+other = "新規セッション"
+
+[[messages]]
+id = "session.open"
+other = "セッションを開く"
+
+[[messages]]
+id = "session.close"
+other = "セッションを閉じる"
+
+[[messages]]
+id = "session.switch"
+other = "セッションを切り替え"
+
+[[messages]]
+id = "tab.new"
+other = "新規タブ"
+
+[[messages]]
+id = "tab.close"
+other = "タブを閉じる"
+
+[[messages]]
+id = "tab.next"
+other = "次のタブ"
+
+[[messages]]
+id = "tab.previous"
+other = "前のタブ"
+
+[[messages]]
+id = "menu.file"
+other = "ファイル"
+
+[[messages]]
+id = "menu.edit"
+other = "編集"
+
+[[messages]]
+id = "menu.view"
+other = "表示"
+
+[[messages]]
+id = "menu.help"
+other = "ヘルプ"
+
+[[messages]]
+id = "menu.quit"
+other = "終了"
+
+[[messages]]
+id = "key.ctrl_c"
+other = "Ctrl+C でキャンセル"
+
+[[messages]]
+id = "key.ctrl_d"
+other = "Ctrl+D で終了"
+
+[[messages]]
+id = "key.ctrl_t"
+other = "Ctrl+T で新規タブ"
+
+[[messages]]
+id = "key.ctrl_w"
+other = "Ctrl+W で閉じる"
+
+[[messages]]
+id = "fleet.head"
+other = "Fleet Head"
+
+[[messages]]
+id = "fleet.agent"
+other = "Fleet Agent"
+
+[[messages]]
+id = "fleet.client"
+other = "Fleet Client"
+
+[[messages]]
+id = "fleet.connecting"
+other = "Fleet に接続中..."
+
+[[messages]]
+id = "fleet.connected"
+other = "Fleet に接続しました"
+
+[[messages]]
+id = "fleet.disconnected"
+other = "Fleet から切断されました"
+
+[[messages]]
+id = "fleet.discover"
+other = "インスタンスを検出"
+
+[[messages]]
+id = "agent.sisyphus"
+other = "Sisyphus"
+
+[[messages]]
+id = "agent.oracle"
+other = "Oracle"
+
+[[messages]]
+id = "agent.librarian"
+other = "司書"
+
+[[messages]]
+id = "agent.explore"
+other = "エクスプローラー"
+
+[[messages]]
+id = "config.loaded"
+other = "設定を読み込みました"
+
+[[messages]]
+id = "config.saved"
+other = "設定を保存しました"
+
+[[messages]]
+id = "config.reset"
+other = "設定をデフォルトにリセットしました"
+
+[[messages]]
+id = "log.starting"
+other = "{{.App}} を起動中..."
+
+[[messages]]
+id = "log.started"
+other = "{{.App}} を起動しました"
+
+[[messages]]
+id = "log.stopping"
+other = "{{.App}} を停止中..."
+
+[[messages]]
+id = "log.stopped"
+other = "{{.App}} を停止しました"
+
+[[messages]]
+id = "log.error"
+other = "エラー: {{.Message}}"
+
+[[messages]]
+id = "log.info"
+other = "情報: {{.Message}}"
+
+[[messages]]
+id = "log.debug"
+other = "デバッグ: {{.Message}}"
+
+[[messages]]
+id = "log.verbose"
+other = "詳細: {{.Message}}"
+
+[[messages]]
+id = "server.starting"
+other = "{{.Address}} でサーバーを起動中"
+
+[[messages]]
+id = "server.started"
+other = "{{.Address}} でサーバーが待機中"
+
+[[messages]]
+id = "server.stopping"
+other = "サーバーを停止中..."
+
+[[messages]]
+id = "server.stopped"
+other = "サーバーを停止しました"
+
+[[messages]]
+id = "mcp.starting"
+other = "{{.Address}} でMCPサーバーを起動中"
+
+[[messages]]
+id = "mcp.started"
+other = "{{.Address}} でMCPサーバーが待機中"
+
+[[messages]]
+id = "hook.invoked"
+other = "Hook {{.Name}} が呼び出されました"
+
+[[messages]]
+id = "hook.error"
+other = "Hook {{.Name}} エラー: {{.Error}}"
+
+[[messages]]
+id = "tool.executing"
+other = "ツール {{.Tool}} を実行中..."
+
+[[messages]]
+id = "tool.executed"
+other = "ツール {{.Tool}} を実行しました"
+
+[[messages]]
+id = "tool.error"
+other = "ツール {{.Tool}} エラー: {{.Error}}"
+
+[[messages]]
+id = "task.claimed"
+other = "タスク {{.Task}} は {{.Agent}} によってクレームされました"
+
+[[messages]]
+id = "task.completed"
+other = "タスク {{.Task}} が完了しました"
+
+[[messages]]
+id = "task.failed"
+other = "タスク {{.Task}} が失敗しました: {{.Error}}"
+
+[[messages]]
+id = "task.blocked"
+other = "タスク {{.Task}} がブロックされました: {{.Reason}}"
+
+[[messages]]
+id = "validation.start"
+other = "検証を開始..."
+
+[[messages]]
+id = "validation.complete"
+other = "検証完了: {{.Passed}} 合格, {{.Failed}} 失敗"
+
+[[messages]]
+id = "validation.pass"
+other = "合格: {{.Check}}"
+
+[[messages]]
+id = "validation.fail"
+other = "失敗: {{.Check}} - {{.Reason}}"
+
+[[messages]]
+id = "yolo.enabled"
+other = "YOLO モードが有効になりました"
+
+[[messages]]
+id = "yolo.disabled"
+other = "YOLO モードが無効になりました"
+
+[[messages]]
+id = "rtl.not_supported"
+other = "このターミナルではRTLはサポートされていません。LTRレイアウトを使用します。"
+
+[[messages]]
+id = "rtl.enabled"
+other = "RTL モードが有効になりました"
+
+[[messages]]
+id = "locale.detected"
+other = "検出されたロケール: {{.Locale}}"
+
+[[messages]]
+id = "locale.changed"
+other = "ロケールが {{.Locale}} に変更されました"
+
+[[messages]]
+id = "locale.not_found"
+other = "ロケール {{.Locale}} が見つかりません、英語を使用します"
+
+[[messages]]
+id = "i18n.not_available"
+other = "翻訳がありません: {{.String}}"
+
+[[messages]]
+id = "strings.count"
+other = "{{.Count}} 件の文字列"

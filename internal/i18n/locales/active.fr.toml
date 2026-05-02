@@ -1,0 +1,342 @@
+# French locale strings for freecode
+
+[[messages]]
+id = "app.name"
+other = "Freecode"
+
+[[messages]]
+id = "app.description"
+other = "Assistant de codage IA unifié et multiplateforme"
+
+[[messages]]
+id = "cmd.help.usage"
+other = "Utilisation: {{.Command}} [options]"
+
+[[messages]]
+id = "cmd.help.description"
+other = "Description:"
+
+[[messages]]
+id = "cmd.help.examples"
+other = "Exemples:"
+
+[[messages]]
+id = "error.generic"
+other = "Une erreur s'est produite: {{.Error}}"
+
+[[messages]]
+id = "error.not_found"
+other = "{{.Resource}} non trouvé"
+
+[[messages]]
+id = "error.invalid_input"
+other = "Entrée invalide: {{.Input}}"
+
+[[messages]]
+id = "error.permission_denied"
+other = "Permission refusée"
+
+[[messages]]
+id = "error.connection_failed"
+other = "Connexion échouée: {{.Reason}}"
+
+[[messages]]
+id = "confirm.prompt"
+other = "Voulez-vous continuer?"
+
+[[messages]]
+id = "confirm.yes"
+other = "oui"
+
+[[messages]]
+id = "confirm.no"
+other = "non"
+
+[[messages]]
+id = "status.saving"
+other = "Enregistrement..."
+
+[[messages]]
+id = "status.saved"
+other = "Enregistré"
+
+[[messages]]
+id = "status.loading"
+other = "Chargement..."
+
+[[messages]]
+id = "status.error"
+other = "Erreur"
+
+[[messages]]
+id = "status.ready"
+other = "Prêt"
+
+[[messages]]
+id = "session.new"
+other = "Nouvelle Session"
+
+[[messages]]
+id = "session.open"
+other = "Ouvrir Session"
+
+[[messages]]
+id = "session.close"
+other = "Fermer Session"
+
+[[messages]]
+id = "session.switch"
+other = "Changer Session"
+
+[[messages]]
+id = "tab.new"
+other = "Nouvel Onglet"
+
+[[messages]]
+id = "tab.close"
+other = "Fermer Onglet"
+
+[[messages]]
+id = "tab.next"
+other = "Onglet Suivant"
+
+[[messages]]
+id = "tab.previous"
+other = "Onglet Précédent"
+
+[[messages]]
+id = "menu.file"
+other = "Fichier"
+
+[[messages]]
+id = "menu.edit"
+other = "Édition"
+
+[[messages]]
+id = "menu.view"
+other = "Affichage"
+
+[[messages]]
+id = "menu.help"
+other = "Aide"
+
+[[messages]]
+id = "menu.quit"
+other = "Quitter"
+
+[[messages]]
+id = "key.ctrl_c"
+other = "Ctrl+C pour annuler"
+
+[[messages]]
+id = "key.ctrl_d"
+other = "Ctrl+D pour quitter"
+
+[[messages]]
+id = "key.ctrl_t"
+other = "Ctrl+T pour nouvel onglet"
+
+[[messages]]
+id = "key.ctrl_w"
+other = "Ctrl+W pour fermer"
+
+[[messages]]
+id = "fleet.head"
+other = "Fleet Head"
+
+[[messages]]
+id = "fleet.agent"
+other = "Fleet Agent"
+
+[[messages]]
+id = "fleet.client"
+other = "Fleet Client"
+
+[[messages]]
+id = "fleet.connecting"
+other = "Connexion à fleet..."
+
+[[messages]]
+id = "fleet.connected"
+other = "Connecté à fleet"
+
+[[messages]]
+id = "fleet.disconnected"
+other = "Déconnecté de fleet"
+
+[[messages]]
+id = "fleet.discover"
+other = "Découvrir Instances"
+
+[[messages]]
+id = "agent.sisyphus"
+other = "Sisyphus"
+
+[[messages]]
+id = "agent.oracle"
+other = "Oracle"
+
+[[messages]]
+id = "agent.librarian"
+other = "Bibliothécaire"
+
+[[messages]]
+id = "agent.explore"
+other = "Explorer"
+
+[[messages]]
+id = "config.loaded"
+other = "Configuration chargée"
+
+[[messages]]
+id = "config.saved"
+other = "Configuration enregistrée"
+
+[[messages]]
+id = "config.reset"
+other = "Configuration réinitialisée aux valeurs par défaut"
+
+[[messages]]
+id = "log.starting"
+other = "Démarrage de {{.App}}..."
+
+[[messages]]
+id = "log.started"
+other = "{{.App}} démarré"
+
+[[messages]]
+id = "log.stopping"
+other = "Arrêt de {{.App}}..."
+
+[[messages]]
+id = "log.stopped"
+other = "{{.App}} arrêté"
+
+[[messages]]
+id = "log.error"
+other = "Erreur: {{.Message}}"
+
+[[messages]]
+id = "log.info"
+other = "Info: {{.Message}}"
+
+[[messages]]
+id = "log.debug"
+other = "Debug: {{.Message}}"
+
+[[messages]]
+id = "log.verbose"
+other = "Détaillé: {{.Message}}"
+
+[[messages]]
+id = "server.starting"
+other = "Démarrage du serveur sur {{.Address}}"
+
+[[messages]]
+id = "server.started"
+other = "Serveur en écoute sur {{.Address}}"
+
+[[messages]]
+id = "server.stopping"
+other = "Arrêt du serveur..."
+
+[[messages]]
+id = "server.stopped"
+other = "Serveur arrêté"
+
+[[messages]]
+id = "mcp.starting"
+other = "Démarrage du serveur MCP sur {{.Address}}"
+
+[[messages]]
+id = "mcp.started"
+other = "Serveur MCP en écoute sur {{.Address}}"
+
+[[messages]]
+id = "hook.invoked"
+other = "Hook {{.Name}} invoqué"
+
+[[messages]]
+id = "hook.error"
+other = "Erreur hook {{.Name}}: {{.Error}}"
+
+[[messages]]
+id = "tool.executing"
+other = "Exécution de l'outil {{.Tool}}..."
+
+[[messages]]
+id = "tool.executed"
+other = "Outil {{.Tool}} exécuté"
+
+[[messages]]
+id = "tool.error"
+other = "Erreur outil {{.Tool}}: {{.Error}}"
+
+[[messages]]
+id = "task.claimed"
+other = "Tâche {{.Task}} réclamée par {{.Agent}}"
+
+[[messages]]
+id = "task.completed"
+other = "Tâche {{.Task}} terminée"
+
+[[messages]]
+id = "task.failed"
+other = "Tâche {{.Task}} échouée: {{.Error}}"
+
+[[messages]]
+id = "task.blocked"
+other = "Tâche {{.Task}} bloquée: {{.Reason}}"
+
+[[messages]]
+id = "validation.start"
+other = "Démarrage de la validation..."
+
+[[messages]]
+id = "validation.complete"
+other = "Validation terminée: {{.Passed}} réussites, {{.Failed}} échecs"
+
+[[messages]]
+id = "validation.pass"
+other = "PASS: {{.Check}}"
+
+[[messages]]
+id = "validation.fail"
+other = "FAIL: {{.Check}} - {{.Reason}}"
+
+[[messages]]
+id = "yolo.enabled"
+other = "Mode YOLO activé"
+
+[[messages]]
+id = "yolo.disabled"
+other = "Mode YOLO désactivé"
+
+[[messages]]
+id = "rtl.not_supported"
+other = "RTL non supporté dans ce terminal. Utilisation du format LTR."
+
+[[messages]]
+id = "rtl.enabled"
+other = "Mode RTL activé"
+
+[[messages]]
+id = "locale.detected"
+other = "Locale détectée: {{.Locale}}"
+
+[[messages]]
+id = "locale.changed"
+other = "Locale changée en {{.Locale}}"
+
+[[messages]]
+id = "locale.not_found"
+other = "Locale {{.Locale}} non trouvée, utilisation de l'anglais"
+
+[[messages]]
+id = "i18n.not_available"
+other = "Traduction non disponible pour: {{.String}}"
+
+[[messages]]
+id = "strings.count"
+one = "{{.Count}} chaîne"
+other = "{{.Count}} chaînes"

@@ -1,0 +1,341 @@
+# Chinese locale strings for freecode
+
+[[messages]]
+id = "app.name"
+other = "Freecode"
+
+[[messages]]
+id = "app.description"
+other = "统一、跨平台的AI编程助手"
+
+[[messages]]
+id = "cmd.help.usage"
+other = "用法: {{.Command}} [选项]"
+
+[[messages]]
+id = "cmd.help.description"
+other = "描述:"
+
+[[messages]]
+id = "cmd.help.examples"
+other = "示例:"
+
+[[messages]]
+id = "error.generic"
+other = "发生错误: {{.Error}}"
+
+[[messages]]
+id = "error.not_found"
+other = "未找到 {{.Resource}}"
+
+[[messages]]
+id = "error.invalid_input"
+other = "无效输入: {{.Input}}"
+
+[[messages]]
+id = "error.permission_denied"
+other = "权限被拒绝"
+
+[[messages]]
+id = "error.connection_failed"
+other = "连接失败: {{.Reason}}"
+
+[[messages]]
+id = "confirm.prompt"
+other = "是否继续?"
+
+[[messages]]
+id = "confirm.yes"
+other = "是"
+
+[[messages]]
+id = "confirm.no"
+other = "否"
+
+[[messages]]
+id = "status.saving"
+other = "保存中..."
+
+[[messages]]
+id = "status.saved"
+other = "已保存"
+
+[[messages]]
+id = "status.loading"
+other = "加载中..."
+
+[[messages]]
+id = "status.error"
+other = "错误"
+
+[[messages]]
+id = "status.ready"
+other = "就绪"
+
+[[messages]]
+id = "session.new"
+other = "新会话"
+
+[[messages]]
+id = "session.open"
+other = "打开会话"
+
+[[messages]]
+id = "session.close"
+other = "关闭会话"
+
+[[messages]]
+id = "session.switch"
+other = "切换会话"
+
+[[messages]]
+id = "tab.new"
+other = "新标签页"
+
+[[messages]]
+id = "tab.close"
+other = "关闭标签页"
+
+[[messages]]
+id = "tab.next"
+other = "下一个标签页"
+
+[[messages]]
+id = "tab.previous"
+other = "上一个标签页"
+
+[[messages]]
+id = "menu.file"
+other = "文件"
+
+[[messages]]
+id = "menu.edit"
+other = "编辑"
+
+[[messages]]
+id = "menu.view"
+other = "视图"
+
+[[messages]]
+id = "menu.help"
+other = "帮助"
+
+[[messages]]
+id = "menu.quit"
+other = "退出"
+
+[[messages]]
+id = "key.ctrl_c"
+other = "Ctrl+C 取消"
+
+[[messages]]
+id = "key.ctrl_d"
+other = "Ctrl+D 退出"
+
+[[messages]]
+id = "key.ctrl_t"
+other = "Ctrl+T 新建标签页"
+
+[[messages]]
+id = "key.ctrl_w"
+other = "Ctrl+W 关闭"
+
+[[messages]]
+id = "fleet.head"
+other = "Fleet Head"
+
+[[messages]]
+id = "fleet.agent"
+other = "Fleet Agent"
+
+[[messages]]
+id = "fleet.client"
+other = "Fleet Client"
+
+[[messages]]
+id = "fleet.connecting"
+other = "正在连接 Fleet..."
+
+[[messages]]
+id = "fleet.connected"
+other = "已连接到 Fleet"
+
+[[messages]]
+id = "fleet.disconnected"
+other = "已断开 Fleet 连接"
+
+[[messages]]
+id = "fleet.discover"
+other = "发现实例"
+
+[[messages]]
+id = "agent.sisyphus"
+other = "Sisyphus"
+
+[[messages]]
+id = "agent.oracle"
+other = "Oracle"
+
+[[messages]]
+id = "agent.librarian"
+other = "Librarian"
+
+[[messages]]
+id = "agent.explore"
+other = "Explorer"
+
+[[messages]]
+id = "config.loaded"
+other = "配置已加载"
+
+[[messages]]
+id = "config.saved"
+other = "配置已保存"
+
+[[messages]]
+id = "config.reset"
+other = "配置已重置为默认值"
+
+[[messages]]
+id = "log.starting"
+other = "正在启动 {{.App}}..."
+
+[[messages]]
+id = "log.started"
+other = "{{.App}} 已启动"
+
+[[messages]]
+id = "log.stopping"
+other = "正在停止 {{.App}}..."
+
+[[messages]]
+id = "log.stopped"
+other = "{{.App}} 已停止"
+
+[[messages]]
+id = "log.error"
+other = "错误: {{.Message}}"
+
+[[messages]]
+id = "log.info"
+other = "信息: {{.Message}}"
+
+[[messages]]
+id = "log.debug"
+other = "调试: {{.Message}}"
+
+[[messages]]
+id = "log.verbose"
+other = "详细: {{.Message}}"
+
+[[messages]]
+id = "server.starting"
+other = "正在启动服务器于 {{.Address}}"
+
+[[messages]]
+id = "server.started"
+other = "服务器正在监听 {{.Address}}"
+
+[[messages]]
+id = "server.stopping"
+other = "正在停止服务器..."
+
+[[messages]]
+id = "server.stopped"
+other = "服务器已停止"
+
+[[messages]]
+id = "mcp.starting"
+other = "正在启动 MCP 服务器于 {{.Address}}"
+
+[[messages]]
+id = "mcp.started"
+other = "MCP 服务器正在监听 {{.Address}}"
+
+[[messages]]
+id = "hook.invoked"
+other = "Hook {{.Name}} 已调用"
+
+[[messages]]
+id = "hook.error"
+other = "Hook {{.Name}} 错误: {{.Error}}"
+
+[[messages]]
+id = "tool.executing"
+other = "正在执行工具 {{.Tool}}..."
+
+[[messages]]
+id = "tool.executed"
+other = "工具 {{.Tool}} 已执行"
+
+[[messages]]
+id = "tool.error"
+other = "工具 {{.Tool}} 错误: {{.Error}}"
+
+[[messages]]
+id = "task.claimed"
+other = "任务 {{.Task}} 已由 {{.Agent}} 认领"
+
+[[messages]]
+id = "task.completed"
+other = "任务 {{.Task}} 已完成"
+
+[[messages]]
+id = "task.failed"
+other = "任务 {{.Task}} 失败: {{.Error}}"
+
+[[messages]]
+id = "task.blocked"
+other = "任务 {{.Task}} 被阻塞: {{.Reason}}"
+
+[[messages]]
+id = "validation.start"
+other = "正在开始验证..."
+
+[[messages]]
+id = "validation.complete"
+other = "验证完成: {{.Passed}} 通过, {{.Failed}} 失败"
+
+[[messages]]
+id = "validation.pass"
+other = "通过: {{.Check}}"
+
+[[messages]]
+id = "validation.fail"
+other = "失败: {{.Check}} - {{.Reason}}"
+
+[[messages]]
+id = "yolo.enabled"
+other = "YOLO 模式已启用"
+
+[[messages]]
+id = "yolo.disabled"
+other = "YOLO 模式已禁用"
+
+[[messages]]
+id = "rtl.not_supported"
+other = "此终端不支持 RTL。使用 LTR 布局。"
+
+[[messages]]
+id = "rtl.enabled"
+other = "RTL 模式已启用"
+
+[[messages]]
+id = "locale.detected"
+other = "检测到语言环境: {{.Locale}}"
+
+[[messages]]
+id = "locale.changed"
+other = "语言环境已更改为 {{.Locale}}"
+
+[[messages]]
+id = "locale.not_found"
+other = "未找到语言环境 {{.Locale}}，使用英语"
+
+[[messages]]
+id = "i18n.not_available"
+other = "无法翻译: {{.String}}"
+
+[[messages]]
+id = "strings.count"
+other = "{{.Count}} 个字符串"

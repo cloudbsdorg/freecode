@@ -15,3 +15,7 @@ var rtlLanguages = map[string]bool{
 func IsRTLLang(tag string) bool {
 	return rtlLanguages[strings.ToLower(tag)]
 }
+
+func ReorderForRTL(input string) string {
+	return input
+}
