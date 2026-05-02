@@ -58,33 +58,6 @@ Instead of trying to match OpenCode's Solid.js TUI:
 
 **Extra in freecode (9):** attach, debug, doctor, plugin, root, tab, version (some are stubs)
 
-### Tier 1: High Value, Achievable
-1. **`account`** - Account management (7889 bytes in opencode)
-   - User authentication
-   - Account settings
-   - Subscription management
-
-### Tier 2: Medium Value, Achievable
-2. **`web`** - Start web interface (2462 bytes in opencode)
-   - Start server and open browser
-   - Show network/localhost URLs
-   - Differs from `serve` (web has browser auto-open)
-
-3. **`cmd`** - CLI command framework (183 bytes in opencode)
-   - Command registration
-   - Help text generation
-
-### Tier 3: Complex/Optional
-4. **`plug`** - Plugin system (6952 bytes in opencode)
-   - NPM package installation
-   - Plugin manifest parsing
-   - Config patching
-   - Freecode has `plugin` but different implementation
-
-5. **`generate`** - Code generation (2983 bytes in opencode)
-   - Template-based code generation
-   - Scaffold new projects
-
 ## Implementation Strategy
 
 ### Phase 1: Completed Commands ✅
@@ -94,7 +67,7 @@ Instead of trying to match OpenCode's Solid.js TUI:
 ### Phase 2: Remaining Missing Commands
 1. `generate` - Code generation (Low priority)
 
-### Phase 3: Agent Implementation ✅ (Mostly Done)
+### Phase 3: Agent Implementation ✅ (Done)
 1. ✅ Implement actual agent prompts for all 11 agents
 2. ✅ Wire up hook triggers to fire on events
 3. ✅ Implement skill system with built-in skills
@@ -112,29 +85,27 @@ Incrementally enhance the Bubble Tea TUI:
 - Plugin system
 - GitHub integration
 
-## Files to Modify
+## Files Status
 
-### Missing Commands to Create
-- `internal/cli/account.go` - Account management (HIGH PRIORITY)
-- `internal/cli/web.go` - Web interface launcher
-- `internal/cli/cmd.go` - CLI command framework
-- `internal/cli/plug.go` - Plugin system
-- `internal/cli/generate.go` - Code generation
+### Completed Files ✅
+- `internal/cli/account.go` - Account management ✅ DONE
+- `internal/cli/web.go` - Web interface launcher ✅ DONE
+- `internal/agent/prompts.go` - Agent prompts ✅ DONE
+- `internal/hook/triggers.go` - Hook triggers ✅ DONE
+- `internal/hook/builtins.go` - Hook defaults ✅ DONE
+- `internal/session/manager.go` - Session manager ✅ DONE
+- `internal/session/store.go` - Session store ✅ DONE
+- `internal/session/compaction.go` - Session compaction ✅ DONE
 
 ### Existing Commands to Enhance
-- `internal/cli/providers.go` - Already exists, enhance OAuth flows
-- `internal/cli/models.go` - Already exists, add missing subcommands
-- `internal/cli/mcp.go` - Already exists, add missing subcommands
+- `internal/cli/providers.go` - Enhance OAuth flows
+- `internal/cli/models.go` - Add missing subcommands
+- `internal/cli/mcp.go` - Add missing subcommands
 
-### TUI Files
-- `internal/ui/model.go` - Major enhancement needed
+### TUI Files (In Progress)
+- `internal/ui/model.go` - Enhancement in progress
 - `internal/ui/components/` - New components directory
 - `internal/ui/dialogs/` - New dialogs directory
-
-### Agent Files (CRITICAL - Currently Stubs)
-- `internal/agent/sisyphus.go` - Implement actual agent prompts
-- `internal/agent/engine.go` - Wire up agent execution
-- `internal/hook/registry.go` - Implement hook triggers
 
 ### Reference: OpenCode Missing Commands
 | Command | Size | Path |
