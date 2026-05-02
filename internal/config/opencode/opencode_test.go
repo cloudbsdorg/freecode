@@ -103,3 +103,68 @@ func TestDefaultOpenCodePath(t *testing.T) {
 		t.Log("No opencode config found (expected on clean system)")
 	}
 }
+
+func TestMockLoaderRead(t *testing.T) {
+	loader := &MockLoader{
+		Config: &OpenCodeConfig{
+			Version:     "2.0",
+			Model:       "claude-3",
+			Provider:    "anthropic",
+			ContextSize: 8192,
+		},
+	}
+
+	cfg, err := loader.Read("/test/path")
+	if err != nil {
+		t.Errorf("Read() error = %v", err)
+	}
+	if cfg.Version != "2.0" {
+		t.Errorf("Version = %q, want %q", cfg.Version, "2.0")
+	}
+	if cfg.Model != "claude-3" {
+		t.Errorf("Model = %q, want %q", cfg.Model, "claude-3")
+	}
+	if cfg.Provider != "anthropic" {
+		t.Errorf("Provider = %q, want %q", cfg.Provider, "anthropic")
+	}
+	if cfg.ContextSize != 8192 {
+		t.Errorf("ContextSize = %d, want %d", cfg.ContextSize, 8192)
+	}
+}
+
+func TestMockLoaderError(t *testing.T) {
+	loader := &MockLoader{
+		Err: ErrMock,
+	}
+
+	_, err := loader.Read("/test/path")
+	if err != ErrMock {
+		t.Errorf("Read() error = %v, want %v", err, ErrMock)
+	}
+}
+
+var ErrMock = errMock{}
+
+type errMock struct{}
+
+func (e errMock) Error() string { return "mock error" }
+
+func TestViperLoaderReadNonexistent(t *testing.T) {
+	loader := NewViperLoader()
+	_, err := loader.Read("/nonexistent/path/config.json")
+	if err == nil {
+		t.Error("ViperLoader.Read() expected error for nonexistent path")
+	}
+}
+
+func TestViperLoaderReadEmpty(t *testing.T) {
+	loader := NewViperLoader()
+	cfg, err := loader.Read("")
+	if err != nil {
+		t.Logf("ViperLoader.Read() found existing config with error (expected if config exists): %v", err)
+		return
+	}
+	if cfg == nil {
+		t.Error("ViperLoader.Read() returned nil config")
+	}
+}

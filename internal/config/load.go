@@ -9,33 +9,44 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Load(path string) (*Config, error) {
-	cfg := DefaultConfig()
+type Loader interface {
+	Read(path string) (*Config, error)
+}
+
+type ViperLoader struct{}
+
+func NewViperLoader() *ViperLoader {
+	return &ViperLoader{}
+}
+
+func (vl *ViperLoader) Read(path string) (*Config, error) {
+	v := viper.New()
 
 	if path != "" {
-		viper.SetConfigFile(path)
+		v.SetConfigFile(path)
 	} else {
 		configPaths := configSearchPaths()
 		for _, p := range configPaths {
 			if _, err := os.Stat(p); err == nil {
-				viper.SetConfigFile(p)
+				v.SetConfigFile(p)
 				break
 			}
 		}
-		viper.SetConfigType("yaml")
+		v.SetConfigType("yaml")
 	}
 
-	viper.AutomaticEnv()
-	viper.SetEnvPrefix("FREECODE")
-	viper.SetEnvKeyReplacer(cfgReplacer)
+	v.SetEnvPrefix("FREECODE")
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	v.AutomaticEnv()
 
-	if err := viper.ReadInConfig(); err != nil {
+	if err := v.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			return nil, fmt.Errorf("failed to read config: %w", err)
 		}
 	}
 
-	if err := viper.Unmarshal(cfg); err != nil {
+	cfg := DefaultConfig()
+	if err := v.Unmarshal(cfg); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
 	}
 
@@ -47,6 +58,23 @@ func Load(path string) (*Config, error) {
 	}
 
 	return cfg, nil
+}
+
+type MockLoader struct {
+	Config *Config
+	Err    error
+}
+
+func (ml *MockLoader) Read(path string) (*Config, error) {
+	if ml.Err != nil {
+		return nil, ml.Err
+	}
+	return ml.Config, nil
+}
+
+func Load(path string) (*Config, error) {
+	loader := NewViperLoader()
+	return loader.Read(path)
 }
 
 func configSearchPaths() []string {

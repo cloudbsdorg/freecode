@@ -99,3 +99,69 @@ func TestConfigMergeJSON(t *testing.T) {
 		t.Errorf("Timeout = %d, want %d", cfg.Timeout, 120)
 	}
 }
+
+func TestConfigToJSONCompact(t *testing.T) {
+	cfg := DefaultConfig()
+
+	data, err := cfg.ToJSONCompact()
+	if err != nil {
+		t.Fatalf("ToJSONCompact() error = %v", err)
+	}
+
+	if len(data) == 0 {
+		t.Error("ToJSONCompact() returned empty data")
+	}
+}
+
+func TestLoadJSONFile(t *testing.T) {
+	cfg, err := LoadJSONFile("/nonexistent/file.json")
+	if err == nil {
+		t.Error("LoadJSONFile() should error for nonexistent file")
+	}
+	if cfg != nil {
+		t.Error("LoadJSONFile() should return nil config for nonexistent file")
+	}
+}
+
+func TestMergeJSONInvalid(t *testing.T) {
+	cfg := DefaultConfig()
+	err := cfg.MergeJSON([]byte(`{invalid`))
+	if err == nil {
+		t.Error("MergeJSON() should error for invalid JSON")
+	}
+}
+
+func TestMergeConfigMap(t *testing.T) {
+	base := map[string]interface{}{
+		"a": 1,
+		"b": map[string]interface{}{
+			"c": 2,
+		},
+	}
+	overlay := map[string]interface{}{
+		"b": map[string]interface{}{
+			"d": 3,
+		},
+		"e": 4,
+	}
+
+	result := mergeConfigMap(base, overlay)
+
+	if result["a"] != 1 {
+		t.Errorf("a = %v, want 1", result["a"])
+	}
+	if result["e"] != 4 {
+		t.Errorf("e = %v, want 4", result["e"])
+	}
+
+	nested, ok := result["b"].(map[string]interface{})
+	if !ok {
+		t.Fatal("b should be map[string]interface{}")
+	}
+	if nested["c"] != 2 {
+		t.Errorf("b.c = %v, want 2", nested["c"])
+	}
+	if nested["d"] != 3 {
+		t.Errorf("b.d = %v, want 3", nested["d"])
+	}
+}

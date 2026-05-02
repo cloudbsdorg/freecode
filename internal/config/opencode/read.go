@@ -22,38 +22,69 @@ type OpenCodeConfig struct {
 	Hooks       map[string]interface{} `mapstructure:"hooks"`
 }
 
-func Read(path string) (*OpenCodeConfig, error) {
+type Loader interface {
+	Read(path string) (*OpenCodeConfig, error)
+}
+
+type ViperLoader struct{}
+
+func NewViperLoader() *ViperLoader {
+	return &ViperLoader{}
+}
+
+func (vl *ViperLoader) Read(path string) (*OpenCodeConfig, error) {
 	cfg := &OpenCodeConfig{}
 
 	if path == "" {
 		path = defaultOpenCodePath()
+		if path == "" {
+			return cfg, nil
+		}
 	}
 
 	ext := filepath.Ext(path)
-	viper.SetConfigFile(path)
+	v := viper.New()
+	v.SetConfigFile(path)
 
 	switch ext {
 	case ".json":
-		viper.SetConfigType("json")
+		v.SetConfigType("json")
 	case ".jsonc":
-		viper.SetConfigType("json")
+		v.SetConfigType("json")
 	case ".toml":
-		viper.SetConfigType("toml")
+		v.SetConfigType("toml")
 	case ".yaml", ".yml":
-		viper.SetConfigType("yaml")
+		v.SetConfigType("yaml")
 	default:
-		viper.SetConfigType("yaml")
+		v.SetConfigType("yaml")
 	}
 
-	if err := viper.ReadInConfig(); err != nil {
+	if err := v.ReadInConfig(); err != nil {
 		return nil, fmt.Errorf("failed to read opencode config: %w", err)
 	}
 
-	if err := viper.Unmarshal(cfg); err != nil {
+	if err := v.Unmarshal(cfg); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal opencode config: %w", err)
 	}
 
 	return cfg, nil
+}
+
+type MockLoader struct {
+	Config *OpenCodeConfig
+	Err    error
+}
+
+func (ml *MockLoader) Read(path string) (*OpenCodeConfig, error) {
+	if ml.Err != nil {
+		return nil, ml.Err
+	}
+	return ml.Config, nil
+}
+
+func Read(path string) (*OpenCodeConfig, error) {
+	loader := NewViperLoader()
+	return loader.Read(path)
 }
 
 func defaultOpenCodePath() string {

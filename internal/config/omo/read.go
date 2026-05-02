@@ -18,27 +18,59 @@ type OMOConfig struct {
 	SlopRemove bool                   `mapstructure:"slop_remove"`
 }
 
-func Read(path string) (*OMOConfig, error) {
+type Loader interface {
+	Read(path string) (*OMOConfig, error)
+}
+
+type ViperLoader struct{}
+
+func NewViperLoader() *ViperLoader {
+	return &ViperLoader{}
+}
+
+func (vl *ViperLoader) Read(path string) (*OMOConfig, error) {
 	cfg := &OMOConfig{}
 
 	if path == "" {
 		path = defaultOMOPath()
-	}
-
-	viper.SetConfigFile(path)
-	viper.SetConfigType("jsonc")
-
-	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-			return nil, fmt.Errorf("failed to read OMO config: %w", err)
+		if path == "" {
+			return cfg, nil
 		}
 	}
 
-	if err := viper.Unmarshal(cfg); err != nil {
+	v := viper.New()
+	v.SetConfigFile(path)
+	v.SetConfigType("jsonc")
+
+	if err := v.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			return nil, fmt.Errorf("failed to read OMO config: %w", err)
+		}
+		return cfg, nil
+	}
+
+	if err := v.Unmarshal(cfg); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal OMO config: %w", err)
 	}
 
 	return cfg, nil
+}
+
+type MockLoader struct {
+	Config *OMOConfig
+	Err    error
+}
+
+func (ml *MockLoader) Read(path string) (*OMOConfig, error) {
+	if ml.Err != nil {
+		return nil, ml.Err
+	}
+	return ml.Config, nil
+}
+
+func Read(path string) (*OMOConfig, error) {
+	loader := NewViperLoader()
+	return loader.Read(path)
 }
 
 func defaultOMOPath() string {

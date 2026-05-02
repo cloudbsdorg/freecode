@@ -60,11 +60,58 @@ func TestMergeIntoNonexistentPath(t *testing.T) {
 }
 
 func TestReadEmptyPath(t *testing.T) {
-	_, err := Read("")
+	loader := &MockLoader{
+		Config: &OMOConfig{},
+	}
+	cfg, err := loader.Read("")
 	if err != nil {
-		t.Logf("Read() error (expected with no config): %v", err)
+		t.Errorf("MockLoader.Read() error = %v", err)
+	}
+	if cfg == nil {
+		t.Error("MockLoader.Read() returned nil config")
 	}
 }
+
+func TestReadWithMockLoader(t *testing.T) {
+	loader := &MockLoader{
+		Config: &OMOConfig{
+			Version:    "2.0",
+			SkillsDir:  "/custom/skills",
+			SlopRemove: true,
+		},
+	}
+
+	cfg, err := loader.Read("/test/path")
+	if err != nil {
+		t.Errorf("Read() error = %v", err)
+	}
+	if cfg.Version != "2.0" {
+		t.Errorf("Version = %q, want %q", cfg.Version, "2.0")
+	}
+	if cfg.SkillsDir != "/custom/skills" {
+		t.Errorf("SkillsDir = %q, want %q", cfg.SkillsDir, "/custom/skills")
+	}
+	if !cfg.SlopRemove {
+		t.Error("SlopRemove should be true")
+	}
+}
+
+func TestMockLoaderError(t *testing.T) {
+	loader := &MockLoader{
+		Err: ErrMock,
+	}
+
+	_, err := loader.Read("/test/path")
+	if err != ErrMock {
+		t.Errorf("Read() error = %v, want %v", err, ErrMock)
+	}
+}
+
+var ErrMock = errMock{}
+
+type errMock struct{}
+
+func (e errMock) Error() string { return "mock error" }
 
 func TestReadNonexistentPath(t *testing.T) {
 	_, err := Read("/nonexistent/path/omo.jsonc")
@@ -73,13 +120,28 @@ func TestReadNonexistentPath(t *testing.T) {
 	}
 }
 
-func TestReadValidConfig(t *testing.T) {
-	t.Skip("viper global state conflict with jsonc type")
-}
-
 func TestDefaultOMOPath(t *testing.T) {
 	path := defaultOMOPath()
 	if path == "" {
 		t.Log("No OMO config found (expected on clean system)")
+	}
+}
+
+func TestViperLoaderRead(t *testing.T) {
+	loader := NewViperLoader()
+	_, err := loader.Read("/nonexistent/path/omo.jsonc")
+	if err == nil {
+		t.Error("ViperLoader.Read() expected error for nonexistent path")
+	}
+}
+
+func TestViperLoaderReadEmpty(t *testing.T) {
+	loader := NewViperLoader()
+	cfg, err := loader.Read("")
+	if err != nil {
+		t.Errorf("ViperLoader.Read() error = %v", err)
+	}
+	if cfg == nil {
+		t.Error("ViperLoader.Read() returned nil config")
 	}
 }

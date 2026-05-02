@@ -36,9 +36,15 @@ type Config struct {
 	Platform    PlatformConfig   `mapstructure:"platform"`
 	Session     SessionConfig    `mapstructure:"session"`
 	LiteLLM     LiteLLMConfig    `mapstructure:"litellm"`
+	Minimax     MinimaxConfig    `mapstructure:"minimax"`
 }
 
 type LiteLLMConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+}
+
+type MinimaxConfig struct {
 	BaseURL string `mapstructure:"base_url"`
 	APIKey  string `mapstructure:"api_key"`
 }
@@ -283,6 +289,10 @@ func DefaultConfig() *Config {
 		LiteLLM: LiteLLMConfig{
 			BaseURL: "http://localhost:4000",
 			APIKey:  "local",
+		},
+		Minimax: MinimaxConfig{
+			BaseURL: "https://api.minimax.chat/v1",
+			APIKey:  "",
 		},
 	}
 }

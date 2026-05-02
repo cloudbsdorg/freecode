@@ -41,6 +41,8 @@ func applyEnvVars(v *viper.Viper) error {
 		"FREECODE_NO_PROXY",
 		"LITELLM_BASE_URL",
 		"LITELLM_API_KEY",
+		"MINIMAX_BASE_URL",
+		"MINIMAX_API_KEY",
 	}
 
 	for _, envVar := range envVars {
@@ -107,5 +109,12 @@ func (c *Config) ApplyEnvOverrides() {
 	}
 	if apiKey := os.Getenv("LITELLM_API_KEY"); apiKey != "" {
 		c.LiteLLM.APIKey = apiKey
+	}
+
+	if baseURL := os.Getenv("MINIMAX_BASE_URL"); baseURL != "" {
+		c.Minimax.BaseURL = baseURL
+	}
+	if apiKey := os.Getenv("MINIMAX_API_KEY"); apiKey != "" {
+		c.Minimax.APIKey = apiKey
 	}
 }
