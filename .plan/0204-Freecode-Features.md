@@ -8,23 +8,23 @@ This document details all features built into freecode. These are native feature
 
 ## 2.0 Built-in Agents (11 Total)
 
-**Implementation Status:** Agents are documented here but currently exist as stubs in `internal/agent/sisyphus.go`. Full agent prompting and behavior needs implementation.
+**Implementation Status:** All 11 agents have full system prompts defined in `internal/agent/prompts.go`. Agent execution in `sisyphus.go` still needs to be wired up to use these prompts.
 
 ### 2.1 Agent Definitions
 
 | Agent | Mode | Default Model | Purpose | Status |
 |-------|------|---------------|---------|--------|
-| Sisyphus | primary | claude-opus-4-7 | Main orchestrator | Stub |
-| Hephaestus | primary | gpt-5.4 | Code generation | Stub |
-| Oracle | subagent | gpt-5.4 | Architecture consultation | Stub |
-| Librarian | subagent | gpt-5.4-mini-fast | Research/library | Stub |
-| Explore | subagent | gpt-5.4-mini-fast | Exploration | Stub |
-| Prometheus | all | claude-opus-4-7 | Planning | Stub |
-| Metis | all | claude-opus-4-7 | Plan consultation | Stub |
-| Momus | all | gpt-5.4 | Code review | Stub |
-| Atlas | primary | claude-sonnet-4-6 | Session tracking | Stub |
-| Multimodal-Looker | subagent | gpt-5.4 | Multimodal | Stub |
-| Sisyphus-Junior | all | (inherited) | Simpler tasks | Stub |
+| Sisyphus | primary | claude-opus-4-7 | Main orchestrator | ✅ Prompts Done |
+| Hephaestus | primary | gpt-5.4 | Code generation | ✅ Prompts Done |
+| Oracle | subagent | gpt-5.4 | Architecture consultation | ✅ Prompts Done |
+| Librarian | subagent | gpt-5.4-mini-fast | Research/library | ✅ Prompts Done |
+| Explore | subagent | gpt-5.4-mini-fast | Exploration | ✅ Prompts Done |
+| Prometheus | all | claude-opus-4-7 | Planning | ✅ Prompts Done |
+| Metis | all | claude-opus-4-7 | Plan consultation | ✅ Prompts Done |
+| Momus | all | gpt-5.4 | Code review | ✅ Prompts Done |
+| Atlas | primary | claude-sonnet-4-6 | Session tracking | ✅ Prompts Done |
+| Multimodal-Looker | subagent | gpt-5.4 | Multimodal | ✅ Prompts Done |
+| Sisyphus-Junior | all | (inherited) | Simpler tasks | ✅ Prompts Done |
 
 ### 2.2 Agent System Prompts
 

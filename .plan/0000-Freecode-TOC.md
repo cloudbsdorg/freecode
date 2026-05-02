@@ -161,11 +161,11 @@ freecode/
 │   ├── freecode/              # Main CLI entry
 │   └── freecode-server/       # Server mode
 ├── internal/
-│   ├── agent/                 # 11 built-in agents
+│   ├── agent/                 # 11 built-in agents (prompts done)
 │   ├── auth/                  # Credential storage
-│   ├── cli/                   # 25 CLI commands
+│   ├── cli/                   # 27 CLI commands (account, web done)
 │   ├── config/                # Configuration
-│   ├── hook/                  # 60+ lifecycle hooks
+│   ├── hook/                  # 60+ lifecycle hooks (26+9 done)
 │   ├── mcp/                   # MCP protocol
 │   ├── provider/              # 50+ providers
 │   ├── session/               # Session management
@@ -173,6 +173,7 @@ freecode/
 │   ├── tool/                  # Tool registry
 │   ├── ui/                    # Bubble Tea TUI
 │   └── fleet/                 # Fleet management
+├── .skills/                   # Skills (7 defined)
 ├── .plan/                     # Plan documents
 ├── make/                      # Build makefiles
 └── go.mod
@@ -203,6 +204,7 @@ make test && make fmt && make tidy
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
+| 2.2 | 2026-05-02 | Mark LaPointe | Add skills, update status (agents prompts done, hooks done, account/web done) |
 | 2.1 | 2026-05-02 | Mark LaPointe | Add 0213 Missing Features; update 0204 agents as stubs, 0212 TUI Analysis, 0300 tasks |
 | 2.0 | 2026-05-02 | Mark LaPointe | Migrate to CloudBSD 4-digit numbering |
 | 1.0 | 2026-05-01 | Mark LaPointe | Initial TOC |

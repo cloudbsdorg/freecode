@@ -15,20 +15,20 @@ This document catalogs features that exist in opencode but are missing or stubbe
 
 ---
 
-## 2.0 Missing CLI Commands
+## 2.0 CLI Commands
 
-### 2.1 High Priority
+### 2.1 Completed ✅
 
-| Command | opencode | freecode | Gap | Reference |
-|---------|----------|----------|-----|-----------|
-| `account` | ✅ account.ts (7889 bytes) | ❌ Missing | Full command missing | [opencode account.ts](file:///Users/mlapointe/git/opencode/packages/opencode/src/cli/cmd/account.ts) |
+| Command | opencode | freecode | Status | Reference |
+|---------|----------|----------|--------|-----------|
+| `account` | ✅ account.ts | ✅ account.go | Done | [freecode account.go](file:///Users/mlapointe/git/freecode/internal/cli/account.go) |
+| `web` | ✅ web.ts | ✅ web.go | Done | [freecode web.go](file:///Users/mlapointe/git/freecode/internal/cli/web.go) |
 
-### 2.2 Medium Priority
+### 2.2 Remaining Gaps
 
 | Command | opencode | freecode | Gap | Reference |
 |---------|----------|----------|-----|-----------|
 | `cmd` | ✅ cmd.ts (183 bytes) | ❌ Missing | CLI command framework | [opencode cmd.ts](file:///Users/mlapointe/git/opencode/packages/opencode/src/cli/cmd/cmd.ts) |
-| `web` | ✅ web.ts (2462 bytes) | ❌ Missing (has `serve`) | Web interface launcher | [opencode web.ts](file:///Users/mlapointe/git/opencode/packages/opencode/src/cli/cmd/web.ts) |
 | `plug` | ✅ plug.ts (6952 bytes) | ⚠️ Has `plugin` | Plugin system | [opencode plug.ts](file:///Users/mlapointe/git/opencode/packages/opencode/src/cli/cmd/plug.ts) |
 | `generate` | ✅ generate.ts (2983 bytes) | ❌ Missing | Code generation | [opencode generate.ts](file:///Users/mlapointe/git/opencode/packages/opencode/src/cli/cmd/generate.ts) |
 
@@ -41,16 +41,18 @@ models, plug, pr, providers, run, serve, session, stats, uninstall,
 upgrade, web
 ```
 
-**Freecode commands (26 files, 25 unique):**
+**Freecode commands (27 files, 26 unique):**
 ```
-acp, agent, attach, cli_test, db, debug, doctor, export, github,
-import, mcp, models, plugin, pr, providers, root, run, serve,
-session, stats, tab, uninstall, upgrade, version
+acp, agent, attach, account, cli_test, db, debug, doctor, export,
+github, import, mcp, models, plugin, pr, providers, root, run, serve,
+session, stats, tab, uninstall, upgrade, version, web
 ```
 
-**Missing:** `account`, `cmd`, `generate`, `plug`, `web`
+**Completed:** `account` ✅, `web` ✅
 
-**Extra in freecode:** `attach`, `cli_test`, `debug`, `doctor`, `plugin`, `tab`, `version` (but some may be stubs)
+**Still missing:** `cmd`, `generate`, `plug`
+
+**Extra in freecode:** `attach`, `cli_test`, `debug`, `doctor`, `plugin`, `tab`, `version`
 
 ---
 
