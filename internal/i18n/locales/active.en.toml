@@ -1,0 +1,428 @@
+# English locale strings for freecode
+# This is the source language - all other translations are derived from this file.
+
+[[messages]]
+id = "app.name"
+description = "Application name"
+other = "Freecode"
+
+[[messages]]
+id = "app.description"
+description = "Application description"
+other = "Unified, platform-independent AI coding assistant"
+
+[[messages]]
+id = "cmd.help.usage"
+description = "Command usage line"
+other = "Usage: {{.Command}} [flags]"
+
+[[messages]]
+id = "cmd.help.description"
+description = "Command description header"
+other = "Description:"
+
+[[messages]]
+id = "cmd.help.examples"
+description = "Command examples header"
+other = "Examples:"
+
+[[messages]]
+id = "error.generic"
+description = "Generic error message"
+other = "An error occurred: {{.Error}}"
+
+[[messages]]
+id = "error.not_found"
+description = "Resource not found"
+other = "{{.Resource}} not found"
+
+[[messages]]
+id = "error.invalid_input"
+description = "Invalid input error"
+other = "Invalid input: {{.Input}}"
+
+[[messages]]
+id = "error.permission_denied"
+description = "Permission denied error"
+other = "Permission denied"
+
+[[messages]]
+id = "error.connection_failed"
+description = "Connection failed error"
+other = "Connection failed: {{.Reason}}"
+
+[[messages]]
+id = "confirm.prompt"
+description = "Confirmation prompt"
+other = "Do you want to continue?"
+
+[[messages]]
+id = "confirm.yes"
+description = "Yes confirmation"
+other = "yes"
+
+[[messages]]
+id = "confirm.no"
+description = "No confirmation"
+other = "no"
+
+[[messages]]
+id = "status.saving"
+description = "Saving status"
+other = "Saving..."
+
+[[messages]]
+id = "status.saved"
+description = "Saved status"
+other = "Saved"
+
+[[messages]]
+id = "status.loading"
+description = "Loading status"
+other = "Loading..."
+
+[[messages]]
+id = "status.error"
+description = "Error status"
+other = "Error"
+
+[[messages]]
+id = "status.ready"
+description = "Ready status"
+other = "Ready"
+
+[[messages]]
+id = "session.new"
+description = "New session"
+other = "New Session"
+
+[[messages]]
+id = "session.open"
+description = "Open session"
+other = "Open Session"
+
+[[messages]]
+id = "session.close"
+description = "Close session"
+other = "Close Session"
+
+[[messages]]
+id = "session.switch"
+description = "Switch session"
+other = "Switch Session"
+
+[[messages]]
+id = "tab.new"
+description = "New tab"
+other = "New Tab"
+
+[[messages]]
+id = "tab.close"
+description = "Close tab"
+other = "Close Tab"
+
+[[messages]]
+id = "tab.next"
+description = "Next tab"
+other = "Next Tab"
+
+[[messages]]
+id = "tab.previous"
+description = "Previous tab"
+other = "Previous Tab"
+
+[[messages]]
+id = "menu.file"
+description = "File menu"
+other = "File"
+
+[[messages]]
+id = "menu.edit"
+description = "Edit menu"
+other = "Edit"
+
+[[messages]]
+id = "menu.view"
+description = "View menu"
+other = "View"
+
+[[messages]]
+id = "menu.help"
+description = "Help menu"
+other = "Help"
+
+[[messages]]
+id = "menuquit"
+description = "Quit menu item"
+other = "Quit"
+
+[[messages]]
+id = "key.ctrl_c"
+description = "Ctrl+C key description"
+other = "Ctrl+C to cancel"
+
+[[messages]]
+id = "key.ctrl_d"
+description = "Ctrl+D key description"
+other = "Ctrl+D to exit"
+
+[[messages]]
+id = "key.ctrl_t"
+description = "Ctrl+T key description"
+other = "Ctrl+T for new tab"
+
+[[messages]]
+id = "key.ctrl_w"
+description = "Ctrl+W key description"
+other = "Ctrl+W to close"
+
+[[messages]]
+id = "fleet.head"
+description = "Fleet head mode"
+other = "Fleet Head"
+
+[[messages]]
+id = "fleet.agent"
+description = "Fleet agent mode"
+other = "Fleet Agent"
+
+[[messages]]
+id = "fleet.client"
+description = "Fleet client mode"
+other = "Fleet Client"
+
+[[messages]]
+id = "fleet.connecting"
+description = "Fleet connecting status"
+other = "Connecting to fleet..."
+
+[[messages]]
+id = "fleet.connected"
+description = "Fleet connected status"
+other = "Connected to fleet"
+
+[[messages]]
+id = "fleet.disconnected"
+description = "Fleet disconnected status"
+other = "Disconnected from fleet"
+
+[[messages]]
+id = "fleet.discover"
+description = "Discover fleet instances"
+other = "Discover Instances"
+
+[[messages]]
+id = "agent.sisyphus"
+description = "Sisyphus agent name"
+other = "Sisyphus"
+
+[[messages]]
+id = "agent.oracle"
+description = "Oracle agent name"
+other = "Oracle"
+
+[[messages]]
+id = "agent.librarian"
+description = "Librarian agent name"
+other = "Librarian"
+
+[[messages]]
+id = "agent.explore"
+description = "Explore agent name"
+other = "Explore"
+
+[[messages]]
+id = "config.loaded"
+description = "Config loaded message"
+other = "Configuration loaded"
+
+[[messages]]
+id = "config.saved"
+description = "Config saved message"
+other = "Configuration saved"
+
+[[messages]]
+id = "config.reset"
+description = "Config reset message"
+other = "Configuration reset to defaults"
+
+[[messages]]
+id = "log.starting"
+description = "Log message when starting"
+other = "Starting {{.App}}..."
+
+[[messages]]
+id = "log.started"
+description = "Log message when started"
+other = "{{.App}} started"
+
+[[messages]]
+id = "log.stopping"
+description = "Log message when stopping"
+other = "Stopping {{.App}}..."
+
+[[messages]]
+id = "log.stopped"
+description = "Log message when stopped"
+other = "{{.App}} stopped"
+
+[[messages]]
+id = "log.error"
+description = "Log error message"
+other = "Error: {{.Message}}"
+
+[[messages]]
+id = "log.info"
+description = "Log info message"
+other = "Info: {{.Message}}"
+
+[[messages]]
+id = "log.debug"
+description = "Log debug message"
+other = "Debug: {{.Message}}"
+
+[[messages]]
+id = "log.verbose"
+description = "Log verbose message"
+other = "Verbose: {{.Message}}"
+
+[[messages]]
+id = "server.starting"
+description = "Server starting message"
+other = "Starting server on {{.Address}}"
+
+[[messages]]
+id = "server.started"
+description = "Server started message"
+other = "Server listening on {{.Address}}"
+
+[[messages]]
+id = "server.stopping"
+description = "Server stopping message"
+other = "Stopping server..."
+
+[[messages]]
+id = "server.stopped"
+description = "Server stopped message"
+other = "Server stopped"
+
+[[messages]]
+id = "mcp.starting"
+description = "MCP server starting message"
+other = "Starting MCP server on {{.Address}}"
+
+[[messages]]
+id = "mcp.started"
+description = "MCP server started message"
+other = "MCP server listening on {{.Address}}"
+
+[[messages]]
+id = "hook.invoked"
+description = "Hook invoked message"
+other = "Hook {{.Name}} invoked"
+
+[[messages]]
+id = "hook.error"
+description = "Hook error message"
+other = "Hook {{.Name}} error: {{.Error}}"
+
+[[messages]]
+id = "tool.executing"
+description = "Tool executing message"
+other = "Executing tool {{.Tool}}..."
+
+[[messages]]
+id = "tool.executed"
+description = "Tool executed message"
+other = "Tool {{.Tool}} executed"
+
+[[messages]]
+id = "tool.error"
+description = "Tool error message"
+other = "Tool {{.Tool}} error: {{.Error}}"
+
+[[messages]]
+id = "task.claimed"
+description = "Task claimed message"
+other = "Task {{.Task}} claimed by {{.Agent}}"
+
+[[messages]]
+id = "task.completed"
+description = "Task completed message"
+other = "Task {{.Task}} completed"
+
+[[messages]]
+id = "task.failed"
+description = "Task failed message"
+other = "Task {{.Task}} failed: {{.Error}}"
+
+[[messages]]
+id = "task.blocked"
+description = "Task blocked message"
+other = "Task {{.Task}} blocked: {{.Reason}}"
+
+[[messages]]
+id = "validation.start"
+description = "Validation start message"
+other = "Starting validation..."
+
+[[messages]]
+id = "validation.complete"
+description = "Validation complete message"
+other = "Validation complete: {{.Passed}} passed, {{.Failed}} failed"
+
+[[messages]]
+id = "validation.pass"
+description = "Validation pass message"
+other = "PASS: {{.Check}}"
+
+[[messages]]
+id = "validation.fail"
+description = "Validation fail message"
+other = "FAIL: {{.Check}} - {{.Reason}}"
+
+[[messages]]
+id = "yolo.enabled"
+description = "YOLO mode enabled"
+other = "YOLO mode enabled"
+
+[[messages]]
+id = "yolo.disabled"
+description = "YOLO mode disabled"
+other = "YOLO mode disabled"
+
+[[messages]]
+id = "rtl.not_supported"
+description = "RTL not supported in terminal"
+other = "RTL not supported in this terminal. Using LTR layout."
+
+[[messages]]
+id = "rtl.enabled"
+description = "RTL enabled"
+other = "RTL mode enabled"
+
+[[messages]]
+id = "locale.detected"
+description = "Locale detected"
+other = "Detected locale: {{.Locale}}"
+
+[[messages]]
+id = "locale.changed"
+description = "Locale changed"
+other = "Locale changed to {{.Locale}}"
+
+[[messages]]
+id = "locale.not_found"
+description = "Locale not found"
+other = "Locale {{.Locale}} not found, falling back to English"
+
+[[messages]]
+id = "i18n.not_available"
+description = "Translation not available"
+other = "Translation not available for: {{.String}}"
+
+[[messages]]
+id = "strings.count"
+description = "Number of strings"
+one = "{{.Count}} string"
+other = "{{.Count}} strings"
