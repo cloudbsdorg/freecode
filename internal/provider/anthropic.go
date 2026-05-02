@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+// Deprecated: Use LiteLLMProvider via NewProvider() instead.
+// AnthropicProvider will be removed in a future release.
+
+
+
 type AnthropicProvider struct {
 	APIKey string
 	BaseURL string

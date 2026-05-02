@@ -35,6 +35,12 @@ type Config struct {
 	Permissions PermissionsConfig `mapstructure:"permissions"`
 	Platform    PlatformConfig   `mapstructure:"platform"`
 	Session     SessionConfig    `mapstructure:"session"`
+	LiteLLM     LiteLLMConfig    `mapstructure:"litellm"`
+}
+
+type LiteLLMConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
 }
 
 type ServerConfig struct {
@@ -273,6 +279,10 @@ func DefaultConfig() *Config {
 			HomeDir:  homeDir,
 			TempDir:  tempDir,
 			CacheDir: cacheDir,
+		},
+		LiteLLM: LiteLLMConfig{
+			BaseURL: "http://localhost:4000",
+			APIKey:  "local",
 		},
 	}
 }

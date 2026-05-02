@@ -39,6 +39,8 @@ func applyEnvVars(v *viper.Viper) error {
 		"FREECODE_HTTP_PROXY",
 		"FREECODE_HTTPS_PROXY",
 		"FREECODE_NO_PROXY",
+		"LITELLM_BASE_URL",
+		"LITELLM_API_KEY",
 	}
 
 	for _, envVar := range envVars {
@@ -98,5 +100,12 @@ func (c *Config) ApplyEnvOverrides() {
 	}
 	if agent := os.Getenv("FREECODE_AGENT_DEFAULT"); agent != "" {
 		c.Agent.Default = agent
+	}
+
+	if baseURL := os.Getenv("LITELLM_BASE_URL"); baseURL != "" {
+		c.LiteLLM.BaseURL = baseURL
+	}
+	if apiKey := os.Getenv("LITELLM_API_KEY"); apiKey != "" {
+		c.LiteLLM.APIKey = apiKey
 	}
 }

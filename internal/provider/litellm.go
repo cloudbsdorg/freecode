@@ -6,65 +6,32 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 )
 
-// Deprecated: Use LiteLLMProvider via NewProvider() instead.
-// OpenAIProvider will be removed in a future release.
-
-
-
-type Provider interface {
-	Name() string
-	Generate(ctx context.Context, req *Request) (*Response, error)
-}
-
-type Request struct {
-	Model       string
-	Messages    []Message
-	Temperature float64
-	MaxTokens   int
-	Stream      bool
-}
-
-type Message struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
-}
-
-type Response struct {
-	Content    string
-	StopReason string
-	Usage      Usage
-}
-
-type Usage struct {
-	InputTokens  int `json:"input_tokens"`
-	OutputTokens int `json:"output_tokens"`
-}
-
-type OpenAIProvider struct {
-	APIKey string
+type LiteLLMProvider struct {
 	BaseURL string
-	Client *http.Client
+	APIKey  string
+	Client  *http.Client
 }
 
-func NewOpenAIProvider(apiKey string) *OpenAIProvider {
-	return &OpenAIProvider{
-		APIKey: apiKey,
-		BaseURL: "https://api.openai.com/v1",
+func NewLiteLLMProvider(baseURL, apiKey string) *LiteLLMProvider {
+	return &LiteLLMProvider{
+		BaseURL: strings.TrimSuffix(baseURL, "/"),
+		APIKey:  apiKey,
 		Client: &http.Client{
-			Timeout: 60 * time.Second,
+			Timeout: 120 * time.Second,
 		},
 	}
 }
 
-func (p *OpenAIProvider) Name() string {
-	return "openai"
+func (p *LiteLLMProvider) Name() string {
+	return "litellm"
 }
 
-func (p *OpenAIProvider) Generate(ctx context.Context, req *Request) (*Response, error) {
-	url := p.BaseURL + "/chat/completions"
+func (p *LiteLLMProvider) Generate(ctx context.Context, req *Request) (*Response, error) {
+	url := p.BaseURL + "/v1/chat/completions"
 
 	payload := map[string]interface{}{
 		"model":       req.Model,
@@ -80,7 +47,9 @@ func (p *OpenAIProvider) Generate(ctx context.Context, req *Request) (*Response,
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Authorization", "Bearer "+p.APIKey)
+	if p.APIKey != "" {
+		httpReq.Header.Set("Authorization", "Bearer "+p.APIKey)
+	}
 
 	resp, err := p.Client.Do(httpReq)
 	if err != nil {
@@ -99,10 +68,18 @@ func (p *OpenAIProvider) Generate(ctx context.Context, req *Request) (*Response,
 			PromptTokens     int `json:"prompt_tokens"`
 			CompletionTokens int `json:"completion_tokens"`
 		} `json:"usage"`
+		Error struct {
+			Message string `json:"message"`
+			Type    string `json:"type"`
+		} `json:"error"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
+	}
+
+	if result.Error.Message != "" {
+		return nil, fmt.Errorf("litellm error: %s", result.Error.Message)
 	}
 
 	if len(result.Choices) == 0 {
@@ -117,4 +94,13 @@ func (p *OpenAIProvider) Generate(ctx context.Context, req *Request) (*Response,
 			OutputTokens: result.Usage.CompletionTokens,
 		},
 	}, nil
+}
+
+type LiteLLMErrorResponse struct {
+	Error LiteLLMError `json:"error"`
+}
+
+type LiteLLMError struct {
+	Message string `json:"message"`
+	Type    string `json:"type"`
 }
