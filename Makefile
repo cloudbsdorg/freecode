@@ -1,29 +1,25 @@
-.PHONY: all build-cli build-server build-all test lint clean
+# Main Makefile for Freecode
+# Detects OS and delegates to platform-specific Makefiles in .plan/
 
-all: build-cli build-server
+UNAME_S := $(shell uname -s)
 
-build-cli:
-	@echo "Building CLI..."
-	@go build -o freecode ./cmd/freecode
+ifeq ($(UNAME_S),Linux)
+    PLATFORM_MAKEFILE := .plan/Makefile.linux
+endif
+ifeq ($(UNAME_S),FreeBSD)
+    PLATFORM_MAKEFILE := .plan/Makefile.freebsd
+endif
+ifeq ($(UNAME_S),Darwin)
+    PLATFORM_MAKEFILE := .plan/Makefile.macos
+endif
+ifeq ($(UNAME_S),SunOS)
+    PLATFORM_MAKEFILE := .plan/Makefile.illumos
+endif
 
-build-server:
-	@echo "Building server..."
-	@go build -o freecode-server ./cmd/freecode-server
+# Default if not detected
+PLATFORM_MAKEFILE ?= .plan/Makefile.linux
 
-build-all: all
+.PHONY: all build test clean install uninstall fmt tidy package
 
-test:
-	@echo "Running tests..."
-	@go test ./...
-
-lint:
-	@which golangci-lint >/dev/null 2>&1 && golangci-lint run || echo "golangci-lint not found, skipping lint"
-
-clean:
-	@rm -f freecode freecode-server
-
-fmt:
-	@go fmt ./...
-
-mod:
-	@go mod tidy
+all build test clean install uninstall fmt tidy package:
+	@$(MAKE) -f $(PLATFORM_MAKEFILE) $@
