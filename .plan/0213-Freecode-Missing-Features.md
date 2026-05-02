@@ -261,10 +261,10 @@ Opencode has 45+ modules in `packages/opencode/src/`:
 |--------|----------|----------|-------|
 | `auth` | ✅ | ❌ | Credential storage |
 | `config` | ✅ | ❌ | Configuration |
-| `fleet` | ✅ | ❌ | Fleet management |
+| `fleet` | ⚠️ Partial | ❌ | UI stub only, no module implementation |
 | `hook` | ✅ | ❌ | Lifecycle hooks |
 | `platform` | ✅ | ❌ | Platform-specific |
-| `provider` | ✅ | ❌ | 50+ native providers |
+| `provider` | ✅ | ❌ | 48 native providers |
 | `shell` | ✅ | ❌ | Shell integration |
 | `tool` | ✅ | ❌ | Tool registry |
 

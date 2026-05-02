@@ -12,10 +12,10 @@ This document contains the detailed task breakdown for implementing freecode. Ta
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| Initialize Go module | `go.mod` | ⏳ | - |
-| Create directory structure | All | ⏳ | - |
-| Setup Makefile | `Makefile` | ⏳ | - |
-| Setup goreleaser | `.goreleaser.yaml` | ⏳ | - |
+| Initialize Go module | `go.mod` | ✅ Done | - |
+| Create directory structure | All | ✅ Done | - |
+| Setup Makefile | `Makefile` | ✅ Done | - |
+| Setup goreleaser | `.goreleaser.yaml` | ✅ Done | - |
 
 ### 1.2 CLI Commands
 
@@ -81,27 +81,27 @@ runCmd.Flags().Bool("yolo", false, "Skip all confirmations")
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| Config struct | `internal/config/config.go` | ⏳ | 1.1 |
-| Config loading | `internal/config/load.go` | ⏳ | 2.1 |
-| YAML parsing | `internal/config/yaml.go` | ⏳ | 2.1 |
-| JSON parsing | `internal/config/json.go` | ⏳ | 2.1 |
-| Env var support | `internal/config/env.go` | ⏳ | 2.2 |
+| Config struct | `internal/config/config.go` | ✅ Done | 1.1 |
+| Config loading | `internal/config/load.go` | ✅ Done | 2.1 |
+| YAML parsing | `internal/config/yaml.go` | ✅ Done | 2.1 |
+| JSON parsing | `internal/config/json.go` | ✅ Done | 2.1 |
+| Env var support | `internal/config/env.go` | ✅ Done | 2.2 |
 
 ### 2.2 OpenCode Config Migration
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| Read opencode configs | `internal/config/opencode/read.go` | ⏳ | 2.1 |
-| Convert to freecode | `internal/config/opencode/migrate.go` | ⏳ | 2.2.1 |
-| TOML support | `internal/config/opencode/toml.go` | ⏳ | 2.2.1 |
-| JSONC support | `internal/config/opencode/jsonc.go` | ⏳ | 2.2.1 |
+| Read opencode configs | `internal/config/opencode/read.go` | ✅ Done | 2.1 |
+| Convert to freecode | `internal/config/opencode/migrate.go` | ✅ Done | 2.2.1 |
+| TOML support | `internal/config/opencode/toml.go` | ⏳ Planned | 2.2.1 |
+| JSONC support | `internal/config/opencode/jsonc.go` | ⏳ Planned | 2.2.1 |
 
 ### 2.3 oh-my-openagent Config Integration
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| Read OMO configs | `internal/config/omo/read.go` | ⏳ | 2.1 |
-| Merge into freecode | `internal/config/omo/merge.go` | ⏳ | 2.3.1 |
+| Read OMO configs | `internal/config/omo/read.go` | ✅ Done | 2.1 |
+| Merge into freecode | `internal/config/omo/merge.go` | ✅ Done | 2.3.1 |
 
 ---
 
@@ -111,32 +111,32 @@ runCmd.Flags().Bool("yolo", false, "Skip all confirmations")
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| Tool registry | `internal/tool/registry.go` | ⏳ | 1.2 |
-| Bash tool | `internal/tool/bash.go` | ⏳ | 3.1 |
-| Read tool | `internal/tool/read.go` | ⏳ | 3.1 |
-| Write tool | `internal/tool/write.go` | ⏳ | 3.1 |
-| Edit tool | `internal/tool/edit.go` | ⏳ | 3.1 |
-| Glob tool | `internal/tool/glob.go` | ⏳ | 3.1 |
-| Grep tool | `internal/tool/grep.go` | ⏳ | 3.1 |
+| Tool registry | `internal/tool/registry.go` | ✅ Done | 1.2 |
+| Bash tool | `internal/tool/bash.go` | ✅ Done | 3.1 |
+| Read tool | `internal/tool/read.go` | ✅ Done | 3.1 |
+| Write tool | `internal/tool/write.go` | ✅ Done | 3.1 |
+| Edit tool | `internal/tool/edit.go` | ✅ Done | 3.1 |
+| Glob tool | `internal/tool/glob.go` | ✅ Done | 3.1 |
+| Grep tool | `internal/tool/grep.go` | ✅ Done | 3.1 |
 
 ### 3.2 Advanced Tools
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| WebFetch tool | `internal/tool/webfetch.go` | ⏳ | 3.1 |
-| WebSearch tool | `internal/tool/websearch.go` | ⏳ | 3.1 |
-| Task tool | `internal/tool/task.go` | ⏳ | 3.1 |
-| Skill tool | `internal/tool/skill.go` | ⏳ | 3.1 |
-| Todo tool | `internal/tool/todo.go` | ⏳ | 3.1 |
-| Question tool | `internal/tool/question.go` | ⏳ | 3.1 |
-| Plan tool | `internal/tool/plan.go` | ⏳ | 3.1 |
-| LSP tool | `internal/tool/lsp.go` | ⏳ | 3.1 |
+| WebFetch tool | `internal/tool/webfetch.go` | ✅ Done | 3.1 |
+| WebSearch tool | `internal/tool/websearch.go` | ✅ Done | 3.1 |
+| Task tool | `internal/tool/task.go` | ✅ Done | 3.1 |
+| Skill tool | `internal/tool/skill.go` | ✅ Done | 3.1 |
+| Todo tool | `internal/tool/todo.go` | ✅ Done | 3.1 |
+| Question tool | `internal/tool/question.go` | ✅ Done | 3.1 |
+| Plan tool | `internal/tool/plan.go` | ✅ Done | 3.1 |
+| LSP tool | `internal/tool/lsp.go` | ✅ Done | 3.1 |
 
 ---
 
 ## Phase 4: Agent Engine & Session Management (Week 5-7)
 
-**CRITICAL:** All 11 agents are currently stubs. See [0213-Freecode-Missing-Features.md](./0213-Freecode-Missing-Features.md#61-agent-stubs)
+**Note:** Agent prompts are defined in `prompts.go`. See [0213-Freecode-Missing-Features.md](./0213-Freecode-Missing-Features.md#61-agent-prompts-done)
 
 ### 4.1 Agent Engine
 
