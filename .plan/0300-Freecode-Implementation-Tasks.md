@@ -227,19 +227,19 @@ runCmd.Flags().Bool("yolo", false, "Skip all confirmations")
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| MCP client | `internal/mcp/client.go` | ⏳ | 4.1 |
-| MCP server handling | `internal/mcp/server.go` | ⏳ | 6.2.1 |
-| OAuth flow | `internal/mcp/oauth.go` | ⏳ | 6.2.1 |
-| Built-in MCPs | `internal/mcp/builtin.go` | ⏳ | 6.2.1 |
+| MCP client | `internal/mcp/client.go` | ✅ Done | 4.1 |
+| MCP server handling | `internal/mcp/server.go` | ✅ Done | 6.2.1 |
+| OAuth flow | `internal/mcp/oauth.go` | ❌ Missing | 6.2.1 |
+| Built-in MCPs | `internal/mcp/builtin.go` | ⚠️ Stub | 6.2.1 |
 
 ### 6.3 Advanced Features
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| Background tasks | `internal/agent/background.go` | ⏳ | 6.1 |
-| Tmux integration | `internal/shell/tmux.go` | ⏳ | 6.1 |
-| Runtime fallback | `internal/agent/fallback.go` | ⏳ | 6.1 |
-| Hashline edit | `internal/tool/hashline.go` | ⏳ | 3.1 |
+| Background tasks | `internal/agent/background.go` | ❌ Missing | 6.1 |
+| Tmux integration | `internal/shell/tmux.go` | ❌ Missing | 6.1 |
+| Runtime fallback | `internal/agent/fallback.go` | ❌ Missing | 6.1 |
+| Hashline edit | `internal/tool/hashline.go` | ❌ Missing | 3.1 |
 
 ### 6.4 Skills System ✅ DONE
 
@@ -261,19 +261,20 @@ runCmd.Flags().Bool("yolo", false, "Skip all confirmations")
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| HTTP server | `internal/server/server.go` | ⏳ | 4.3 |
-| Routes | `internal/server/routes.go` | ⏳ | 7.1.1 |
-| WebSocket | `internal/server/websocket.go` | ⏳ | 7.1.1 |
-| Health check | `internal/server/health.go` | ⏳ | 7.1.1 |
+| HTTP server | `internal/server/server.go` | ✅ Done | 4.3 |
+| Routes | `internal/server/routes.go` | ✅ Done | 7.1.1 |
+| WebSocket | `internal/server/websocket.go` | ❌ Missing | 7.1.1 |
+| Health check | `internal/server/health.go` | ✅ Done | 7.1.1 |
 
 ### 7.2 Platform-Specific
 
 | Task | Platform | Status | Dependencies |
 |------|----------|--------|--------------|
-| FreeBSD support | `internal/platform/freebsd.go` | ⏳ | 3.1 |
-| macOS support | `internal/platform/darwin.go` | ⏳ | 3.1 |
-| Linux support | `internal/platform/linux.go` | ⏳ | 3.1 |
-| IllumOS support | `internal/platform/illuminos.go` | ⏳ | 3.1 |
+| FreeBSD support | `internal/platform/freebsd.go` | ⏳ Planned | 3.1 |
+| macOS support | `internal/platform/darwin.go` | ⏳ Planned | 3.1 |
+| Linux support | `internal/platform/linux.go` | ⏳ Planned | 3.1 |
+| IllumOS support | `internal/platform/illuminos.go` | ⏳ Planned | 3.1 |
+| **Current** | `internal/platform/platform.go` | ✅ Done | 3.1 |
 
 ### 7.3 Packaging
 
