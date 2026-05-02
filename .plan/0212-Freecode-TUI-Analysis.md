@@ -17,7 +17,7 @@ OpenCode and Freecode have fundamentally different architectures that make full 
 | **Language** | TypeScript (Node/Bun) | Go | Incompatible - different languages |
 | **TUI Framework** | Solid.js + @opentui/* | Bubble Tea (Go) | **Cannot port - requires complete rewrite** |
 | **TUI Code Size** | 27,000+ lines (app.tsx alone) | 160 lines (stub) | **Not achievable without years of work** |
-| **Commands** | 22 files | 10 files | **11 commands missing** |
+| **Commands** | 21 files | 27 files | **1 command missing** |
 | **UI Complexity** | 20+ context providers, 15+ dialog types | None | **Not achievable** |
 
 ## TUI Reality
@@ -43,18 +43,20 @@ Instead of trying to match OpenCode's Solid.js TUI:
 
 **OpenCode commands (21 unique):** account, acp, agent, cmd, db, export, generate, github, import, mcp, models, plug, pr, providers, run, serve, session, stats, uninstall, upgrade, web
 
-**Freecode commands (24 unique):** acp, agent, attach, db, debug, doctor, export, github, import, mcp, models, plugin, pr, providers, root, run, serve, session, stats, tab, uninstall, upgrade, version
+**Freecode commands (27 unique):** acp, agent, attach, account, db, debug, doctor, export, github, import, mcp, models, plugin, pr, providers, root, run, serve, session, stats, tab, uninstall, upgrade, version, web
 
-**Truly missing from freecode (0):**
+**Completed (2):**
+| Command | Status |
+|---------|--------|
+| `account` | ✅ Done - Login/logout/org switching |
+| `web` | ✅ Done - API server + embedded web UI + browser auto-open |
+
+**Still Missing (1):**
 | Command | Priority | Notes |
 |---------|----------|-------|
-| `account` | High | Account management ✅ DONE |
-| `web` | ✅ DONE | API server + embedded web UI (grows with TUI features) |
-| `cmd` | N/A | Not applicable - Cobra provides this |
-| `plug` | N/A | Not applicable - Node.js plugin system |
-| `generate` | Low | Code generation (check if needed) |
+| `generate` | Low | Code generation |
 
-**Extra in freecode (8):** attach, debug, doctor, plugin, root, tab, version (some are stubs)
+**Extra in freecode (9):** attach, debug, doctor, plugin, root, tab, version (some are stubs)
 
 ### Tier 1: High Value, Achievable
 1. **`account`** - Account management (7889 bytes in opencode)
@@ -85,19 +87,17 @@ Instead of trying to match OpenCode's Solid.js TUI:
 
 ## Implementation Strategy
 
-### Phase 1: Missing Commands (Priority Order)
-Implement the 5 missing CLI commands:
-1. `account` - Account management (High user-facing impact)
-2. `web` - Web interface launcher (Medium, differs from `serve`)
-3. `cmd` - CLI framework (Medium, enables command registration)
-4. `plug` - Plugin system (Low, freecode has `plugin` with different approach)
-5. `generate` - Code generation (Low)
+### Phase 1: Completed Commands ✅
+1. `account` - Account management ✅ DONE
+2. `web` - Web interface launcher ✅ DONE
 
-### Phase 2: Agent Implementation (Critical)
-**This is the highest priority work:**
-1. Implement actual agent prompts for all 11 agents
-2. Wire up hook triggers to fire on events
-3. Implement skill system with built-in skills
+### Phase 2: Remaining Missing Commands
+1. `generate` - Code generation (Low priority)
+
+### Phase 3: Agent Implementation ✅ (Mostly Done)
+1. ✅ Implement actual agent prompts for all 11 agents
+2. ✅ Wire up hook triggers to fire on events
+3. ✅ Implement skill system with built-in skills
 
 ### Phase 3: TUI Enhancement (Ongoing)
 Incrementally enhance the Bubble Tea TUI:
