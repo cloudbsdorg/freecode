@@ -212,6 +212,41 @@ func (r *HookRegistry) Disable(hookType, name string) error
 func (r *HookRegistry) Enable(hookType, name string) error
 ```
 
+### 3.9 Skills System ✅ DONE
+
+Freecode includes a skills system for specialized task execution. Skills are defined in `.skills/` directory.
+
+| Skill | Description | Location |
+|-------|-------------|----------|
+| git-master | Expert git operations, history analysis, bisect | `.skills/git-master/SKILL.md` |
+| playwright | Browser automation, testing, web scraping | `.skills/playwright/SKILL.md` |
+| frontend-ui-ux | UI development, accessibility, design | `.skills/frontend-ui-ux/SKILL.md` |
+| review-work | Code review, security audit, quality | `.skills/review-work/SKILL.md` |
+| ai-slop-remover | Detect and fix AI-generated code patterns | `.skills/ai-slop-remover/SKILL.md` |
+| search-code | Code search with grep, ast-grep, LSP | `.skills/search-code/SKILL.md` |
+| architect | System design, architecture patterns | `.skills/architect/SKILL.md` |
+
+**Usage:**
+```go
+task(
+    category="visual-engineering",
+    load_skills=["frontend-ui-ux", "playwright"],
+    prompt="Build a login form with tests..."
+)
+```
+
+**Skill Format:**
+```markdown
+---
+name: skill-name
+description: One-line description
+---
+
+# Skill Title
+
+Detailed skill content...
+```
+
 ---
 
 ## 4.0 Configuration Categories (8)
@@ -3165,7 +3200,7 @@ comment_checker:
 ---
 
 **Author:** Mark LaPointe <mark@cloudbsd.org>
-**Last Updated:** 2026-05-01
+**Last Updated:** 2026-05-02 (Added skills section)
 
 ---
 

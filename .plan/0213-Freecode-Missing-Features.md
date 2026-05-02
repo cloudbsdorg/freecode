@@ -268,70 +268,76 @@ Opencode has 45+ modules in `packages/opencode/src/`:
 
 ---
 
-## 6.0 Stub Implementations
+## 6.0 Implementation Status
 
-### 6.1 Agent Stubs
+### 6.1 Agent Prompts ✅ DONE
 
-All 11 agents exist as stubs in `internal/agent/sisyphus.go`. Each agent returns a placeholder response without any actual prompting or behavior.
+All 11 agents have full system prompts defined in `internal/agent/prompts.go`. Execution still needs implementation in `sisyphus.go`.
 
 | Agent | File | Status |
 |-------|------|--------|
-| Sisyphus | sisyphus.go | Stub |
-| Hephaestus | sisyphus.go | Stub |
-| Oracle | sisyphus.go | Stub |
-| Librarian | sisyphus.go | Stub |
-| Explore | sisyphus.go | Stub |
-| Prometheus | ❌ | Missing |
-| Metis | ❌ | Missing |
-| Momus | ❌ | Missing |
-| Atlas | ❌ | Missing |
-| Multimodal-Looker | ❌ | Missing |
-| Sisyphus-Junior | ❌ | Missing |
+| Sisyphus | prompts.go | ✅ Prompts Done |
+| Hephaestus | prompts.go | ✅ Prompts Done |
+| Oracle | prompts.go | ✅ Prompts Done |
+| Librarian | prompts.go | ✅ Prompts Done |
+| Explore | prompts.go | ✅ Prompts Done |
+| Prometheus | prompts.go | ✅ Prompts Done |
+| Metis | prompts.go | ✅ Prompts Done |
+| Momus | prompts.go | ✅ Prompts Done |
+| Atlas | prompts.go | ✅ Prompts Done |
+| Multimodal-Looker | prompts.go | ✅ Prompts Done |
+| Sisyphus-Junior | prompts.go | ✅ Prompts Done |
 
-### 6.2 Hook Implementation
+### 6.2 Hook Triggers ✅ DONE
+
+Hook triggers are fully implemented in `internal/hook/triggers.go` with defaults in `builtins.go`.
 
 | Hook Tier | Registry | Status |
 |-----------|----------|--------|
-| Session (26) | hook/registry.go | Registry only, no triggers |
-| Tool (14) | hook/registry.go | Registry only, no triggers |
-| Transform (5) | hook/registry.go | Registry only, no triggers |
-| Continuation (10) | hook/registry.go | Registry only, no triggers |
-| Skill (2) | hook/registry.go | Registry only, no triggers |
-| Ralph (3) | hook/registry.go | Registry only, no triggers |
+| Session (26) | triggers.go | ✅ Implemented |
+| Tool (9) | triggers.go | ✅ Implemented |
+| Transform (5) | registry.go | Registry only |
+| Continuation (10) | registry.go | Registry only |
+| Skill (2) | registry.go | Registry only |
+| Ralph (3) | registry.go | Registry only |
 
-### 6.3 Skills System
+### 6.3 Skills System ✅ DONE
 
-| Skill | Documented | Implemented |
-|-------|------------|-------------|
-| git-master | Yes | ❌ Missing |
-| playwright | Yes | ❌ Missing |
-| frontend-ui-ux | Yes | ❌ Missing |
-| review-work | Yes | ❌ Missing |
-| ai-slop-remover | Yes | ❌ Missing |
+Skills are defined in `.skills/` directory with SKILL.md format matching opencode.
+
+| Skill | Location | Status |
+|-------|----------|--------|
+| git-master | .skills/git-master/SKILL.md | ✅ Done |
+| playwright | .skills/playwright/SKILL.md | ✅ Done |
+| frontend-ui-ux | .skills/frontend-ui-ux/SKILL.md | ✅ Done |
+| review-work | .skills/review-work/SKILL.md | ✅ Done |
+| ai-slop-remover | .skills/ai-slop-remover/SKILL.md | ✅ Done |
+| search-code | .skills/search-code/SKILL.md | ✅ Done |
+| architect | .skills/architect/SKILL.md | ✅ Done |
 
 ---
 
 ## 7.0 Implementation Priority
 
-### Tier 1: Critical (Must Have)
+### Tier 1: Critical ✅ DONE
 
-1. **Agent Prompts** - Implement actual agent prompting for all 11 agents
-2. **Hook Triggers** - Wire up hook system to actually fire on events
-3. **Skills System** - Implement skill registry and execution
+1. **Agent Prompts** - ✅ All 11 agents defined in prompts.go
+2. **Hook Triggers** - ✅ 26 session + 9 tool hooks implemented
+3. **Skills System** - ✅ 7 skills defined in .skills/ directory
 
-### Tier 2: High Value
+### Tier 2: High Value (In Progress)
 
-4. **Missing CLI Commands** - `account`, `web`, `cmd`, `plug`, `generate`
-5. **TUI Basic Components** - Dialog system, status bar, session tabs
-6. **Provider System** - Already excellent (50+ native providers)
+4. **Missing CLI Commands** - `account` ✅ Done, `web` ✅ Done, others planned
+5. **Agent Execution** - Full agent prompting in sisyphus.go
+6. **Provider System** - ✅ Already excellent (50+ native providers)
 
-### Tier 3: Medium Value
+### Tier 3: Medium Value (Planned)
 
-7. **TUI Advanced Components** - Command palette, context menus, theme system
+7. **TUI Basic Components** - Dialog system, status bar, session tabs
 8. **Context Providers** - File context, global sync
-9. **Missing Modules** - skill, lsp, pty, sync
+9. **Missing Modules** - skill discovery, lsp, pty, sync
 
-### Tier 4: Nice to Have
+### Tier 4: Nice to Have (Deferred)
 
 10. **Full TUI Parity** - Logo, complex dialogs (not achievable without significant work)
 
@@ -393,7 +399,7 @@ Instead of trying to port TypeScript/Solid.js:
 
 **Author:** Mark LaPointe <mark@cloudbsd.org>
 
-**Last Updated:** 2026-05-02
+**Last Updated:** 2026-05-02 (Updated: Skills added, hook triggers implemented)
 
 ---
 

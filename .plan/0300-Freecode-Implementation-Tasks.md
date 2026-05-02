@@ -38,11 +38,11 @@ This document contains the detailed task breakdown for implementing freecode. Ta
 
 | Task | File | Priority | Status |
 |------|------|----------|--------|
-| Account command | `internal/cli/account.go` | HIGH | ⏳ Missing |
-| Web command | `internal/cli/web.go` | MEDIUM | ⏳ Missing |
-| Cmd command | `internal/cli/cmd.go` | MEDIUM | ⏳ Missing |
-| Plug command | `internal/cli/plug.go` | LOW | ⏳ Missing |
-| Generate command | `internal/cli/generate.go` | LOW | ⏳ Missing |
+| Account command | `internal/cli/account.go` | HIGH | ✅ Done |
+| Web command | `internal/cli/web.go` | MEDIUM | ✅ Done |
+| Cmd command | `internal/cli/cmd.go` | MEDIUM | ⏳ Planned |
+| Plug command | `internal/cli/plug.go` | LOW | ⏳ Planned |
+| Generate command | `internal/cli/generate.go` | LOW | ⏳ Planned |
 
 **Reference:** See [0212-Freecode-TUI-Analysis.md](./0212-Freecode-TUI-Analysis.md#missing-commands-accurate-as-of-2026-05-02)
 
@@ -149,23 +149,23 @@ runCmd.Flags().Bool("yolo", false, "Skip all confirmations")
 
 ### 4.2 Built-in Agents
 
-**All agents are STUBS - need real prompt implementation**
+**All agents have prompts in `prompts.go` - need execution implementation in `sisyphus.go`**
 
 | Task | Agent | Status | Implementation File |
 |------|-------|--------|---------------------|
-| Sisyphus | primary | ⚠️ Stub | `internal/agent/sisyphus.go` |
-| Hephaestus | primary | ⚠️ Stub | `internal/agent/sisyphus.go` |
-| Oracle | subagent | ⚠️ Stub | `internal/agent/sisyphus.go` |
-| Librarian | subagent | ⚠️ Stub | `internal/agent/sisyphus.go` |
-| Explore | subagent | ⚠️ Stub | `internal/agent/sisyphus.go` |
-| Prometheus | all | ⚠️ Stub | `internal/agent/sisyphus.go` |
-| Metis | all | ⚠️ Stub | `internal/agent/sisyphus.go` |
-| Momus | all | ⚠️ Stub | `internal/agent/sisyphus.go` |
-| Atlas | primary | ⚠️ Stub | `internal/agent/sisyphus.go` |
-| Multimodal-Looker | subagent | ⚠️ Stub | `internal/agent/sisyphus.go` |
-| Sisyphus-Junior | all | ⚠️ Stub | `internal/agent/sisyphus.go` |
+| Sisyphus | primary | ✅ Prompts Done | `internal/agent/prompts.go` |
+| Hephaestus | primary | ✅ Prompts Done | `internal/agent/prompts.go` |
+| Oracle | subagent | ✅ Prompts Done | `internal/agent/prompts.go` |
+| Librarian | subagent | ✅ Prompts Done | `internal/agent/prompts.go` |
+| Explore | subagent | ✅ Prompts Done | `internal/agent/prompts.go` |
+| Prometheus | all | ✅ Prompts Done | `internal/agent/prompts.go` |
+| Metis | all | ✅ Prompts Done | `internal/agent/prompts.go` |
+| Momus | all | ✅ Prompts Done | `internal/agent/prompts.go` |
+| Atlas | primary | ✅ Prompts Done | `internal/agent/prompts.go` |
+| Multimodal-Looker | subagent | ✅ Prompts Done | `internal/agent/prompts.go` |
+| Sisyphus-Junior | all | ✅ Prompts Done | `internal/agent/prompts.go` |
 
-**Next Step:** Implement actual agent prompts using opencode's `packages/opencode/src/agent/prompt/` files as reference
+**Next Step:** Implement actual agent execution in `sisyphus.go` using prompts from `prompts.go`
 
 ### 4.3 Session Management
 
@@ -216,11 +216,12 @@ runCmd.Flags().Bool("yolo", false, "Skip all confirmations")
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| Hook registry | `internal/hook/registry.go` | ⏳ | 4.1 |
-| Session hooks | `internal/hook/session.go` | ⏳ | 6.1.1 |
-| Tool hooks | `internal/hook/tool.go` | ⏳ | 6.1.1 |
-| Transform hooks | `internal/hook/transform.go` | ⏳ | 6.1.1 |
-| Continuation hooks | `internal/hook/continuation.go` | ⏳ | 6.1.1 |
+| Hook registry | `internal/hook/registry.go` | ✅ Done | 4.1 |
+| Session hooks (26) | `internal/hook/triggers.go` | ✅ Done | 6.1.1 |
+| Tool hooks (9) | `internal/hook/triggers.go` | ✅ Done | 6.1.1 |
+| Default implementations | `internal/hook/builtins.go` | ✅ Done | 6.1.1 |
+| Transform hooks | `internal/hook/transform.go` | ⏳ Planned | 6.1.1 |
+| Continuation hooks | `internal/hook/continuation.go` | ⏳ Planned | 6.1.1 |
 
 ### 6.2 MCP Client
 
@@ -239,6 +240,18 @@ runCmd.Flags().Bool("yolo", false, "Skip all confirmations")
 | Tmux integration | `internal/shell/tmux.go` | ⏳ | 6.1 |
 | Runtime fallback | `internal/agent/fallback.go` | ⏳ | 6.1 |
 | Hashline edit | `internal/tool/hashline.go` | ⏳ | 3.1 |
+
+### 6.4 Skills System ✅ DONE
+
+| Skill | File | Status |
+|-------|------|--------|
+| git-master | `.skills/git-master/SKILL.md` | ✅ Done |
+| playwright | `.skills/playwright/SKILL.md` | ✅ Done |
+| frontend-ui-ux | `.skills/frontend-ui-ux/SKILL.md` | ✅ Done |
+| review-work | `.skills/review-work/SKILL.md` | ✅ Done |
+| ai-slop-remover | `.skills/ai-slop-remover/SKILL.md` | ✅ Done |
+| search-code | `.skills/search-code/SKILL.md` | ✅ Done |
+| architect | `.skills/architect/SKILL.md` | ✅ Done |
 
 ---
 
