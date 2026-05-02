@@ -29,28 +29,70 @@ This is a conversion of opencode (TypeScript) to Go, with all features built dir
 
 ## Document Structure
 
-All plan documents are in the `.plan/` directory (sorted for easy navigation):
+All plan documents are in the `.plan/` directory following CloudBSD 4-digit numbering:
 
-| # | File | What It Covers |
-|---|------|----------------|
-| 0.0 | [`000.0-TOC.md`](.plan/000.0-TOC.md) | Master table of contents |
-| 0.1 | [`001.0-Workflow.md`](.plan/001.0-Workflow.md) | Task claiming, completion, merge handling |
-| 1.0 | [`002.0-Overview.md`](.plan/002.0-Overview.md) | Executive summary, phases, architecture |
-| 1.1 | [`003.0-Architecture.md`](.plan/003.0-Architecture.md) | TypeScript → Go mapping |
-| 2.0 | [`010.0-Design.md`](.plan/010.0-Design.md) | Go architecture, packages, concurrency |
-| 3.0 | [`011.0-Implementation-Tasks.md`](.plan/011.0-Implementation-Tasks.md) | Phase-by-phase task breakdown |
-| 4.0 | [`012.0-Configuration.md`](.plan/012.0-Configuration.md) | Unified config schema, migration |
-| 5.0 | [`013.0-Features.md`](.plan/013.0-Features.md) | All features: agents, hooks, MCP, fleet, tools |
-| 6.0 | [`014.0-Session-Tabbing.md`](.plan/014.0-Session-Tabbing.md) | TUI tabs, split view, command palette, mouse |
-| 7.0 | [`015.0-Packaging.md`](.plan/015.0-Packaging.md) | FreeBSD, Linux, macOS, IllumOS packages |
-| 8.0 | [`016.0-Dependencies.md`](.plan/016.0-Dependencies.md) | Build dependencies per platform |
-| 9.0 | [`017.0-Security.md`](.plan/017.0-Security.md) | Localhost binding, permissions, YubiKey |
-| - | [`004.0-Platform-Specific.md`](.plan/004.0-Platform-Specific.md) | Platform-specific details |
-| - | [`005.0-Validation.md`](.plan/005.0-Validation.md) | Task completion tracking, validation checklists |
-| - | [`006.0-Risks.md`](.plan/006.0-Risks.md) | Risks, TODO tracker |
-| - | [`007.0-oh-my-openagent-Audit.md`](.plan/007.0-oh-my-openagent-Audit.md) | Audit of oh-my-openagent |
-| - | [`008.0-Development-Guide.md`](.plan/008.0-Development-Guide.md) | Dev setup, testing, contributions |
-| - | [`009.0-Feature-Inventory.md`](.plan/009.0-Feature-Inventory.md) | 88 features tracked with task IDs |
+### Meta (0000-0002)
+| File | What It Covers |
+|------|----------------|
+| `0000-Freecode-TOC.md` | Master table of contents |
+| `0001-Freecode-Workflow.md` | Task claiming, completion, merge handling |
+| `0002-Freecode-Build-Status.md` | CI/CD pipeline, build artifacts |
+
+### Security (0100-0106)
+| File | What It Covers |
+|------|----------------|
+| `0100-Freecode-Security-Overview.md` | Security strategy |
+| `0101-Freecode-Security-ThreatModel.md` | Threat analysis |
+| `0102-Freecode-Security-AccessControl.md` | Permissions, credentials |
+| `0103-Freecode-Security-Runtime.md` | Sandbox, filesystem |
+| `0104-Freecode-Security-Implementation.md` | Security tasks |
+| `0105-Freecode-Security-Audit.md` | oh-my-openagent audit |
+| `0106-Freecode-Security-Additional.md` | Audit logging, supply chain |
+
+### Overview & Architecture (0200-0212)
+| File | What It Covers |
+|------|----------------|
+| `0200-Freecode-Overview.md` | Executive summary, phases |
+| `0201-Freecode-Current-Architecture.md` | TypeScript → Go mapping |
+| `0202-Freecode-Platform-Specific.md` | Platform-specific details |
+| `0203-Freecode-Feature-Inventory.md` | 88 features tracked |
+| `0204-Freecode-Features.md` | All features |
+| `0210-Freecode-Architecture-Design.md` | Go architecture |
+| `0211-Freecode-LiteLLM-Integration.md` | LiteLLM provider consolidation |
+| `0212-Freecode-TUI-Analysis.md` | OpenCode vs Freecode TUI parity |
+
+### Implementation (0300-0301)
+| File | What It Covers |
+|------|----------------|
+| `0300-Freecode-Implementation-Tasks.md` | Phase-by-phase tasks |
+| `0301-Freecode-Session-Tabbing.md` | TUI tabs, split view |
+
+### Testing (0400-0403)
+| File | What It Covers |
+|------|----------------|
+| `0400-Freecode-Testing.md` | Test strategy |
+| `0401-Freecode-Unit-Tests.md` | Unit testing plan |
+| `0402-Freecode-Integration-Tests.md` | Integration testing plan |
+| `0403-Freecode-Code-Validation.md` | Linting, fuzzing, security |
+
+### Operations (0500-0504)
+| File | What It Covers |
+|------|----------------|
+| `0501-Freecode-Configuration.md` | Config schema, migration |
+| `0502-Freecode-Packaging.md` | FreeBSD, Linux, macOS, IllumOS |
+| `0503-Freecode-Dependencies.md` | Build dependencies |
+| `0504-Freecode-I18N.md` | Internationalization |
+| `0510-Freecode-Tooling.md` | Development guide |
+
+### Risks (0700)
+| File | What It Covers |
+|------|----------------|
+| `0700-Freecode-Risks.md` | Risk register |
+
+### Validation (0900)
+| File | What It Covers |
+|------|----------------|
+| `0900-Freecode-Validation.md` | Task completion, validation |
 
 ---
 
