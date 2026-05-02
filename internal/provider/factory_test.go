@@ -37,7 +37,7 @@ func TestNewProviderWithEnv(t *testing.T) {
 }
 
 func TestNewProviderWithConfig(t *testing.T) {
-	p := NewProviderWithConfig("http://custom:4000", "custom-key")
+	p := NewProviderWithConfig("ollama", "http://custom:4000", "custom-key")
 	if p == nil {
 		t.Fatal("NewProviderWithConfig returned nil")
 	}
@@ -47,9 +47,29 @@ func TestNewProviderWithConfig(t *testing.T) {
 }
 
 func TestNewProviderWithConfigEmpty(t *testing.T) {
-	p := NewProviderWithConfig("", "")
+	p := NewProviderWithConfig("ollama", "", "")
 	if p == nil {
 		t.Fatal("NewProviderWithConfig returned nil")
+	}
+}
+
+func TestNewProviderWithConfigOpenAI(t *testing.T) {
+	p := NewProviderWithConfig("openai", "", "test-key")
+	if p == nil {
+		t.Fatal("NewProviderWithConfig returned nil")
+	}
+	if p.Name() != "openai" {
+		t.Errorf("Name() = %q, want %q", p.Name(), "openai")
+	}
+}
+
+func TestNewProviderWithConfigAnthropic(t *testing.T) {
+	p := NewProviderWithConfig("anthropic", "", "test-key")
+	if p == nil {
+		t.Fatal("NewProviderWithConfig returned nil")
+	}
+	if p.Name() != "anthropic" {
+		t.Errorf("Name() = %q, want %q", p.Name(), "anthropic")
 	}
 }
 
@@ -70,9 +90,11 @@ func TestGetModelProvider(t *testing.T) {
 		{"azure/gpt-4", "azure"},
 		{"aws/bedrock/claude", "aws"},
 		{"bedrock/anthropic/claude", "aws"},
-		{"unknown/model", "litellm"},
-		{"some-random-model", "litellm"},
-		{"", "litellm"},
+		{"unknown/model", "unknown"},
+		{"some-random-model", "unknown"},
+		{"", "unknown"},
+		{"claude-3-opus", "anthropic"},
+		{"gpt-4", "openai"},
 	}
 
 	for _, tt := range tests {
