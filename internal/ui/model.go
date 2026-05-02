@@ -6,13 +6,16 @@ import (
 )
 
 type Model struct {
-	width    int
-	height   int
-	tabs     []TabModel
-	active   int
-	session  *session.Session
-	yolo     bool
-	quitting bool
+	width             int
+	height            int
+	tabs              []TabModel
+	active            int
+	session           *session.Session
+	yolo              bool
+	quitting          bool
+	commandPaletteOpen bool
+	sidebarOpen       bool
+	fleetPanelOpen    bool
 }
 
 type TabModel struct {
@@ -125,6 +128,21 @@ func (m *Model) statusBar() string {
 		yoloStatus = "YOLO: OFF"
 	}
 	return "\n" + yoloStatus + " | Tab: " + string(rune(m.active+'1'))
+}
+
+func (m *Model) OpenCommandPalette() tea.Cmd {
+	m.commandPaletteOpen = !m.commandPaletteOpen
+	return nil
+}
+
+func (m *Model) ToggleSidebar() tea.Cmd {
+	m.sidebarOpen = !m.sidebarOpen
+	return nil
+}
+
+func (m *Model) ToggleFleetPanel() tea.Cmd {
+	m.fleetPanelOpen = !m.fleetPanelOpen
+	return nil
 }
 
 type NewTabMsg struct{}

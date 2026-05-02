@@ -1,0 +1,19 @@
+name: freecode
+version: "0.1.0"
+comment: Unified AI coding assistant
+desc: "Go-based CLI that combines the best of opencode with enhanced agents, hooks, fleet management, and workflow features"
+author: "Mark LaPointe <mark@cloudbsd.org>"
+license: "Unlimited"
+www: "https://github.com/cloudbsdorg/freecode"
+maintainer: "Mark LaPointe <mark@cloudbsd.org>"
+categories:
+  - devel
+  - ai
+  - chat
+  - assistant
+depends:
+  - go124
+  - git
+slists:
+  - local
+www: "https://github.com/cloudbsdorg/freecode"

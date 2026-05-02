@@ -1,0 +1,14 @@
+id: org.freecode.cli
+name: Freecode
+runtime: org.freecode.BaseApp
+runtime-version: '0.1'
+sdk: org.freecode.Sdk
+command: freecode
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=home
+  - --talk-name=org.freedesktop.Notifications
