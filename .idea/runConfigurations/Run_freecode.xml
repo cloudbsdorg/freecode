@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run freecode" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="freecode" />
+    <working_directory value="$PROJECT_DIR$" />
+    <kind value="PACKAGE" />
+    <package value="github.com/freecode/freecode/cmd/freecode" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$/cmd/freecode/main.go" />
+    <method v="2" />
+  </configuration>
+</component>
