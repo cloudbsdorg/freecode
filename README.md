@@ -10,8 +10,8 @@ Freecode is a Go-based CLI that combines the best of opencode with enhanced agen
 - **60+ Lifecycle Hooks** — Session, tool, transform, continuation, Ralph, skill hooks
 - **8 Task Categories** — visual-engineering, ultrabrain, deep, artistry, quick, writing, and more
 - **Session Tabbing** — Multiple concurrent sessions with split views
-- **Fleet Management** — Head/agent/client modes for multi-instance coordination
-- **Built-in MCPs** — Exa websearch, Context7 docs, Grep.app, GitHub/GitLab CLI
+- **⚠️ Fleet Management** — Head/agent/client modes (planned)
+- **⚠️ Built-in MCPs** — Exa websearch, Context7 docs, Grep.app, GitHub/GitLab CLI (stubs)
 - **TUI with Mouse Support** — Full interactive interface with clickable elements
 - **Security-first** — All services bound to localhost only, no telemetry
 
@@ -56,7 +56,6 @@ internal/agent/        # 11 built-in agents
 internal/hook/         # 60+ lifecycle hooks
 internal/session/      # Session management, tabs
 internal/ui/           # Bubble Tea TUI
-internal/fleet/        # Fleet head/agent/client
 internal/platform/     # Platform-specific code
 ```
 
@@ -79,8 +78,8 @@ Freecode is a Go conversion of opencode with all oh-my-openagent features integr
 | Distribution | NPM | Static binary |
 | Agents | 7 | 11 |
 | Hooks | ~20 | 60+ |
-| Fleet Mode | ❌ | ✅ |
-| Built-in MCPs | ❌ | ✅ |
+| Fleet Mode | ❌ | ⚠️ Planned |
+| Built-in MCPs | ❌ | ⚠️ Partial |
 
 ## Security
 
