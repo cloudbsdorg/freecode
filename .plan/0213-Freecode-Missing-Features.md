@@ -439,14 +439,54 @@ Instead of trying to port TypeScript/Solid.js:
 
 ### Reference Documents
 
-- TASKLIST-PHASE2.md - Detailed implementation tasks
+- TASKLIST-PHASE2.md - Detailed implementation tasks (COMPLETED)
 - CHAIN-TODO.md - Ordered implementation sequence
+
+---
+
+## Phase 3: Module Parity (Remaining 12 Modules)
+
+### Missing Modules to Implement
+
+| Priority | Module | Description | Reference |
+|----------|--------|-------------|-----------|
+| HIGH | `internal/account` | Account management | `packages/opencode/src/account/` |
+| HIGH | `internal/acp` | Access control policy | `packages/opencode/src/acp/` |
+| HIGH | `internal/control-plane` | Fleet control plane | `packages/opencode/src/control-plane/` |
+| HIGH | `internal/file` | File operations/watcher | `packages/opencode/src/file/` |
+| HIGH | `internal/plugin` | Plugin system | `packages/opencode/src/plugin/` |
+| HIGH | `internal/skill` | Skill system | `packages/opencode/src/skill/` |
+| MEDIUM | `internal/env` | Environment variables | `packages/opencode/src/env/` |
+| MEDIUM | `internal/format` | Code formatting | `packages/opencode/src/format/` |
+| MEDIUM | `internal/question` | Question/answer flow | `packages/opencode/src/question/` |
+| MEDIUM | `internal/util` | Utilities | `packages/opencode/src/util/` |
+| LOW | `internal/id` | ID generation | `packages/opencode/src/id/` |
+| LOW | `internal/installation` | Installation detection | `packages/opencode/src/installation/` |
+
+### Implementation Order
+
+1. **account** - Account management (user-facing feature)
+2. **acp** - Access control policy (security)
+3. **file** - File operations (foundational)
+4. **plugin** - Plugin system (extensibility)
+5. **skill** - Skill system (already exists, needs parity)
+6. **env** - Environment variables (config)
+7. **format** - Code formatting (tool integration)
+8. **question** - Q&A flow (UX)
+9. **util** - Utilities (shared code)
+10. **control-plane** - Fleet control (advanced)
+11. **id** - ID generation (utility)
+12. **installation** - Installation detection (platform)
+
+### Reference Documents
+
+- TASKLIST-PHASE3.md - Detailed implementation tasks
 
 ---
 
 **Author:** Mark LaPointe <mark@cloudbsd.org>
 
-**Last Updated:** 2026-05-02 (Phase 2: Module parity plan added)
+**Last Updated:** 2026-05-02 (Phase 3: 12 remaining modules added)
 
 ---
 
