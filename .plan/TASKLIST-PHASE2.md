@@ -23,7 +23,7 @@ This document tracks implementation of missing modules to achieve OpenCode parit
 | 2 | `internal/command` | Command framework | `packages/opencode/src/command/` | ❌ Missing |
 | 3 | `internal/lsp` | Language Server Protocol client | `packages/opencode/src/lsp/` | ❌ Missing |
 | 4 | `internal/pty` | Terminal/PTY handling | `packages/opencode/src/pty/` | ❌ Missing |
-| 5 | `internal/storage` | Database persistence | `packages/opencode/src/storage/` | ❌ Missing |
+| 5 | `internal/storage` | Database persistence | `packages/opencode/src/storage/` | ✅ Done |
 
 ### Medium Priority (Feature Parity)
 
