@@ -15,7 +15,7 @@ Tasks must be completed in dependency order. High priority tasks unblock medium 
 
 | # | Task | File | Status | Dependencies | Notes |
 |---|------|------|--------|-------------|-------|
-| 1 | Session History | `internal/session/history.go` | ✅ Done | 4.3 | Unblocks session management |
+| 1 | Session History | `internal/session/compaction.go` | ✅ Done | 4.3 | History struct in compaction |
 | 2 | Hashline Tool | `internal/tool/hashline.go` | ✅ Done | 3.1 | For edit tool enhancement |
 | 3 | OAuth Flow | `internal/mcp/oauth.go` | ✅ Done | 6.2 | MCP OAuth integration |
 | 4 | WebSocket Server | `internal/server/websocket.go` | ✅ Done | 7.1 | Real-time communication |
@@ -42,14 +42,9 @@ Tasks must be completed in dependency order. High priority tasks unblock medium 
 | 13 | TOML Config | `internal/config/toml.go` | ✅ Done | 2.2.1 | TOML config parsing |
 | 14 | JSONC Config | `internal/config/jsonc.go` | ✅ Done | 2.2.1 | JSONC config parsing |
 | 15 | TUI Model | `internal/ui/model.go` | ✅ Done | 4.3 | Main UI model |
-| 16 | TUI View | `internal/ui/view.go` | ✅ Done | 5.1 | View rendering |
-| 17 | TUI Input | `internal/ui/input.go` | ✅ Done | 5.1 | Input handling |
-| 18 | TUI Style | `internal/ui/style.go` | ✅ Done | 5.1 | Theme/styling |
-| 19 | TUI Tab Model | `internal/ui/tab/model.go` | ✅ Done | 4.3.1 | Tab management |
-| 20 | TUI Tab View | `internal/ui/tab/view.go` | ✅ Done | 5.2.1 | Tab rendering |
-| 21 | TUI Tab Keys | `internal/ui/tab/keys.go` | ✅ Done | 5.2.1 | Tab keybindings |
+| 16 | TUI View | `internal/ui/model.go` | ✅ Done | 5.1 | View method in model |
 | 22 | TUI Tab Split | `internal/ui/tab/split.go` | ✅ Done | 5.2.1 | Split view |
-| 23 | YOLO Toggle | `internal/ui/tab/commands.go` | ✅ Done | 5.2.1 | YOLO mode toggle |
+| 23 | YOLO Toggle | `internal/ui/commands.go` | ✅ Done | 5.2.1 | YOLO mode toggle |
 | 24 | MCP Builtin | `internal/mcp/builtin.go` | ⚠️ Stub | 6.2.1 | Needs full implementation |
 | 25 | Platform Core | `internal/platform/platform.go` | ✅ Done | 7.2 | Platform detection & preflight |
 | 26 | FreeBSD Package | `packaging/freebsd/` | ✅ Stub | 7.2.1 | Package build stub |

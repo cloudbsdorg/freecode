@@ -141,7 +141,7 @@ func (t *%s) Schema() ToolSchema {
 
 func (t *%s) Execute(ctx context.Context, req Request) (*Response, error) {
 	return &Response{
-		Result: fmt.Sprintf("Executed %s"),
+		Result: "Executed tool",
 	}, nil
 }
 `, titleCase(name), titleCase(name), titleCase(name), titleCase(name), titleCase(name), name, titleCase(name), name, titleCase(name), name, name, name)
