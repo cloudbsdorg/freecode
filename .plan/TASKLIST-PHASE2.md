@@ -20,31 +20,31 @@ This document tracks implementation of missing modules to achieve OpenCode parit
 | # | Module | Description | OpenCode Path | Status |
 |---|--------|-------------|---------------|--------|
 | 1 | `internal/bus` | Event bus pub/sub system | `packages/opencode/src/bus/` | ✅ Done |
-| 2 | `internal/command` | Command framework | `packages/opencode/src/command/` | ❌ Missing |
-| 3 | `internal/lsp` | Language Server Protocol client | `packages/opencode/src/lsp/` | ❌ Missing |
-| 4 | `internal/pty` | Terminal/PTY handling | `packages/opencode/src/pty/` | ❌ Missing |
+| 2 | `internal/command` | Command framework | `packages/opencode/src/command/` | ✅ Done |
+| 3 | `internal/lsp` | Language Server Protocol client | `packages/opencode/src/lsp/` | ✅ Done |
+| 4 | `internal/pty` | Terminal/PTY handling | `packages/opencode/src/pty/` | ✅ Done |
 | 5 | `internal/storage` | Database persistence | `packages/opencode/src/storage/` | ✅ Done |
 
 ### Medium Priority (Feature Parity)
 
 | # | Module | Description | OpenCode Path | Status |
 |---|--------|-------------|---------------|--------|
-| 6 | `internal/sync` | Session sync | `packages/opencode/src/sync/` | ❌ Missing |
-| 7 | `internal/project` | Project management | `packages/opencode/src/project/` | ❌ Missing |
-| 8 | `internal/git` | Git operations | `packages/opencode/src/git/` | ❌ Missing |
-| 9 | `internal/permission` | Permission system | `packages/opencode/src/permission/` | ❌ Missing |
-| 10 | `internal/ide` | IDE integration | `packages/opencode/src/ide/` | ❌ Missing |
+| 6 | `internal/sync` | Session sync | `packages/opencode/src/sync/` | ✅ Done |
+| 7 | `internal/project` | Project management | `packages/opencode/src/project/` | ✅ Done |
+| 8 | `internal/git` | Git operations | `packages/opencode/src/git/` | ✅ Done |
+| 9 | `internal/permission` | Permission system | `packages/opencode/src/permission/` | ✅ Done |
+| 10 | `internal/ide` | IDE integration | `packages/opencode/src/ide/` | ✅ Done |
 
 ### Low Priority (Advanced Features)
 
 | # | Module | Description | OpenCode Path | Status |
 |---|--------|-------------|---------------|--------|
-| 11 | `internal/effect` | Effects system | `packages/opencode/src/effect/` | ❌ Missing |
-| 12 | `internal/patch` | Patching | `packages/opencode/src/patch/` | ❌ Missing |
-| 13 | `internal/share` | Sharing | `packages/opencode/src/share/` | ❌ Missing |
-| 14 | `internal/snapshot` | Snapshots | `packages/opencode/src/snapshot/` | ❌ Missing |
-| 15 | `internal/v2` | API v2 | `packages/opencode/src/v2/` | ❌ Missing |
-| 16 | `internal/worktree` | Git worktree | `packages/opencode/src/worktree/` | ❌ Missing |
+| 11 | `internal/effect` | Effects system | `packages/opencode/src/effect/` | ✅ Done |
+| 12 | `internal/patch` | Patching | `packages/opencode/src/patch/` | ✅ Done |
+| 13 | `internal/share` | Sharing | `packages/opencode/src/share/` | ✅ Done |
+| 14 | `internal/snapshot` | Snapshots | `packages/opencode/src/snapshot/` | ✅ Done |
+| 15 | `internal/v2` | API v2 | `packages/opencode/src/v2/` | ✅ Done |
+| 16 | `internal/worktree` | Git worktree | `packages/opencode/src/worktree/` | ✅ Done |
 
 ---
 
