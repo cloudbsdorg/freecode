@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Create comprehensive TASKLIST.md files that follow a proper planning-before-implementation workflow.
+Create comprehensive TASKLIST.md files that follow a proper planning-before-implementation workflow with REGULAR COMMITS after each task.
 
 ## Core Principle
 
-**DOCUMENT FIRST, IMPLEMENT LAST**
+**DOCUMENT FIRST, IMPLEMENT LAST, COMMIT AFTER EACH**
 
-Never start implementing until all planning documents are updated.
+Never start implementing until all planning documents are updated. Commit and push after EVERY completed task.
 
 ---
 
@@ -42,7 +42,7 @@ Never start implementing until all planning documents are updated.
    - Include status table with columns:
      - Task name
      - File path
-     - Status (❌ Missing → ⏳ Planned → ✅ Done)
+     - Status (❌ Missing → ⏳ Planned → ⚠️ In Progress → ✅ Done)
      - Dependencies
      - Notes
 
@@ -50,7 +50,9 @@ Never start implementing until all planning documents are updated.
    - Ordered sequence of implementation
    - Dependency chain visualization
 
-### Step 3: Validation Phase
+4. **Commit and Push** - Document the plan before implementing
+
+### Step 3: Validation Phase (Before Implementation)
 
 1. **Verify All Files Exist**
    - Do NOT assume - use `ls` or `test -f`
@@ -63,18 +65,22 @@ Never start implementing until all planning documents are updated.
 3. **Build Check**
    - `go build ./...` must pass
 
-### Step 4: Implementation Phase (LAST)
+### Step 4: Implementation Phase (LAST, WITH REGULAR COMMITS)
 
-1. **Implement in Dependency Order**
-   - Never implement a module that another unimplemented module depends on
+**CRITICAL: Commit and push after EACH module, not at the end**
 
-2. **Mark Complete Immediately**
-   - Update TASKLIST.md as you go
-   - Commit after each module
+#### Per-Module Cycle:
 
-3. **Validate After Each**
-   - Build after each file
-   - Test after each module
+1. **Update TASKLIST.md** - Mark module as "⚠️ In Progress"
+2. **Commit** - `git add -A && git commit -m "chore: starting <module> implementation"`
+3. **Implement the module** - Create files, write code
+4. **Write tests** - Unit tests, integration tests
+5. **Verify** - `go build ./...` passes
+6. **Run tests** - `go test ./...` passes
+7. **Update TASKLIST.md** - Mark module as "✅ Done"
+8. **Commit** - `git add -A && git commit -m "feat: implement <module> module"`
+9. **Push** - `git push`
+10. **Repeat** - Next module
 
 ---
 
@@ -143,7 +149,7 @@ Brief description of what this task list covers.
 |--------|---------|
 | ❌ Missing | Does not exist |
 | ⏳ Planned | Will create |
-| ⚠️ Stub | Exists but incomplete |
+| ⚠️ In Progress | Currently implementing |
 | ✅ Done | Implemented and tested |
 
 ---
@@ -153,6 +159,22 @@ Brief description of what this task list covers.
 ❌ **NEVER** start implementing before documentation is complete
 ❌ **NEVER** mark something done that doesn't compile
 ❌ **NEVER** skip the validation phase
+❌ **NEVER** complete ALL work before committing (commit after EACH module)
+❌ **NEVER** forget to push (remote sync is part of the workflow)
+
+---
+
+## Commit Message Format
+
+```
+<type>: <short description>
+
+<optional body>
+
+Author: Mark LaPointe <mark@cloudbsd.org>
+```
+
+Types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`
 
 ---
 

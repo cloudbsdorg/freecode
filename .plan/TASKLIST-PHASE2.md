@@ -19,7 +19,7 @@ This document tracks implementation of missing modules to achieve OpenCode parit
 
 | # | Module | Description | OpenCode Path | Status |
 |---|--------|-------------|---------------|--------|
-| 1 | `internal/bus` | Event bus pub/sub system | `packages/opencode/src/bus/` | ❌ Missing |
+| 1 | `internal/bus` | Event bus pub/sub system | `packages/opencode/src/bus/` | ✅ Done |
 | 2 | `internal/command` | Command framework | `packages/opencode/src/command/` | ❌ Missing |
 | 3 | `internal/lsp` | Language Server Protocol client | `packages/opencode/src/lsp/` | ❌ Missing |
 | 4 | `internal/pty` | Terminal/PTY handling | `packages/opencode/src/pty/` | ❌ Missing |
