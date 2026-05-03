@@ -338,16 +338,82 @@ Phase 7 ── 7.1 Server ── 7.2 Platform ── 7.3 Packaging ────�
 
 ---
 
+## Phase 8: OpenCode Module Parity (Week 12-16)
+
+### 8.1 Event Bus
+
+| Task | File | Status | Dependencies |
+|------|------|--------|--------------|
+| Event bus core | `internal/bus/bus.go` | ⏳ Planned | 7.1 |
+| Event definitions | `internal/bus/event.go` | ⏳ Planned | 8.1.1 |
+| Global bus | `internal/bus/global.go` | ⏳ Planned | 8.1.1 |
+
+### 8.2 Command Framework
+
+| Task | File | Status | Dependencies |
+|------|------|--------|--------------|
+| Command registry | `internal/command/registry.go` | ⏳ Planned | 8.1 |
+| Command interface | `internal/command/command.go` | ⏳ Planned | 8.2.1 |
+| Template engine | `internal/command/template.go` | ⏳ Planned | 8.2.1 |
+
+### 8.3 LSP Client
+
+| Task | File | Status | Dependencies |
+|------|------|--------|--------------|
+| LSP client | `internal/lsp/client.go` | ⏳ Planned | 8.1 |
+| Diagnostics | `internal/lsp/diagnostic.go` | ⏳ Planned | 8.3.1 |
+| Server management | `internal/lsp/server.go` | ⏳ Planned | 8.3.1 |
+
+### 8.4 PTY/Terminal
+
+| Task | File | Status | Dependencies |
+|------|------|--------|--------------|
+| PTY interface | `internal/pty/pty.go` | ⏳ Planned | 8.1 |
+| Terminal handling | `internal/pty/terminal.go` | ⏳ Planned | 8.4.1 |
+| Input handling | `internal/pty/input.go` | ⏳ Planned | 8.4.1 |
+
+### 8.5 Storage
+
+| Task | File | Status | Dependencies |
+|------|------|--------|--------------|
+| Database interface | `internal/storage/db.go` | ⏳ Planned | 7.1 |
+| Schema | `internal/storage/schema.go` | ⏳ Planned | 8.5.1 |
+| Migration | `internal/storage/migration.go` | ⏳ Planned | 8.5.1 |
+
+### 8.6 Medium Priority Modules
+
+| Task | File | Status | Dependencies |
+|------|------|--------|--------------|
+| Sync | `internal/sync/` | ⏳ Planned | 8.5 |
+| Project | `internal/project/` | ⏳ Planned | 8.3, 8.7 |
+| Git | `internal/git/` | ⏳ Planned | 8.6 |
+| Permission | `internal/permission/` | ⏳ Planned | 8.5 |
+| IDE | `internal/ide/` | ⏳ Planned | 8.3 |
+
+### 8.7 Low Priority Modules
+
+| Task | File | Status | Dependencies |
+|------|------|--------|--------------|
+| Effect | `internal/effect/` | ⏳ Planned | 8.1 |
+| Patch | `internal/patch/` | ⏳ Planned | 8.5 |
+| Share | `internal/share/` | ⏳ Planned | 8.5 |
+| Snapshot | `internal/snapshot/` | ⏳ Planned | 8.5 |
+| V2 API | `internal/v2/` | ⏳ Planned | 8.5 |
+| Worktree | `internal/worktree/` | ⏳ Planned | 8.7 |
+
+---
+
 ## Change Log
 
 | Date | Version | Changes |
 |------|---------|---------|
 | 2026-05-01 | 1.0 | Initial task breakdown |
+| 2026-05-02 | 2.0 | Phase 8 added - Module parity plan |
 
 ---
 
 **Author:** Mark LaPointe <mark@cloudbsd.org>
-**Last Updated:** 2026-05-01
+**Last Updated:** 2026-05-02
 
 ---
 

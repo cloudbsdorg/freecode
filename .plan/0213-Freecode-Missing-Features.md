@@ -399,9 +399,54 @@ Instead of trying to port TypeScript/Solid.js:
 
 ---
 
+## Phase 2: Module Parity Plan
+
+### Missing Modules to Implement
+
+| Priority | Module | Description | Reference |
+|----------|--------|-------------|-----------|
+| HIGH | `internal/bus` | Event bus pub/sub | `packages/opencode/src/bus/` |
+| HIGH | `internal/command` | Command framework | `packages/opencode/src/command/` |
+| HIGH | `internal/lsp` | LSP client | `packages/opencode/src/lsp/` |
+| HIGH | `internal/pty` | Terminal/PTY | `packages/opencode/src/pty/` |
+| HIGH | `internal/storage` | Database persistence | `packages/opencode/src/storage/` |
+| MEDIUM | `internal/sync` | Session sync | `packages/opencode/src/sync/` |
+| MEDIUM | `internal/project` | Project management | `packages/opencode/src/project/` |
+| MEDIUM | `internal/git` | Git operations | `packages/opencode/src/git/` |
+| MEDIUM | `internal/permission` | Permission system | `packages/opencode/src/permission/` |
+| MEDIUM | `internal/ide` | IDE integration | `packages/opencode/src/ide/` |
+| LOW | `internal/effect` | Effects system | `packages/opencode/src/effect/` |
+| LOW | `internal/patch` | Patching | `packages/opencode/src/patch/` |
+| LOW | `internal/share` | Sharing | `packages/opencode/src/share/` |
+| LOW | `internal/snapshot` | Snapshots | `packages/opencode/src/snapshot/` |
+| LOW | `internal/v2` | API v2 | `packages/opencode/src/v2/` |
+| LOW | `internal/worktree` | Git worktree | `packages/opencode/src/worktree/` |
+
+### Implementation Order
+
+1. **bus** - Event bus (foundational for other modules)
+2. **storage** - Database (foundational for persistence)
+3. **command** - Command framework (used by CLI)
+4. **pty** - Terminal (used by shell integration)
+5. **lsp** - LSP client (used by IDE features)
+6. **git** - Git operations (used by project management)
+7. **sync** - Session sync (uses storage)
+8. **project** - Project management (uses git, bus)
+9. **permission** - Permission system
+10. **ide** - IDE integration (uses lsp, bus)
+11. **effect** - Effects system (advanced)
+12. **patch, share, snapshot, v2, worktree** - Advanced features
+
+### Reference Documents
+
+- TASKLIST-PHASE2.md - Detailed implementation tasks
+- CHAIN-TODO.md - Ordered implementation sequence
+
+---
+
 **Author:** Mark LaPointe <mark@cloudbsd.org>
 
-**Last Updated:** 2026-05-02 (Updated: Skills added, hook triggers implemented)
+**Last Updated:** 2026-05-02 (Phase 2: Module parity plan added)
 
 ---
 

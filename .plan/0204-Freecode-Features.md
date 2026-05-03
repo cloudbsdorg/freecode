@@ -3196,8 +3196,51 @@ comment_checker:
 
 ---
 
+## Phase 2: OpenCode Module Parity
+
+### Missing Modules from OpenCode
+
+| Module | Description | Priority |
+|--------|-------------|----------|
+| `bus` | Event bus pub/sub system | HIGH |
+| `command` | Command framework | HIGH |
+| `lsp` | Language Server Protocol client | HIGH |
+| `pty` | Terminal/PTY handling | HIGH |
+| `storage` | Database persistence | HIGH |
+| `sync` | Session synchronization | MEDIUM |
+| `project` | Project management | MEDIUM |
+| `git` | Git operations | MEDIUM |
+| `permission` | Permission system | MEDIUM |
+| `ide` | IDE integration | MEDIUM |
+| `effect` | Effects system | LOW |
+| `patch` | Patching | LOW |
+| `share` | Sharing | LOW |
+| `snapshot` | Snapshots | LOW |
+| `v2` | API v2 | LOW |
+| `worktree` | Git worktree | LOW |
+
+### Implementation Order
+
+1. `bus` → foundational for events
+2. `storage` → persistence
+3. `command` → CLI framework
+4. `pty` → shell integration
+5. `lsp` → IDE features
+6. `git` → version control
+7. `sync` → session sync
+8. `project` → project mgmt
+9. `permission` → access control
+10. `ide` → IDE integration
+
+### Reference Documents
+
+- See TASKLIST-PHASE2.md for detailed implementation tasks
+- See CHAIN-TODO.md for ordered implementation sequence
+
+---
+
 **Author:** Mark LaPointe <mark@cloudbsd.org>
-**Last Updated:** 2026-05-02 (Added skills section)
+**Last Updated:** 2026-05-02 (Phase 2: Module parity plan added)
 
 ---
 
