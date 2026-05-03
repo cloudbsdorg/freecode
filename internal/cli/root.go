@@ -58,4 +58,8 @@ func init() {
 	rootCmd.AddCommand(upgradeCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(accountCmd)
+	rootCmd.AddCommand(webCmd)
+	rootCmd.AddCommand(cmdCmd)
+	rootCmd.AddCommand(plugCmd)
+	rootCmd.AddCommand(generateCmd)
 }
