@@ -19,28 +19,28 @@ This document tracks implementation of 12 remaining modules to achieve full Open
 
 | # | Module | Description | OpenCode Path | Status |
 |---|--------|-------------|---------------|--------|
-| 1 | `internal/account` | Account management | `packages/opencode/src/account/` | ❌ Missing |
-| 2 | `internal/acp` | Access control policy | `packages/opencode/src/acp/` | ❌ Missing |
-| 3 | `internal/control-plane` | Fleet control plane | `packages/opencode/src/control-plane/` | ❌ Missing |
-| 4 | `internal/file` | File operations/watcher | `packages/opencode/src/file/` | ❌ Missing |
-| 5 | `internal/plugin` | Plugin system | `packages/opencode/src/plugin/` | ❌ Missing |
-| 6 | `internal/skill` | Skill system | `packages/opencode/src/skill/` | ⚠️ Partial |
+| 1 | `internal/account` | Account management | `packages/opencode/src/account/` | ✅ Done |
+| 2 | `internal/acp` | Access control policy | `packages/opencode/src/acp/` | ✅ Done |
+| 3 | `internal/control-plane` | Fleet control plane | `packages/opencode/src/control-plane/` | ✅ Done |
+| 4 | `internal/file` | File operations/watcher | `packages/opencode/src/file/` | ✅ Done |
+| 5 | `internal/plugin` | Plugin system | `packages/opencode/src/plugin/` | ✅ Done |
+| 6 | `internal/skill` | Skill system | `packages/opencode/src/skill/` | ✅ Done |
 
 ### Medium Priority
 
 | # | Module | Description | OpenCode Path | Status |
 |---|--------|-------------|---------------|--------|
-| 7 | `internal/env` | Environment variables | `packages/opencode/src/env/` | ❌ Missing |
-| 8 | `internal/format` | Code formatting | `packages/opencode/src/format/` | ❌ Missing |
-| 9 | `internal/question` | Question/answer flow | `packages/opencode/src/question/` | ❌ Missing |
-| 10 | `internal/util` | Utilities | `packages/opencode/src/util/` | ❌ Missing |
+| 7 | `internal/env` | Environment variables | `packages/opencode/src/env/` | ✅ Done |
+| 8 | `internal/format` | Code formatting | `packages/opencode/src/format/` | ✅ Done |
+| 9 | `internal/question` | Question/answer flow | `packages/opencode/src/question/` | ✅ Done |
+| 10 | `internal/util` | Utilities | `packages/opencode/src/util/` | ✅ Done |
 
 ### Low Priority
 
 | # | Module | Description | OpenCode Path | Status |
 |---|--------|-------------|---------------|--------|
-| 11 | `internal/id` | ID generation | `packages/opencode/src/id/` | ❌ Missing |
-| 12 | `internal/installation` | Installation detection | `packages/opencode/src/installation/` | ❌ Missing |
+| 11 | `internal/id` | ID generation | `packages/opencode/src/id/` | ✅ Done |
+| 12 | `internal/installation` | Installation detection | `packages/opencode/src/installation/` | ✅ Done |
 
 ---
 
