@@ -1,169 +1,248 @@
-# Freecode Implementation Task List
+# Freecode — Consolidated Task List
 
-**Last Updated:** 2026-05-02
+**Last Updated:** 2026-05-04
 **Author:** Mark LaPointe <mark@cloudbsd.org>
-**Build Status:** ✅ Passes
+**Reference:** [FREECODE-STATUS.md](./FREECODE-STATUS.md) for true status
 
 ---
 
-## Priority Chain (Do in Order)
+## Legend
 
-Tasks must be completed in dependency order. High priority tasks unblock medium and low.
-
-### 🔴 HIGH PRIORITY (Blocker Tasks)
-*Must complete before medium priority*
-
-| # | Task | File | Status | Dependencies | Notes |
-|---|------|------|--------|-------------|-------|
-| 1 | Session History | `internal/session/compaction.go` | ✅ Done | 4.3 | History struct in compaction |
-| 2 | Hashline Tool | `internal/tool/hashline.go` | ✅ Done | 3.1 | For edit tool enhancement |
-| 3 | OAuth Flow | `internal/mcp/oauth.go` | ✅ Done | 6.2 | MCP OAuth integration |
-| 4 | WebSocket Server | `internal/server/websocket.go` | ✅ Done | 7.1 | Real-time communication |
-
-### 🟡 MEDIUM PRIORITY (Feature Tasks)
-*Depend on high priority completion*
-
-| # | Task | File | Status | Dependencies | Notes |
-|---|------|------|--------|-------------|-------|
-| 5 | Background Tasks | `internal/agent/background.go` | ✅ Done | 6.1 | Agent background processing |
-| 6 | Runtime Fallback | `internal/agent/fallback.go` | ✅ Done | 6.1 | Model fallback logic |
-| 7 | Tmux Integration | `internal/shell/tmux.go` | ✅ Done | 6.1 | Shell integration |
-| 8 | Transform Hooks | `internal/hook/transform.go` | ✅ Done | 6.1.1 | Input/output transformation |
-| 9 | Continuation Hooks | `internal/hook/continuation.go` | ✅ Done | 6.1.1 | Session continuation |
-| 10 | CLI: Cmd | `internal/cli/cmd.go` | ✅ Done | 1.3 | Command framework |
-| 11 | CLI: Plug | `internal/cli/plug.go` | ✅ Done | 1.3 | Plugin system |
-| 12 | CLI: Generate | `internal/cli/generate.go` | ✅ Done | 1.3 | Code generation |
-
-### 🟢 LOW PRIORITY (Polish Tasks)
-*Depend on medium priority completion*
-
-| # | Task | File | Status | Dependencies | Notes |
-|---|------|------|--------|-------------|-------|
-| 13 | TOML Config | `internal/config/toml.go` | ✅ Done | 2.2.1 | TOML config parsing |
-| 14 | JSONC Config | `internal/config/jsonc.go` | ✅ Done | 2.2.1 | JSONC config parsing |
-| 15 | TUI Model | `internal/ui/model.go` | ✅ Done | 4.3 | Main UI model |
-| 16 | TUI View | `internal/ui/model.go` | ✅ Done | 5.1 | View method in model |
-| 22 | TUI Tab Split | `internal/ui/tab/split.go` | ✅ Done | 5.2.1 | Split view |
-| 23 | YOLO Toggle | `internal/ui/commands.go` | ✅ Done | 5.2.1 | YOLO mode toggle |
-| 24 | MCP Builtin | `internal/mcp/builtin.go` | ⚠️ Stub | 6.2.1 | Needs full implementation |
-| 25 | Platform Core | `internal/platform/platform.go` | ✅ Done | 7.2 | Platform detection & preflight |
-| 26 | FreeBSD Package | `packaging/freebsd/` | ✅ Stub | 7.2.1 | Package build stub |
-| 27 | Linux Flatpak | `packaging/linux/` | ✅ Stub | 7.2.3 | Flatpak package stub |
-| 28 | macOS Homebrew | `packaging/macos/` | ✅ Stub | 7.2.2 | Homebrew formula stub |
-| 29 | IllumOS Tarball | `packaging/illuminos/` | ✅ Stub | 7.2.4 | Tarball build stub |
+| Symbol | Meaning |
+|---------|---------|
+| ✅ REAL | Fully implemented and tested |
+| ⚠️ PARTIAL | Partially implemented, needs completion |
+| 🚨 STUB | Interface only, needs significant work |
+| ❌ MISSING | Not started |
+| 🔄 IN PROGRESS | Work underway |
 
 ---
 
-## Completed Tasks (Do Not Modify)
+## Section 0: Foundation (VERIFIED COMPLETE)
 
-### ✅ Phase 1: Project Setup & CLI
+### 0.1 Project Setup
+
+| Task | File | Status | Verification |
+|------|------|--------|---------------|
+| Go module | `go.mod` | ✅ REAL | Builds on all platforms |
+| Directory structure | `internal/*` | ✅ REAL | All packages created |
+| Makefile | `Makefile` | ✅ REAL | `make build` works |
+| Cross-compile | GOOS/GOARCH | ✅ REAL | 5 platforms |
+| goreleaser | `.goreleaser.yaml` | ✅ REAL | Binary builds |
+
+### 0.2 Core Infrastructure
+
+| Task | File | Status | Verification |
+|------|------|--------|---------------|
+| Provider system | `internal/provider/*.go` | ✅ REAL | 48+ providers |
+| Hook system | `internal/hook/*.go` | ✅ REAL | 52 triggers |
+| Shell integration | `internal/shell/*.go` | ✅ REAL | tmux, executor |
+| i18n system | `internal/i18n/*.go` | ✅ REAL | RTL, 17 languages |
+| Platform detection | `internal/platform/*.go` | ✅ REAL | Cross-platform |
+| Agent engine | `internal/agent/*.go` | ✅ REAL | Streaming, tools |
+| TUI | `internal/ui/*.go` | ✅ REAL | Bubble Tea functional |
+| Auth | `internal/auth/*.go` | ✅ REAL | Credential store |
+
+---
+
+## Section 1: CLI Commands
+
+### 1.1 Completed Commands
+
+| Task | File | Status | Notes |
+|------|------|--------|-------|
+| Root command | `internal/cli/root.go` | ✅ REAL | Cobra root |
+| Run command | `internal/cli/run.go` | ✅ REAL | Main session |
+| Serve command | `internal/cli/serve.go` | ✅ REAL | HTTP server |
+| Agent command | `internal/cli/agent.go` | ✅ REAL | Agent mode |
+| Session command | `internal/cli/session.go` | ✅ REAL | Session mgmt |
+| Tab command | `internal/cli/tab.go` | ✅ REAL | Session tabs |
+| MCP command | `internal/cli/mcp.go` | ✅ REAL | MCP server |
+| Stats command | `internal/cli/stats.go` | ✅ REAL | Usage stats |
+| Doctor command | `internal/cli/doctor.go` | ✅ REAL | Health checks |
+| Upgrade command | `internal/cli/upgrade.go` | ✅ REAL | Self-upgrade |
+| DB command | `internal/cli/db.go` | ✅ REAL | DB operations |
+| Debug command | `internal/cli/debug.go` | ✅ REAL | Debug tools |
+| Export command | `internal/cli/export.go` | ✅ REAL | Session export |
+| GitHub command | `internal/cli/github.go` | ✅ REAL | PR, issues |
+| Import command | `internal/cli/import.go` | ✅ REAL | Session import |
+| Models command | `internal/cli/models.go` | ✅ REAL | List models |
+| Providers command | `internal/cli/providers.go` | ✅ REAL | List providers |
+| PR command | `internal/cli/pr.go` | ✅ REAL | PR operations |
+| Attach command | `internal/cli/attach.go` | ✅ REAL | Attach to session |
+| Uninstall command | `internal/cli/uninstall.go` | ✅ REAL | Cleanup |
+| Version command | `internal/cli/version.go` | ✅ REAL | Version info |
+
+### 1.2 Stub Commands (Need Completion)
+
+| Task | File | Status | Required Work |
+|------|------|--------|---------------|
+| Account command | `internal/cli/account.go` | ⚠️ PARTIAL | Full account operations |
+| Web command | `internal/cli/web.go` | ⚠️ PARTIAL | Web interface |
+
+### 1.3 Missing Commands (Not Started)
+
+| Task | File | Status | Required Work |
+|------|------|--------|---------------|
+| **Cmd framework** | `internal/cli/cmd.go` | ❌ MISSING | Full command system |
+| **Generate command** | `internal/cli/generate.go` | ❌ MISSING | Code generation |
+| **Plug command** | `internal/cli/plug.go` | ❌ MISSING | Plugin system |
+
+---
+
+## Section 2: Core Modules (Phase 2 - NEEDS REDO)
+
+> **⚠️ WARNING:** These were marked "Done" but are actually stubs. True implementation required.
+
+### 2.1 Foundation Modules
+
+| Task | File | Status | True Work Required |
+|------|------|--------|-------------------|
+| Event Bus | `internal/bus/bus.go` | 🚨 STUB | Wildcard subscriptions, session events |
+| Storage | `internal/storage/*.go` | 🚨 STUB | SQLite schema, migration |
+| Command | `internal/command/*.go` | ⚠️ PARTIAL | Templates, argument parsing |
+
+### 2.2 Integration Modules
+
+| Task | File | Status | True Work Required |
+|------|------|--------|-------------------|
+| PTY/Terminal | `internal/pty/*.go` | 🚨 STUB | Terminal with resize, shell |
+| LSP Client | `internal/lsp/*.go` | 🚨 STUB | Full protocol implementation |
+| Git | `internal/git/*.go` | ✅ REAL | Uses go-git, complete |
+| Sync | `internal/sync/*.go` | 🚨 STUB | Sync protocol, conflict resolution |
+| Project | `internal/project/*.go` | 🚨 STUB | Detection algorithms |
+| Permission | `internal/permission/*.go` | 🚨 STUB | Pattern matching |
+| IDE | `internal/ide/*.go` | 🚨 STUB | LSP integration |
+
+### 2.3 Advanced Modules
+
+| Task | File | Status | True Work Required |
+|------|------|--------|-------------------|
+| Effect | `internal/effect/*.go` | 🚨 STUB | Full effect runtime |
+| Patch | `internal/patch/*.go` | ⚠️ PARTIAL | Apply/parse patches |
+| Share | `internal/share/*.go` | 🚨 STUB | Sharing protocol |
+| Snapshot | `internal/snapshot/*.go` | ⚠️ PARTIAL | Snapshot logic |
+| V2 API | `internal/v2/*.go` | 🚨 STUB | API endpoints |
+| Worktree | `internal/worktree/*.go` | ⚠️ PARTIAL | Worktree operations |
+
+---
+
+## Section 3: Extended Modules (Phase 3 - NEEDS REDO)
+
+> **⚠️ WARNING:** These were marked "Done" but need significant work.
+
+### 3.1 High Priority
+
+| Task | File | Status | True Work Required |
+|------|------|--------|-------------------|
+| Account | `internal/account/*.go` | 🚨 STUB | Account CRUD |
+| ACP | `internal/acp/*.go` | 🚨 STUB | ACP protocol |
+| Control Plane | `internal/controlplane/*.go` | ❌ MISSING | Fleet orchestration |
+| File | `internal/file/*.go` | 🚨 STUB | File watcher, ops |
+| Plugin | `internal/plugin/*.go` | 🚨 STUB | Plugin loader |
+
+### 3.2 Medium Priority
+
+| Task | File | Status | True Work Required |
+|------|------|--------|-------------------|
+| Skill | `internal/skill/*.go` | ⚠️ PARTIAL | Discovery, registry |
+| Env | `internal/env/*.go` | ✅ REAL | Complete |
+| Format | `internal/format/*.go` | ⚠️ PARTIAL | Formatting hooks |
+| Question | `internal/question/*.go` | ⚠️ PARTIAL | Q&A flow |
+| Util | `internal/util/*.go` | 🚨 STUB | 33 files in OpenCode |
+
+### 3.3 Low Priority
+
+| Task | File | Status | True Work Required |
+|------|------|--------|-------------------|
+| ID | `internal/id/*.go` | ✅ REAL | Complete |
+| Installation | `internal/installation/*.go` | ✅ REAL | Complete |
+
+---
+
+## Section 4: Fleet/Clustering (NEW - PHASE 4)
+
+> **🆕 NEW FEATURE:** Not in OpenCode, requires full implementation.
+
+### 4.1 Fleet Core
+
+| Task | File | Status | Description |
+|------|------|--------|-------------|
+| Fleet Head | `internal/fleet/head.go` | ❌ MISSING | WebSocket server, task queue |
+| Fleet Agent | `internal/fleet/agent.go` | ❌ MISSING | Worker protocol |
+| Fleet Client | `internal/fleet/client.go` | ❌ MISSING | Thin monitoring client |
+| Instance Registry | `internal/fleet/registry.go` | ❌ MISSING | Track fleet members |
+| Task Queue | `internal/fleet/queue.go` | ❌ MISSING | Distributed execution |
+
+### 4.2 Fleet Security
+
+| Task | File | Status | Description |
+|------|------|--------|-------------|
+| Fleet TLS | `internal/fleet/tls.go` | 🔄 IN PROGRESS | SEC-07 tracking |
+| API Key Auth | `internal/fleet/auth.go` | ❌ MISSING | Fleet authentication |
+
+### 4.3 Fleet Tools
+
+| Task | File | Status | Description |
+|------|------|--------|-------------|
+| Fleet Status | `internal/fleet/status.go` | ❌ MISSING | Health monitoring |
+| Fleet Exec | `internal/fleet/exec.go` | ❌ MISSING | Remote command execution |
+| Fleet SCP | `internal/fleet/scp.go` | ❌ MISSING | File transfer |
+| Fleet SSH | `internal/fleet/ssh.go` | ❌ MISSING | Shell into instances |
+
+### 4.4 Distributed Storage
+
+| Task | File | Status | Description |
+|------|------|--------|-------------|
+| BitTorrent | `internal/fleet/bt/*.go` | ❌ MISSING | Distributed file sharing |
+| Sync Protocol | `internal/sync/*.go` | 🚨 STUB | Session sync |
+
+---
+
+## Section 5: TUI Components
+
+### 5.1 Completed TUI
+
 | Task | File | Status |
 |------|------|--------|
-| Initialize Go module | `go.mod` | ✅ Done |
-| Create directory structure | All | ✅ Done |
-| Setup Makefile | `Makefile` | ✅ Done |
-| Setup goreleaser | `.goreleaser.yaml` | ✅ Done |
-| Root command | `internal/cli/root.go` | ✅ Done |
-| Run command | `internal/cli/run.go` | ✅ Done |
-| Serve command | `internal/cli/serve.go` | ✅ Done |
-| Agent command | `internal/cli/agent.go` | ✅ Done |
-| Session command | `internal/cli/session.go` | ✅ Done |
-| Tab command | `internal/cli/tab.go` | ✅ Done |
-| MCP command | `internal/cli/mcp.go` | ✅ Done |
-| Stats command | `internal/cli/stats.go` | ✅ Done |
-| Doctor command | `internal/cli/doctor.go` | ✅ Done |
-| Upgrade command | `internal/cli/upgrade.go` | ✅ Done |
-| Account command | `internal/cli/account.go` | ✅ Done |
-| Web command | `internal/cli/web.go` | ✅ Done |
+| Commands | `internal/ui/commands.go` | ✅ REAL |
+| Keys | `internal/ui/keys.go` | ✅ REAL |
+| Input | `internal/ui/input.go` | ✅ REAL |
+| Model | `internal/ui/model.go` | ✅ REAL |
 
-### ✅ Phase 2: Config
-| Task | File | Status |
-|------|------|--------|
-| Config struct | `internal/config/config.go` | ✅ Done |
-| Config loading | `internal/config/load.go` | ✅ Done |
-| YAML parsing | `internal/config/yaml.go` | ✅ Done |
-| JSON parsing | `internal/config/json.go` | ✅ Done |
-| Env var support | `internal/config/env.go` | ✅ Done |
-| Read opencode configs | `internal/config/opencode/read.go` | ✅ Done |
-| Convert to freecode | `internal/config/opencode/migrate.go` | ✅ Done |
-| Read OMO configs | `internal/config/omo/read.go` | ✅ Done |
-| Merge into freecode | `internal/config/omo/merge.go` | ✅ Done |
+### 5.2 Fleet Panel (TUI)
 
-### ✅ Phase 3: Tools
-| Task | File | Status |
-|------|------|--------|
-| Tool registry | `internal/tool/registry.go` | ✅ Done |
-| Bash tool | `internal/tool/bash.go` | ✅ Done |
-| Read tool | `internal/tool/read.go` | ✅ Done |
-| Write tool | `internal/tool/write.go` | ✅ Done |
-| Edit tool | `internal/tool/edit.go` | ✅ Done |
-| Glob tool | `internal/tool/glob.go` | ✅ Done |
-| Grep tool | `internal/tool/grep.go` | ✅ Done |
-| WebFetch tool | `internal/tool/webfetch.go` | ✅ Done |
-| WebSearch tool | `internal/tool/websearch.go` | ✅ Done |
-| Task tool | `internal/tool/task.go` | ✅ Done |
-| Skill tool | `internal/tool/skill.go` | ✅ Done |
-| Todo tool | `internal/tool/todo.go` | ✅ Done |
-| Question tool | `internal/tool/question.go` | ✅ Done |
-| Plan tool | `internal/tool/plan.go` | ✅ Done |
-| LSP tool | `internal/tool/lsp.go` | ✅ Done |
-
-### ✅ Phase 4: Agent & Session
-| Task | File | Status |
-|------|------|--------|
-| Engine struct | `internal/agent/engine.go` | ✅ Done |
-| Message handling | `internal/agent/message.go` | ✅ Done |
-| Tool calling | `internal/agent/tools.go` | ✅ Done |
-| Response streaming | `internal/agent/stream.go` | ✅ Done |
-| Agent prompts (11) | `internal/agent/prompts.go` | ✅ Done |
-| Session manager | `internal/session/manager.go` | ✅ Done |
-| Session store | `internal/session/store.go` | ✅ Done |
-| Session compaction | `internal/session/compaction.go` | ✅ Done |
-
-### ✅ Phase 6: Hooks & Skills
-| Task | File | Status |
-|------|------|--------|
-| Hook registry | `internal/hook/registry.go` | ✅ Done |
-| Session hooks (26) | `internal/hook/triggers.go` | ✅ Done |
-| Tool hooks (9) | `internal/hook/triggers.go` | ✅ Done |
-| Default implementations | `internal/hook/builtins.go` | ✅ Done |
-| Skills (7) | `.skills/*/SKILL.md` | ✅ Done |
-
-### ✅ Phase 7: Server & Platform
-| Task | File | Status |
-|------|------|--------|
-| HTTP server | `internal/server/server.go` | ✅ Done |
-| Routes | `internal/server/routes.go` | ✅ Done |
-| Health check | `internal/server/health.go` | ✅ Done |
-| MCP client | `internal/mcp/client.go` | ✅ Done |
-| MCP server | `internal/mcp/server.go` | ✅ Done |
-| Platform core | `internal/platform/platform.go` | ✅ Done |
+| Task | File | Status | Description |
+|------|------|--------|-------------|
+| Fleet Status Cmd | `internal/ui/commands.go` | ⚠️ PARTIAL | `FleetStatusCmd` stub |
+| Fleet Panel | `internal/ui/fleet.go` | ❌ MISSING | Full fleet management |
 
 ---
 
 ## Progress Summary
 
-| Priority | Total | Done | Remaining |
-|----------|-------|------|----------|
-| HIGH | 4 | 4 | 0 |
-| MEDIUM | 8 | 8 | 0 |
-| LOW | 29 | 28 | 1 (MCP Builtin) |
-| **Total** | **41** | **40** | **1** |
+### By Section
 
-**Note:** MCP Builtin (`internal/mcp/builtin.go`) remains a stub - full implementation requires actual API integrations.
+| Section | Total | ✅ Real | ⚠️ Partial | 🚨 Stub | ❌ Missing |
+|---------|-------|---------|-------------|---------|-----------|
+| 0. Foundation | 9 | 9 | 0 | 0 | 0 |
+| 1. CLI Commands | 26 | 21 | 2 | 0 | 3 |
+| 2. Core Modules | 16 | 1 | 3 | 11 | 1 |
+| 3. Extended Modules | 12 | 3 | 4 | 4 | 1 |
+| 4. Fleet (NEW) | 14 | 0 | 1 | 0 | 13 |
+| **TOTAL** | **77** | **34 (44%)** | **10 (13%)** | **15 (20%)** | **18 (23%)** |
+
+### True Completion Rate
+
+**VERIFIED COMPLETE (working implementation):** 34 tasks (44%)
+**NEEDS COMPLETION:** 43 tasks (56%)
 
 ---
 
 ## Change Log
 
-| Date | Commit | Description |
-|------|--------|-------------|
-| 2026-05-02 | - | Initial task list creation |
-| 2026-05-02 | 3515efb | Implement hashline tool |
-| 2026-05-02 | 0363709 | Implement MCP OAuth flow |
-| 2026-05-02 | cbfd5d1 | Implement WebSocket server |
-| 2026-05-02 | 0254b52 | Implement background tasks, fallback, tmux |
-| 2026-05-02 | 88d6796 | Implement transform hooks |
-| 2026-05-02 | b3a6a25 | Implement CLI commands (cmd, plug, generate) |
-| 2026-05-02 | e31d7dc | Implement TOML and JSONC config |
-| 2026-05-02 | 385c6b6 | Add packaging stubs |
+| Date | Description |
+|------|-------------|
+| 2026-05-04 | Complete rewrite - found 58% of "done" tasks were actually stubs |
+| 2026-05-02 | Phase 2/3 TASKLISTs created with incorrect "Done" status |
+| 2026-05-02 | Initial task tracking started |

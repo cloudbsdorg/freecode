@@ -1,9 +1,13 @@
 # Freecode Implementation Task List - Phase 2
 
+**⚠️ DEPRECATED:** See [TASKLIST.md](./TASKLIST.md) and [FREECODE-STATUS.md](./FREECODE-STATUS.md) for accurate status.
+
 **Last Updated:** 2026-05-02
 **Author:** Mark LaPointe <mark@cloudbsd.org>
 **Build Status:** ✅ Passes
 **Phase:** 2 - OpenCode Parity Gap
+
+> **⚠️ DEPRECATED (2026-05-04):** This document incorrectly marked modules as "Done" when they are actually stubs. The true status is documented in FREECODE-STATUS.md. Phase 2 has ~1 truly complete module out of 16.
 
 ---
 
@@ -182,12 +186,14 @@ Effect, patch, share, snapshot, v2, worktree implementations.
 
 ## Progress Summary
 
-| Priority | Total | Done | Remaining |
-|----------|-------|------|-----------|
-| HIGH | 5 | 0 | 5 |
-| MEDIUM | 5 | 0 | 5 |
-| LOW | 6 | 0 | 6 |
-| **Total** | **16** | **0** | **16** |
+| Priority | Total | Truly Complete | Remaining |
+|----------|-------|-----------------|----------|
+| HIGH | 5 | 0 | 5 (all stubs) |
+| MEDIUM | 5 | 1 (git) | 4 |
+| LOW | 6 | 0 | 6 (all stubs) |
+| **Total** | **16** | **1** | **15** |
+
+> True completion: ~6%
 
 ---
 

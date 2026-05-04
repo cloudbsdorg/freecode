@@ -178,13 +178,15 @@ worktree ──────────────────────┘  
 
 ## Progress
 
-| Phase | Tasks | Completed |
-|-------|-------|-----------|
-| A - Foundation | 2 | 0 |
-| B - Core | 3 | 0 |
-| C - Integration | 5 | 0 |
-| D - Advanced | 6 | 0 |
-| **Total** | **16** | **0** |
+| Phase | Tasks | Truly Complete | Notes |
+|-------|-------|---------------|-------|
+| A - Foundation | 2 | 0 | bus (stub), storage (stub) |
+| B - Core | 3 | 0 | command (partial), pty (stub), lsp (stub) |
+| C - Integration | 5 | 1 | git (real), sync (stub), project (stub), permission (stub), ide (stub) |
+| D - Advanced | 6 | 0 | All stubs |
+| **Total** | **16** | **1** | ~6% true completion |
+
+> ⚠️ **NOTE (2026-05-04):** See [FREECODE-STATUS.md](./FREECODE-STATUS.md) for true status audit. Phase 2/3 task lists incorrectly marked modules as "Done" when they are stubs.
 
 ---
 

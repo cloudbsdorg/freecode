@@ -1,5 +1,7 @@
 # Freecode Implementation Task List - Phase 3
 
+**⚠️ DEPRECATED:** See [TASKLIST.md](./TASKLIST.md) and [FREECODE-STATUS.md](./FREECODE-STATUS.md) for accurate status.
+
 **Last Updated:** 2026-05-02
 **Author:** Mark LaPointe <mark@cloudbsd.org>
 **Build Status:** ✅ Passes
@@ -9,7 +11,9 @@
 
 ## Overview
 
-This document tracks implementation of 12 remaining modules to achieve full OpenCode parity. Phase 2 (16 modules) is complete. Phase 3 focuses on the remaining modules discovered during gap analysis.
+> **⚠️ DEPRECATED (2026-05-04):** Phase 2 is NOT complete - the modules are stubs. This document also incorrectly marked modules as "Done" when they are actually stubs or missing. True status is documented in FREECODE-STATUS.md.
+
+This document tracks implementation of 12 remaining modules to achieve full OpenCode parity. Phase 2 (16 modules) claimed complete but is actually ~6% complete. Phase 3 focuses on the remaining modules discovered during gap analysis.
 
 ---
 
@@ -46,12 +50,14 @@ This document tracks implementation of 12 remaining modules to achieve full Open
 
 ## Progress Summary
 
-| Priority | Total | Done | Remaining |
-|----------|-------|------|----------|
-| HIGH | 6 | 0 | 6 |
-| MEDIUM | 4 | 0 | 4 |
-| LOW | 2 | 0 | 2 |
-| **Total** | **12** | **0** | **12** |
+| Priority | Total | Truly Complete | Remaining |
+|----------|-------|-----------------|----------|
+| HIGH | 6 | 0 | 6 (all stubs/missing) |
+| MEDIUM | 4 | 1 (env) | 3 |
+| LOW | 2 | 2 (id, installation) | 0 |
+| **Total** | **12** | **3** | **9** |
+
+> True completion: 25%
 
 ---
 
