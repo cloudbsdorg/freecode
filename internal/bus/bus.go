@@ -19,10 +19,11 @@ type Payload struct {
 type EventHandler func(payload Payload)
 
 type State struct {
-	mu      sync.RWMutex
-	wildcard []GlobalHandler
-	typed    map[string][]Handler
-	closed   bool
+	mu        sync.RWMutex
+	wildcard  []GlobalHandler
+	typed     map[string][]Handler
+	closed    bool
+	nextID    int32
 }
 
 type Handler struct {
@@ -36,39 +37,41 @@ type GlobalHandler struct {
 	callback func(GlobalEvent)
 }
 
-var globalHandlerID int32
-var handlerID int32
-
 type GlobalEvent struct {
 	Directory string
 	Project   string
 	Workspace string
-	Payload   any
+	Payload   Payload
 }
 
 var (
-	defaultState *State
-	once        sync.Once
+	globalState     *State
+	globalStateOnce sync.Once
+	handlerID       int32
+	globalHandlerID int32
 )
 
 func getState() *State {
-	once.Do(func() {
-		defaultState = &State{
+	globalStateOnce.Do(func() {
+		globalState = &State{
 			typed: make(map[string][]Handler),
 		}
 	})
-	if defaultState.closed {
-		defaultState.mu.Lock()
-		defaultState.closed = false
-		defaultState.typed = make(map[string][]Handler)
-		defaultState.wildcard = nil
-		defaultState.mu.Unlock()
+	if globalState.closed {
+		globalState.mu.Lock()
+		globalState.closed = false
+		globalState.typed = make(map[string][]Handler)
+		globalState.wildcard = nil
+		globalState.mu.Unlock()
 	}
-	return defaultState
+	return globalState
 }
 
 func Publish(ctx context.Context, def Definition, properties any) error {
-	s := getState()
+	return publishTo(getState(), def, properties)
+}
+
+func publishTo(s *State, def Definition, properties any) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -90,44 +93,62 @@ func Publish(ctx context.Context, def Definition, properties any) error {
 }
 
 func Subscribe(def Definition, callback EventHandler) func() {
-	s := getState()
+	return subscribeTo(getState(), def, callback)
+}
+
+func subscribeTo(s *State, def Definition, callback EventHandler) func() {
+	id := atomic.AddInt32(&handlerID, 1)
+
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	id := atomic.AddInt32(&handlerID, 1)
 	h := Handler{id: int(id), eventType: def.Type, callback: callback}
 	s.typed[def.Type] = append(s.typed[def.Type], h)
 
 	return func() {
-		s.mu.Lock()
-		defer s.mu.Unlock()
-		handlers := s.typed[def.Type]
-		for i, h := range handlers {
-			if h.id == int(id) {
-				s.typed[def.Type] = append(handlers[:i], handlers[i+1:]...)
-				return
-			}
+		unsubscribe(s, def.Type, int(id))
+	}
+}
+
+func unsubscribe(s *State, eventType string, id int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	handlers := s.typed[eventType]
+	for i, h := range handlers {
+		if h.id == id {
+			s.typed[eventType] = append(handlers[:i], handlers[i+1:]...)
+			return
 		}
 	}
 }
 
 func SubscribeAll(callback func(event GlobalEvent)) func() {
-	s := getState()
+	return subscribeAllTo(getState(), callback)
+}
+
+func subscribeAllTo(s *State, callback func(event GlobalEvent)) func() {
+	id := atomic.AddInt32(&globalHandlerID, 1)
+
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	id := atomic.AddInt32(&globalHandlerID, 1)
 	handler := GlobalHandler{id: int(id), callback: callback}
 	s.wildcard = append(s.wildcard, handler)
 
 	return func() {
-		s.mu.Lock()
-		defer s.mu.Unlock()
-		for i, h := range s.wildcard {
-			if h.id == int(id) {
-				s.wildcard = append(s.wildcard[:i], s.wildcard[i+1:]...)
-				return
-			}
+		unsubscribeAll(s, int(id))
+	}
+}
+
+func unsubscribeAll(s *State, id int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for i, h := range s.wildcard {
+		if h.id == id {
+			s.wildcard = append(s.wildcard[:i], s.wildcard[i+1:]...)
+			return
 		}
 	}
 }
@@ -141,6 +162,15 @@ func Close() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.closed = true
+	s.typed = make(map[string][]Handler)
+	s.wildcard = nil
+}
+
+func Reset() {
+	s := getState()
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.closed = false
 	s.typed = make(map[string][]Handler)
 	s.wildcard = nil
 }
