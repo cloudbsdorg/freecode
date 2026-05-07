@@ -28,7 +28,7 @@ func (a *SisyphusAgent) Run(ctx context.Context, req Request) (*Response, error)
 			Role:    "assistant",
 			Content: fmt.Sprintf("[Using Sisyphus agent with system prompt]\n\nUser request: %s", req.Message.Content),
 		},
-		AgentName: cfg.Name,
+		AgentName:    cfg.Name,
 		SystemPrompt: cfg.SystemPrompt,
 	}, nil
 }
@@ -56,7 +56,7 @@ func (a *HephaestusAgent) Run(ctx context.Context, req Request) (*Response, erro
 			Role:    "assistant",
 			Content: fmt.Sprintf("[Using Hephaestus agent - code generation specialist]\n\nUser request: %s", req.Message.Content),
 		},
-		AgentName:   cfg.Name,
+		AgentName:    cfg.Name,
 		SystemPrompt: cfg.SystemPrompt,
 	}, nil
 }

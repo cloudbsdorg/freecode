@@ -98,8 +98,8 @@ func TestGetProviderDisplayName(t *testing.T) {
 
 func TestGetProviderModel(t *testing.T) {
 	tests := []struct {
-		id     string
-		model  string
+		id    string
+		model string
 	}{
 		{"openai", "gpt-4o"},
 		{"anthropic", "claude-sonnet-4-5"},

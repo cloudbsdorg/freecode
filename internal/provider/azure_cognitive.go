@@ -10,9 +10,9 @@ import (
 )
 
 type AzureCognitiveProvider struct {
-	APIKey    string
-	BaseURL   string
-	Client    *http.Client
+	APIKey  string
+	BaseURL string
+	Client  *http.Client
 }
 
 func NewAzureCognitiveProvider(apiKey, baseURL string) *AzureCognitiveProvider {

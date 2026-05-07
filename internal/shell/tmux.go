@@ -125,9 +125,9 @@ func (m *TmuxManager) ListSessions() ([]*TmuxSession, error) {
 		fmt.Sscanf(parts[1], "%d", &windows)
 
 		sessions = append(sessions, &TmuxSession{
-			Name:      sessionName,
-			Windows:   windows,
-			Attached:  parts[2] == "1",
+			Name:     sessionName,
+			Windows:  windows,
+			Attached: parts[2] == "1",
 		})
 	}
 

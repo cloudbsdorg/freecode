@@ -67,7 +67,7 @@ func (t *WebSearchTool) Execute(ctx context.Context, req Request) (*Response, er
 	}
 
 	body, _ := json.Marshal(map[string]interface{}{
-		"query":    query,
+		"query":      query,
 		"numResults": numResults,
 	})
 	httpReq.Body = io.NopCloser(bytes.NewReader(body))

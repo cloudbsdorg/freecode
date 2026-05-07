@@ -19,8 +19,8 @@ type Option struct {
 
 type Answer struct {
 	QuestionID string
-	OptionID  string
-	Value     string
+	OptionID   string
+	Value      string
 }
 
 type Flow interface {

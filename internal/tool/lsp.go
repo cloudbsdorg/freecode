@@ -36,7 +36,7 @@ func (t *LSPTool) Schema() ToolSchema {
 				Type:        "string",
 				Description: "Action: hover, definition, references, completion, diagnostics, start",
 				Required:    true,
-				Enum:       []string{"hover", "definition", "references", "completion", "diagnostics", "start"},
+				Enum:        []string{"hover", "definition", "references", "completion", "diagnostics", "start"},
 			},
 			"file": {
 				Type:        "string",

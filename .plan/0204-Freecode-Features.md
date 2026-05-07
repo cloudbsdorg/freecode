@@ -1270,6 +1270,27 @@ type ExperimentalConfig struct {
 
 LSP provides language-aware features: autocomplete, goto definition, find references, rename, hover docs, diagnostics, and more. Freecode auto-detects and manages LSP servers per language.
 
+### 17.1.1 Implementation Status
+
+**✅ FULL IMPLEMENTATION COMPLETE**
+
+| Aspect | Status | Notes |
+|--------|--------|-------|
+| File | `internal/lsp/lsp.go` | ~560 lines |
+| Build | ✅ PASS | Fixed 2026-05-06 |
+| Types | ✅ Done | LSP types defined |
+| Client Connect | ✅ Done | Process spawn, jsonrpc2 connection |
+| Initialize | ✅ Done | Capabilities handshake |
+| Notifications | ✅ Done | DidOpen/DidChange |
+| Requests | ✅ Done | Hover/Definition/References/Completion |
+| **Bidirectional handlers** | ✅ Done | HandlerWithError with all handlers |
+| **Diagnostics** | ✅ Done | Store with 150ms debouncing |
+| **Server management** | ✅ Done | Auto-detect, lifecycle management |
+| **Tool integration** | ✅ Done | Full LSP tool with all operations |
+| **Language detection** | ✅ Done | `language.go` with 100+ extensions |
+
+**Reference:** `packages/opencode/src/lsp/client.ts` (697 lines)
+
 ### 17.2 Supported Languages
 
 | Language | LSP Server | Auto-install | Extension |

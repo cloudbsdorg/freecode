@@ -16,26 +16,26 @@ const (
 )
 
 type Provider struct {
-	ID     string             `json:"id"`
-	API    string             `json:"api,omitempty"`
-	Name   string             `json:"name"`
-	Env    []string           `json:"env"`
-	NPM    string             `json:"npm,omitempty"`
+	ID     string            `json:"id"`
+	API    string            `json:"api,omitempty"`
+	Name   string            `json:"name"`
+	Env    []string          `json:"env"`
+	NPM    string            `json:"npm,omitempty"`
 	Models map[string]*Model `json:"models"`
-	Doc    string             `json:"doc,omitempty"`
+	Doc    string            `json:"doc,omitempty"`
 }
 
 type Model struct {
-	ID          string       `json:"id"`
-	Name        string       `json:"name"`
-	Family      string       `json:"family,omitempty"`
-	Attachment  bool         `json:"attachment"`
-	Reasoning   bool         `json:"reasoning"`
-	ToolCall    bool         `json:"tool_call"`
-	Temperature bool         `json:"temperature"`
-	Modalities *Modalities `json:"modalities,omitempty"`
-	Cost       *Cost       `json:"cost,omitempty"`
-	Limit      *Limit      `json:"limit"`
+	ID          string      `json:"id"`
+	Name        string      `json:"name"`
+	Family      string      `json:"family,omitempty"`
+	Attachment  bool        `json:"attachment"`
+	Reasoning   bool        `json:"reasoning"`
+	ToolCall    bool        `json:"tool_call"`
+	Temperature bool        `json:"temperature"`
+	Modalities  *Modalities `json:"modalities,omitempty"`
+	Cost        *Cost       `json:"cost,omitempty"`
+	Limit       *Limit      `json:"limit"`
 	ReleaseDate string      `json:"release_date,omitempty"`
 	LastUpdated string      `json:"last_updated,omitempty"`
 }
@@ -102,18 +102,18 @@ func generateJSON(providers map[string]*Provider) (string, error) {
 		Name        string  `json:"name"`
 		Context     int     `json:"context"`
 		OutputLimit int     `json:"outputLimit"`
-		InputCost  float64 `json:"inputCost"`
-		OutputCost float64 `json:"outputCost"`
-		HasVision  bool    `json:"hasVision"`
-		HasAudio   bool    `json:"hasAudio"`
+		InputCost   float64 `json:"inputCost"`
+		OutputCost  float64 `json:"outputCost"`
+		HasVision   bool    `json:"hasVision"`
+		HasAudio    bool    `json:"hasAudio"`
 	}
 
 	result := struct {
 		Providers map[string]registryEntry         `json:"providers"`
-		Models   map[string]map[string]modelEntry `json:"models"`
+		Models    map[string]map[string]modelEntry `json:"models"`
 	}{
 		Providers: make(map[string]registryEntry),
-		Models:   make(map[string]map[string]modelEntry),
+		Models:    make(map[string]map[string]modelEntry),
 	}
 
 	for id, prov := range providers {
@@ -150,10 +150,10 @@ func generateJSON(providers map[string]*Provider) (string, error) {
 				Name:        m.Name,
 				Context:     contextLimit,
 				OutputLimit: outputLimit,
-				InputCost:  inputCost,
-				OutputCost: outputCost,
-				HasVision:  hasModality(m.Modalities, "image"),
-				HasAudio:   hasModality(m.Modalities, "audio"),
+				InputCost:   inputCost,
+				OutputCost:  outputCost,
+				HasVision:   hasModality(m.Modalities, "image"),
+				HasAudio:    hasModality(m.Modalities, "audio"),
 			}
 		}
 	}

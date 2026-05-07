@@ -28,7 +28,7 @@ func (t *TaskTool) Schema() ToolSchema {
 				Type:        "string",
 				Description: "Action: list, create, update, delete",
 				Required:    true,
-				Enum:       []string{"list", "create", "update", "delete"},
+				Enum:        []string{"list", "create", "update", "delete"},
 			},
 			"title": {
 				Type:        "string",
@@ -45,7 +45,7 @@ func (t *TaskTool) Schema() ToolSchema {
 			"status": {
 				Type:        "string",
 				Description: "Task status",
-				Enum:       []string{"pending", "in_progress", "completed", "blocked"},
+				Enum:        []string{"pending", "in_progress", "completed", "blocked"},
 			},
 		},
 	}

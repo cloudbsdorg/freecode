@@ -15,7 +15,7 @@ type RegistryLoader struct {
 }
 
 type Registry struct {
-	Providers map[string]ProviderInfo `json:"providers"`
+	Providers map[string]ProviderInfo         `json:"providers"`
 	Models    map[string]map[string]ModelInfo `json:"models"`
 }
 
@@ -31,10 +31,10 @@ type ModelInfo struct {
 	Name        string  `json:"name"`
 	Context     int     `json:"context"`
 	OutputLimit int     `json:"outputLimit"`
-	InputCost  float64 `json:"inputCost"`
-	OutputCost float64 `json:"outputCost"`
-	HasVision  bool    `json:"hasVision"`
-	HasAudio   bool    `json:"hasAudio"`
+	InputCost   float64 `json:"inputCost"`
+	OutputCost  float64 `json:"outputCost"`
+	HasVision   bool    `json:"hasVision"`
+	HasAudio    bool    `json:"hasAudio"`
 }
 
 var (

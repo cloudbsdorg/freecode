@@ -8,17 +8,17 @@ import (
 )
 
 type BackgroundTask struct {
-	ID        string
-	Name      string
-	Type      string
-	Status    TaskStatus
-	Result    interface{}
-	Error     error
-	CreatedAt time.Time
-	StartedAt *time.Time
+	ID          string
+	Name        string
+	Type        string
+	Status      TaskStatus
+	Result      interface{}
+	Error       error
+	CreatedAt   time.Time
+	StartedAt   *time.Time
 	CompletedAt *time.Time
-	Progress  int
-	CancelFn  context.CancelFunc
+	Progress    int
+	CancelFn    context.CancelFunc
 }
 
 type TaskStatus string

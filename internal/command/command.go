@@ -5,10 +5,10 @@ import (
 )
 
 type Command struct {
-	Name    string
-	Args    []string
-	Dir     string
-	Env     []string
+	Name string
+	Args []string
+	Dir  string
+	Env  []string
 }
 
 type Runner interface {

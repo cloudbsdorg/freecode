@@ -9,7 +9,7 @@ import (
 const (
 	DiagnosticSeverityError   = 1
 	DiagnosticSeverityWarning = 2
-	DiagnosticSeverityInfo   = 3
+	DiagnosticSeverityInfo    = 3
 	DiagnosticSeverityHint    = 4
 )
 
@@ -18,12 +18,12 @@ const (
 )
 
 type DiagnosticStore struct {
-	mu          sync.RWMutex
-	push        map[string][]Diagnostic
-	pull        map[string][]Diagnostic
-	published   map[string]*PublishInfo
-	pending     map[string]*pendingDiagnostic
-	onPublish   func(uri string, diagnostics []Diagnostic)
+	mu        sync.RWMutex
+	push      map[string][]Diagnostic
+	pull      map[string][]Diagnostic
+	published map[string]*PublishInfo
+	pending   map[string]*pendingDiagnostic
+	onPublish func(uri string, diagnostics []Diagnostic)
 }
 
 type PublishInfo struct {
@@ -32,8 +32,8 @@ type PublishInfo struct {
 }
 
 type pendingDiagnostic struct {
-	timer  *time.Timer
-	uri    string
+	timer *time.Timer
+	uri   string
 }
 
 func NewDiagnosticStore(onPublish func(uri string, diagnostics []Diagnostic)) *DiagnosticStore {
@@ -169,8 +169,8 @@ func PrettyDiagnostic(diagnostic Diagnostic) string {
 	severityMap := map[int]string{
 		DiagnosticSeverityError:   "ERROR",
 		DiagnosticSeverityWarning: "WARN",
-		DiagnosticSeverityInfo:     "INFO",
-		DiagnosticSeverityHint:     "HINT",
+		DiagnosticSeverityInfo:    "INFO",
+		DiagnosticSeverityHint:    "HINT",
 	}
 
 	severity := severityMap[diagnostic.Severity]

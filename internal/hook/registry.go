@@ -7,13 +7,13 @@ import (
 )
 
 type Registry struct {
-	mu              sync.RWMutex
-	sessionHooks    map[string][]SessionHook
-	toolHooks      map[string][]ToolHook
-	transformHooks  []TransformHook
+	mu                sync.RWMutex
+	sessionHooks      map[string][]SessionHook
+	toolHooks         map[string][]ToolHook
+	transformHooks    []TransformHook
 	continuationHooks []ContinuationHook
-	ralphHooks     []RalphHook
-	skillHooks     map[string][]SkillHook
+	ralphHooks        []RalphHook
+	skillHooks        map[string][]SkillHook
 }
 
 type SessionHook func(ctx context.Context, evt SessionEvent) error
@@ -55,12 +55,12 @@ type ContinueSignal struct {
 
 func NewRegistry() *Registry {
 	return &Registry{
-		sessionHooks:    make(map[string][]SessionHook),
-		toolHooks:      make(map[string][]ToolHook),
-		transformHooks:  make([]TransformHook, 0),
+		sessionHooks:      make(map[string][]SessionHook),
+		toolHooks:         make(map[string][]ToolHook),
+		transformHooks:    make([]TransformHook, 0),
 		continuationHooks: make([]ContinuationHook, 0),
-		ralphHooks:     make([]RalphHook, 0),
-		skillHooks:     make(map[string][]SkillHook),
+		ralphHooks:        make([]RalphHook, 0),
+		skillHooks:        make(map[string][]SkillHook),
 	}
 }
 

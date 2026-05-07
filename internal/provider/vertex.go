@@ -10,11 +10,11 @@ import (
 )
 
 type VertexProvider struct {
-	ProjectID   string
-	Location   string
-	Token      string
-	BaseURL    string
-	Client     *http.Client
+	ProjectID string
+	Location  string
+	Token     string
+	BaseURL   string
+	Client    *http.Client
 }
 
 func NewVertexProvider(projectID, location, token string) *VertexProvider {

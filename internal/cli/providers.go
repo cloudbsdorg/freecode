@@ -15,16 +15,16 @@ var providersLoginProvider string
 var providersLoginMethod string
 
 var providersCmd = &cobra.Command{
-	Use:   "providers",
-	Short: "Manage AI providers and credentials",
+	Use:     "providers",
+	Short:   "Manage AI providers and credentials",
 	Aliases: []string{"auth"},
 }
 
 var providersListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List configured providers and credentials",
+	Use:     "list",
+	Short:   "List configured providers and credentials",
 	Aliases: []string{"ls"},
-	RunE:  runProvidersList,
+	RunE:    runProvidersList,
 }
 
 var providersLoginCmd = &cobra.Command{
@@ -351,22 +351,22 @@ func isValidProvider(id string) bool {
 
 func getProviderDisplayName(id string) string {
 	names := map[string]string{
-		"openai":    "OpenAI",
-		"anthropic": "Anthropic",
-		"google":    "Google",
-		"azure":     "Azure",
-		"bedrock":   "Amazon Bedrock",
-		"vertex":    "Google Vertex AI",
+		"openai":     "OpenAI",
+		"anthropic":  "Anthropic",
+		"google":     "Google",
+		"azure":      "Azure",
+		"bedrock":    "Amazon Bedrock",
+		"vertex":     "Google Vertex AI",
 		"openrouter": "OpenRouter",
-		"ollama":    "Ollama",
-		"litellm":   "LiteLLM",
-		"minimax":   "MiniMax",
-		"groq":      "Groq",
-		"deepseek":  "DeepSeek",
-		"mistral":   "Mistral",
-		"cohere":    "Cohere",
-		"ai21":      "AI21",
-		"opencode":  "OpenCode",
+		"ollama":     "Ollama",
+		"litellm":    "LiteLLM",
+		"minimax":    "MiniMax",
+		"groq":       "Groq",
+		"deepseek":   "DeepSeek",
+		"mistral":    "Mistral",
+		"cohere":     "Cohere",
+		"ai21":       "AI21",
+		"opencode":   "OpenCode",
 	}
 
 	if name, ok := names[id]; ok {
@@ -377,22 +377,22 @@ func getProviderDisplayName(id string) string {
 
 func getProviderModel(id string) string {
 	defaultModels := map[string]string{
-		"openai":    "gpt-4o",
-		"anthropic": "claude-sonnet-4-5",
-		"google":    "gemini-2.0-flash",
-		"azure":     "gpt-4o",
-		"bedrock":   "anthropic.claude-3-5-sonnet",
-		"vertex":    "gemini-2.0-flash",
+		"openai":     "gpt-4o",
+		"anthropic":  "claude-sonnet-4-5",
+		"google":     "gemini-2.0-flash",
+		"azure":      "gpt-4o",
+		"bedrock":    "anthropic.claude-3-5-sonnet",
+		"vertex":     "gemini-2.0-flash",
 		"openrouter": "openai/gpt-4o",
-		"ollama":    "llama3.2",
-		"litellm":   "gpt-4o",
-		"minimax":   "MiniMax-Text-01",
-		"groq":      "llama-3.3-70b",
-		"deepseek":  "deepseek-chat",
-		"mistral":   "mistral-large-latest",
-		"cohere":    "command-r-plus",
-		"ai21":      "jamba-1-5-large",
-		"opencode":  "opencode",
+		"ollama":     "llama3.2",
+		"litellm":    "gpt-4o",
+		"minimax":    "MiniMax-Text-01",
+		"groq":       "llama-3.3-70b",
+		"deepseek":   "deepseek-chat",
+		"mistral":    "mistral-large-latest",
+		"cohere":     "command-r-plus",
+		"ai21":       "jamba-1-5-large",
+		"opencode":   "opencode",
 	}
 
 	if model, ok := defaultModels[id]; ok {
@@ -402,36 +402,36 @@ func getProviderModel(id string) string {
 }
 
 type providerConfig struct {
-	envVar        string
+	envVar         string
 	defaultBaseURL string
-	defaultModel  string
+	defaultModel   string
 }
 
 var providerConfigs = map[string]providerConfig{
 	"openai": {
-		envVar:        "OPENAI_API_KEY",
+		envVar:         "OPENAI_API_KEY",
 		defaultBaseURL: "https://api.openai.com/v1",
-		defaultModel:  "gpt-4o",
+		defaultModel:   "gpt-4o",
 	},
 	"anthropic": {
-		envVar:        "ANTHROPIC_API_KEY",
+		envVar:         "ANTHROPIC_API_KEY",
 		defaultBaseURL: "https://api.anthropic.com",
-		defaultModel:  "claude-sonnet-4-5",
+		defaultModel:   "claude-sonnet-4-5",
 	},
 	"google": {
-		envVar:        "GOOGLE_API_KEY",
+		envVar:         "GOOGLE_API_KEY",
 		defaultBaseURL: "https://generativelanguage.googleapis.com/v1",
-		defaultModel:  "gemini-2.0-flash",
+		defaultModel:   "gemini-2.0-flash",
 	},
 	"ollama": {
-		envVar:        "OLLAMA_BASE_URL",
+		envVar:         "OLLAMA_BASE_URL",
 		defaultBaseURL: "http://localhost:11434",
-		defaultModel:  "llama3.2",
+		defaultModel:   "llama3.2",
 	},
 	"litellm": {
-		envVar:        "LITELLM_BASE_URL",
+		envVar:         "LITELLM_BASE_URL",
 		defaultBaseURL: "http://localhost:4000",
-		defaultModel:  "gpt-4o",
+		defaultModel:   "gpt-4o",
 	},
 }
 
@@ -445,10 +445,10 @@ func getConfiguredProviders() []*providerInfo {
 	for id, cfg := range providerConfigs {
 		if apiKey := cfg.getAPIKey(); apiKey != "" {
 			result = append(result, &providerInfo{
-				id:       id,
-				apiKey:   apiKey,
-				baseURL:  os.Getenv(cfg.envVar + "_BASE_URL"),
-				model:    getProviderModel(id),
+				id:      id,
+				apiKey:  apiKey,
+				baseURL: os.Getenv(cfg.envVar + "_BASE_URL"),
+				model:   getProviderModel(id),
 			})
 		}
 	}

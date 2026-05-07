@@ -30,10 +30,10 @@ func TestGetEnvDefault(t *testing.T) {
 
 func TestGetEnvBool(t *testing.T) {
 	tests := []struct {
-		name    string
-		envVal  string
-		def     bool
-		want    bool
+		name   string
+		envVal string
+		def    bool
+		want   bool
 	}{
 		{"true string", "true", false, true},
 		{"TRUE uppercase", "TRUE", false, true},

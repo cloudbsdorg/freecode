@@ -20,8 +20,8 @@ type Store interface {
 }
 
 type MemoryStore struct {
-	mu  sync.RWMutex
-	m   map[string]*Session
+	mu sync.RWMutex
+	m  map[string]*Session
 }
 
 func NewMemoryStore() *MemoryStore {

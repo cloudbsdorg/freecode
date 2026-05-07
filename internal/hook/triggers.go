@@ -176,8 +176,8 @@ func (t *Trigger) ToolConfirmAllow(ctx context.Context, toolName, sessionID stri
 
 func (t *Trigger) ToolRateLimit(ctx context.Context, toolName, sessionID string, retryAfter int) error {
 	return t.registry.EmitSessionEvent(ctx, "tool.rate_limit", sessionID, map[string]interface{}{
-		"tool_name":    toolName,
-		"retry_after":  retryAfter,
+		"tool_name":   toolName,
+		"retry_after": retryAfter,
 	})
 }
 

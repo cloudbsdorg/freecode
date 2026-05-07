@@ -15,19 +15,19 @@ type Server struct {
 
 type ServerRequest struct {
 	JSONRPC string          `json:"jsonrpc"`
-	Method  string           `json:"method"`
-	Params  json.RawMessage  `json:"params,omitempty"`
-	ID     interface{}      `json:"id,omitempty"`
+	Method  string          `json:"method"`
+	Params  json.RawMessage `json:"params,omitempty"`
+	ID      interface{}     `json:"id,omitempty"`
 }
 
 type ServerResponse struct {
 	JSONRPC string      `json:"jsonrpc"`
 	Result  interface{} `json:"result,omitempty"`
-	Error  *struct {
+	Error   *struct {
 		Code    int    `json:"code"`
 		Message string `json:"message"`
 	} `json:"error,omitempty"`
-	ID     interface{} `json:"id,omitempty"`
+	ID interface{} `json:"id,omitempty"`
 }
 
 func NewServer(port int) *Server {

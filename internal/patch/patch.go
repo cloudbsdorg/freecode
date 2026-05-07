@@ -6,7 +6,7 @@ import (
 )
 
 type Patch struct {
-	Path    string
+	Path     string
 	OldLines []string
 	NewLines []string
 }

@@ -10,9 +10,9 @@ import (
 )
 
 type AzureProvider struct {
-	APIKey    string
-	BaseURL   string
-	Client    *http.Client
+	APIKey  string
+	BaseURL string
+	Client  *http.Client
 }
 
 func NewAzureProvider(apiKey, baseURL string) *AzureProvider {

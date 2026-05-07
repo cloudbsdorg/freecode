@@ -8,12 +8,12 @@ import (
 
 type FormatOptions struct {
 	Language string
-	Path    string
+	Path     string
 }
 
 type Result struct {
 	Formatted string
-	Error    error
+	Error     error
 }
 
 func Format(ctx context.Context, code string, opts FormatOptions) (*Result, error) {

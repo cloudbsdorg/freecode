@@ -44,14 +44,14 @@ type Response struct {
 }
 
 type Message struct {
-	Role    string
-	Content string
+	Role     string
+	Content  string
 	Thinking string
 }
 
 type ToolCall struct {
-	ID       string
-	Name     string
+	ID        string
+	Name      string
 	Arguments map[string]interface{}
 }
 

@@ -19,11 +19,11 @@ type Payload struct {
 type EventHandler func(payload Payload)
 
 type State struct {
-	mu        sync.RWMutex
-	wildcard  []GlobalHandler
-	typed     map[string][]Handler
-	closed    bool
-	nextID    int32
+	mu       sync.RWMutex
+	wildcard []GlobalHandler
+	typed    map[string][]Handler
+	closed   bool
+	nextID   int32
 }
 
 type Handler struct {

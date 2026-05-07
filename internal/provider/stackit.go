@@ -10,9 +10,9 @@ import (
 )
 
 type StackitProvider struct {
-	Token    string
-	BaseURL  string
-	Client   *http.Client
+	Token   string
+	BaseURL string
+	Client  *http.Client
 }
 
 func NewStackitProvider(token string) *StackitProvider {

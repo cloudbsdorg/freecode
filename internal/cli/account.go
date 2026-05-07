@@ -52,9 +52,9 @@ func listAccounts(cfg *config.Config) error {
 	fmt.Println("")
 
 	providers := []struct {
-		name    string
-		keyEnv  string
-		keySet  bool
+		name   string
+		keyEnv string
+		keySet bool
 	}{
 		{"Anthropic", "ANTHROPIC_API_KEY", os.Getenv("ANTHROPIC_API_KEY") != ""},
 		{"OpenAI", "OPENAI_API_KEY", os.Getenv("OPENAI_API_KEY") != ""},

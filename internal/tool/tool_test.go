@@ -972,8 +972,8 @@ func TestTodoToolExecuteAddWithPriority(t *testing.T) {
 	tool := NewTodoTool()
 	_, err := tool.Execute(context.Background(), Request{
 		Arguments: map[string]interface{}{
-			"action":  "add",
-			"content": "High priority",
+			"action":   "add",
+			"content":  "High priority",
 			"priority": "high",
 		},
 	})
@@ -1396,7 +1396,7 @@ func TestGrepToolExecuteIgnoreCase(t *testing.T) {
 	_, err := tool.Execute(context.Background(), Request{
 		Arguments: map[string]interface{}{
 			"pattern":     "TEST",
-			"path":       "/tmp",
+			"path":        "/tmp",
 			"ignore_case": true,
 		},
 	})
@@ -1411,7 +1411,7 @@ func TestGlobToolExecuteNonExistentPath(t *testing.T) {
 	_, err := tool.Execute(context.Background(), Request{
 		Arguments: map[string]interface{}{
 			"pattern": "*.go",
-			"path":   "/nonexistent",
+			"path":    "/nonexistent",
 		},
 	})
 	if err != nil {
@@ -1542,7 +1542,7 @@ func TestEditToolExecuteNonExistentFile(t *testing.T) {
 	tool := NewEditTool()
 	_, err := tool.Execute(context.Background(), Request{
 		Arguments: map[string]interface{}{
-			"file": "/nonexistent/path/file.txt",
+			"file":  "/nonexistent/path/file.txt",
 			"edits": []map[string]string{},
 		},
 	})
@@ -1578,4 +1578,3 @@ func TestWriteToolExecuteWithMissingDir(t *testing.T) {
 		t.Error("Execute() should error when parent directory doesn't exist")
 	}
 }
-

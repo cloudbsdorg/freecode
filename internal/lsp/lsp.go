@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,12 +13,35 @@ import (
 	"github.com/sourcegraph/jsonrpc2"
 )
 
+// stdinStdout combines stdin and stdout into a single ReadWriteCloser for LSP communication
+type stdinStdout struct {
+	stdin  io.WriteCloser
+	stdout io.ReadCloser
+}
+
+func (s *stdinStdout) Write(p []byte) (n int, err error) {
+	return s.stdin.Write(p)
+}
+
+func (s *stdinStdout) Read(p []byte) (n int, err error) {
+	return s.stdout.Read(p)
+}
+
+func (s *stdinStdout) Close() error {
+	if err := s.stdin.Close(); err != nil {
+		return err
+	}
+	return s.stdout.Close()
+}
+
 type Client struct {
-	conn   *jsonrpc2.Conn
-	proc   *exec.Cmd
-	root   string
-	mu     sync.RWMutex
-	files  map[string]*textDocument
+	conn         *jsonrpc2.Conn
+	proc         *exec.Cmd
+	root         string
+	mu           sync.RWMutex
+	files        map[string]*textDocument
+	diagnostics  *DiagnosticStore
+	capabilities ServerCapabilities
 }
 
 type textDocument struct {
@@ -27,15 +51,15 @@ type textDocument struct {
 }
 
 type ServerCapabilities struct {
-	TextDocumentSync         any       `json:"textDocumentSync,omitempty"`
-	HoverProvider            bool      `json:"hoverProvider,omitempty"`
-	DefinitionProvider       bool      `json:"definitionProvider,omitempty"`
-	ReferencesProvider       bool      `json:"referencesProvider,omitempty"`
-	ImplementationProvider   bool      `json:"implementationProvider,omitempty"`
-	DocumentSymbolProvider   bool      `json:"documentSymbolProvider,omitempty"`
-	WorkspaceSymbolProvider  bool      `json:"workspaceSymbolProvider,omitempty"`
-	CompletionProvider       *struct{} `json:"completionProvider,omitempty"`
-	DiagnosticProvider       any       `json:"diagnosticProvider,omitempty"`
+	TextDocumentSync        any       `json:"textDocumentSync,omitempty"`
+	HoverProvider           bool      `json:"hoverProvider,omitempty"`
+	DefinitionProvider      bool      `json:"definitionProvider,omitempty"`
+	ReferencesProvider      bool      `json:"referencesProvider,omitempty"`
+	ImplementationProvider  bool      `json:"implementationProvider,omitempty"`
+	DocumentSymbolProvider  bool      `json:"documentSymbolProvider,omitempty"`
+	WorkspaceSymbolProvider bool      `json:"workspaceSymbolProvider,omitempty"`
+	CompletionProvider      *struct{} `json:"completionProvider,omitempty"`
+	DiagnosticProvider      any       `json:"diagnosticProvider,omitempty"`
 }
 
 type InitializeResult struct {
@@ -88,8 +112,30 @@ func uriToFilePath(uri string) string {
 	return uri
 }
 
+func UriToFilePath(uri string) string {
+	return uriToFilePath(uri)
+}
+
+func FilePathToURI(path string) string {
+	return filePathToURI(path)
+}
+
+func (c *Client) GetDiagnostics(uri string) []Diagnostic {
+	if c.diagnostics == nil {
+		return nil
+	}
+	return c.diagnostics.GetDiagnostics(uri)
+}
+
 func NewClient() *Client {
-	return &Client{files: make(map[string]*textDocument)}
+	return &Client{
+		files:       make(map[string]*textDocument),
+		diagnostics: NewDiagnosticStore(nil),
+	}
+}
+
+func (c *Client) SetDiagnosticsCallback(callback func(uri string, diagnostics []Diagnostic)) {
+	c.diagnostics = NewDiagnosticStore(callback)
 }
 
 func (c *Client) Connect(ctx context.Context, server string, root string) error {
@@ -105,54 +151,76 @@ func (c *Client) Connect(ctx context.Context, server string, root string) error 
 		return fmt.Errorf("stdout pipe: %w", err)
 	}
 
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("start server: %w", err)
+	}
+
 	c.proc = cmd
 	c.root = root
 
-	conn := jsonrpc2.NewConn(ctx, jsonrpc2.NewPlainObjectStream(stdin), jsonrpc2.NewPlainObjectStream(stdout), c.handler())
-	c.conn = conn
+	stream := jsonrpc2.NewPlainObjectStream(&stdinStdout{stdin: stdin, stdout: stdout})
+	handler := c.makeHandler()
+
+	c.conn = jsonrpc2.NewConn(ctx, stream, handler)
 
 	return nil
 }
 
-func (c *Client) handler() jsonrpc2.Handler {
-	return jsonrpc2.HandlerFunc(func(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (interface{}, error) {
+func (c *Client) makeHandler() *jsonrpc2.HandlerWithErrorConfigurer {
+	return jsonrpc2.HandlerWithError(func(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (interface{}, error) {
 		switch req.Method {
 		case "window/workDoneProgress/create":
 			return nil, nil
+
 		case "workspace/configuration":
 			return []any{}, nil
+
 		case "client/registerCapability":
 			return nil, nil
+
 		case "client/unregisterCapability":
 			return nil, nil
+
 		case "workspace/workspaceFolders":
-			return []any{{Name: "workspace", URI: filePathToURI(c.root)}}, nil
+			return []struct {
+				Name string `json:"name"`
+				URI  string `json:"uri"`
+			}{{Name: "workspace", URI: filePathToURI(c.root)}}, nil
+
 		case "workspace/diagnostic/refresh":
 			return nil, nil
+
 		case "textDocument/publishDiagnostics":
-			// handled via callback if registered
+			var params struct {
+				URI         string       `json:"uri"`
+				Diagnostics []Diagnostic `json:"diagnostics"`
+			}
+			if err := json.Unmarshal(*req.Params, &params); err == nil {
+				c.diagnostics.UpdatePushDiagnostics(params.URI, params.Diagnostics)
+			}
 			return nil, nil
+
 		default:
-			return nil, &jsonrpc2.Error{Code: jsonrpc2.MethodNotFound, Message: fmt.Sprintf("method %q not handled", req.Method)}
+			return nil, &jsonrpc2.Error{Code: jsonrpc2.CodeMethodNotFound, Message: fmt.Sprintf("method %q not handled", req.Method)}
 		}
 	})
 }
 
 func (c *Client) Initialize(ctx context.Context) error {
 	params := InitializeParams{
-		RootURI:    filePathToURI(c.root),
-		ProcessID:  os.Getpid(),
+		RootURI:   filePathToURI(c.root),
+		ProcessID: os.Getpid(),
 		Capabilities: map[string]any{
 			"window": map[string]any{
 				"workDoneProgress": true,
 			},
 			"workspace": map[string]any{
-				"configuration":     true,
+				"configuration":         true,
 				"didChangeWatchedFiles": map[string]any{"dynamicRegistration": true},
 			},
 			"textDocument": map[string]any{
 				"synchronization": map[string]any{
-					"didOpen": true,
+					"didOpen":   true,
 					"didChange": true,
 				},
 				"diagnostic": map[string]any{
@@ -170,6 +238,8 @@ func (c *Client) Initialize(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("initialize: %w", err)
 	}
+
+	c.capabilities = result.Capabilities
 
 	err = c.conn.Notify(ctx, "initialized", map[string]any{})
 	if err != nil {
@@ -190,12 +260,12 @@ func (c *Client) DidOpen(ctx context.Context, path, text string) error {
 	c.files[path] = &textDocument{uri: uri, version: 0, text: text}
 	c.mu.Unlock()
 
-	return c.conn.Notify(ctx, "textDocument/didOpen", map[string]any{}{
+	return c.conn.Notify(ctx, "textDocument/didOpen", map[string]any{
 		"textDocument": map[string]any{
-			"uri":      uri,
+			"uri":        uri,
 			"languageId": languageID(filepath.Ext(path)),
-			"version":  0,
-			"text":     text,
+			"version":    0,
+			"text":       text,
 		},
 	})
 }
@@ -211,9 +281,9 @@ func (c *Client) DidChange(ctx context.Context, path, text string) error {
 	doc.text = text
 	c.mu.Unlock()
 
-	return c.conn.Notify(ctx, "textDocument/didChange", map[string]any{}{
+	return c.conn.Notify(ctx, "textDocument/didChange", map[string]any{
 		"textDocument": map[string]any{
-			"uri":    doc.uri,
+			"uri":     doc.uri,
 			"version": doc.version,
 		},
 		"contentChanges": []map[string]any{{"text": text}},
@@ -229,7 +299,7 @@ func (c *Client) Hover(ctx context.Context, path string, line, character uint32)
 	}
 
 	var result HoverResult
-	err := c.conn.Call(ctx, "textDocument/hover", map[string]any{}{
+	err := c.conn.Call(ctx, "textDocument/hover", map[string]any{
 		"textDocument": map[string]any{"uri": doc.uri},
 		"position":     map[string]any{"line": line, "character": character},
 	}, &result)
@@ -240,7 +310,7 @@ func (c *Client) Hover(ctx context.Context, path string, line, character uint32)
 }
 
 type HoverResult struct {
-	Contents any `json:"contents"`
+	Contents any    `json:"contents"`
 	Range    *Range `json:"range,omitempty"`
 }
 
@@ -253,7 +323,7 @@ func (c *Client) Definition(ctx context.Context, path string, line, character ui
 	}
 
 	var result []Location
-	err := c.conn.Call(ctx, "textDocument/definition", map[string]any{}{
+	err := c.conn.Call(ctx, "textDocument/definition", map[string]any{
 		"textDocument": map[string]any{"uri": doc.uri},
 		"position":     map[string]any{"line": line, "character": character},
 	}, &result)
@@ -264,8 +334,8 @@ func (c *Client) Definition(ctx context.Context, path string, line, character ui
 }
 
 type Location struct {
-	URI  string `json:"uri"`
-	Range Range `json:"range"`
+	URI   string `json:"uri"`
+	Range Range  `json:"range"`
 }
 
 func (c *Client) References(ctx context.Context, path string, line, character uint32) ([]Location, error) {
@@ -277,7 +347,7 @@ func (c *Client) References(ctx context.Context, path string, line, character ui
 	}
 
 	var result []Location
-	err := c.conn.Call(ctx, "textDocument/references", map[string]any{}{
+	err := c.conn.Call(ctx, "textDocument/references", map[string]any{
 		"textDocument": map[string]any{"uri": doc.uri},
 		"position":     map[string]any{"line": line, "character": character},
 		"context":      map[string]any{"includeDeclaration": true},
@@ -297,7 +367,7 @@ func (c *Client) Completion(ctx context.Context, path string, line, character ui
 	}
 
 	var result CompletionList
-	err := c.conn.Call(ctx, "textDocument/completion", map[string]any{}{
+	err := c.conn.Call(ctx, "textDocument/completion", map[string]any{
 		"textDocument": map[string]any{"uri": doc.uri},
 		"position":     map[string]any{"line": line, "character": character},
 	}, &result)
@@ -311,8 +381,8 @@ func (c *Client) Completion(ctx context.Context, path string, line, character ui
 }
 
 type CompletionList struct {
-	Items      []CompletionItem `json:"items"`
-	IsIncomplete bool            `json:"isIncomplete"`
+	Items        []CompletionItem `json:"items"`
+	IsIncomplete bool             `json:"isIncomplete"`
 }
 
 func (c *Client) DocumentSymbol(ctx context.Context, path string) ([]DocumentSymbol, error) {
@@ -324,7 +394,7 @@ func (c *Client) DocumentSymbol(ctx context.Context, path string) ([]DocumentSym
 	}
 
 	var result []DocumentSymbol
-	err := c.conn.Call(ctx, "textDocument/documentSymbol", map[string]any{}{
+	err := c.conn.Call(ctx, "textDocument/documentSymbol", map[string]any{
 		"textDocument": map[string]any{"uri": doc.uri},
 	}, &result)
 	if err != nil {
@@ -334,12 +404,12 @@ func (c *Client) DocumentSymbol(ctx context.Context, path string) ([]DocumentSym
 }
 
 type DocumentSymbol struct {
-	Name        string  `json:"name"`
-	Detail      string  `json:"detail,omitempty"`
-	Kind        int     `json:"kind"`
-	Range       Range   `json:"range"`
-	SelectionRange Range `json:"selectionRange"`
-	Children    []DocumentSymbol `json:"children,omitempty"`
+	Name           string           `json:"name"`
+	Detail         string           `json:"detail,omitempty"`
+	Kind           int              `json:"kind"`
+	Range          Range            `json:"range"`
+	SelectionRange Range            `json:"selectionRange"`
+	Children       []DocumentSymbol `json:"children,omitempty"`
 }
 
 func (c *Client) WorkspaceSymbol(ctx context.Context, query string) ([]SymbolInformation, error) {
@@ -354,10 +424,10 @@ func (c *Client) WorkspaceSymbol(ctx context.Context, query string) ([]SymbolInf
 }
 
 type SymbolInformation struct {
-	Name       string   `json:"name"`
-	Kind       int      `json:"kind"`
-	Location   Location `json:"location"`
-	ContainerName string `json:"containerName,omitempty"`
+	Name          string   `json:"name"`
+	Kind          int      `json:"kind"`
+	Location      Location `json:"location"`
+	ContainerName string   `json:"containerName,omitempty"`
 }
 
 func languageID(ext string) string {
@@ -427,66 +497,67 @@ func (c *Client) Close() error {
 
 // --- Server side ---
 
+// Server is an LSP server that listens for connections
 type Server struct {
-	conn    *jsonrpc2.Conn
-	stdin   chan json.RawMessage
-	stdout  chan json.RawMessage
+	conn   *jsonrpc2.Conn
+	stdin  io.ReadCloser
+	stdout io.WriteCloser
 }
 
 func NewServer() *Server {
-	return &Server{
-		stdin:  make(chan json.RawMessage, 100),
-		stdout: make(chan json.RawMessage, 100),
-	}
+	return &Server{}
 }
 
 func (s *Server) Start(ctx context.Context) error {
-	conn := jsonrpc2.NewConn(ctx, jsonrpc2.NewPlainObjectStream(s.stdout), jsonrpc2.NewPlainObjectStream(s.stdin), s.handler())
-	s.conn = conn
+	stream := jsonrpc2.NewPlainObjectStream(&stdinStdout{
+		stdin:  os.Stdin,
+		stdout: os.Stdout,
+	})
+
+	handler := jsonrpc2.HandlerWithError(s.handleServerRequest)
+	s.conn = jsonrpc2.NewConn(ctx, stream, handler)
 	return nil
 }
 
-func (s *Server) handler() jsonrpc2.Handler {
-	return jsonrpc2.HandlerFunc(func(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (interface{}, error) {
-		switch req.Method {
-		case "initialize":
-			var params InitializeParams
-			if err := json.Unmarshal(*req.Params, &params); err != nil {
-				return nil, err
-			}
-			return InitializeResult{
-				Capabilities: ServerCapabilities{
-					TextDocumentSync:        2,
-					HoverProvider:           true,
-					DefinitionProvider:      true,
-					ReferencesProvider:     true,
-					DocumentSymbolProvider: true,
-					WorkspaceSymbolProvider: true,
-					CompletionProvider:     &struct{}{},
-				},
-			}, nil
-		case "shutdown":
-			return nil, nil
-		case "textDocument/didOpen":
-			return nil, nil
-		case "textDocument/didChange":
-			return nil, nil
-		case "textDocument/hover":
-			return nil, nil
-		case "textDocument/definition":
-			return nil, nil
-		case "textDocument/references":
-			return nil, nil
-		case "textDocument/completion":
-			return CompletionList{Items: []CompletionItem{}}, nil
-		case "textDocument/documentSymbol":
-			return []DocumentSymbol{}, nil
-		case "workspace/symbol":
-			return []SymbolInformation{}, nil
-		default:
-			return nil, &jsonrpc2.Error{Code: jsonrpc2.MethodNotFound, Message: fmt.Sprintf("method %q not handled", req.Method)}
+func (s *Server) handleServerRequest(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (interface{}, error) {
+	switch req.Method {
+	case "initialize":
+		var params InitializeParams
+		if err := json.Unmarshal(*req.Params, &params); err != nil {
+			return nil, err
 		}
-	})
+		return InitializeResult{
+			Capabilities: ServerCapabilities{
+				TextDocumentSync:        2,
+				HoverProvider:           true,
+				DefinitionProvider:      true,
+				ReferencesProvider:      true,
+				DocumentSymbolProvider:  true,
+				WorkspaceSymbolProvider: true,
+				CompletionProvider:      &struct{}{},
+			},
+		}, nil
+	case "shutdown":
+		return nil, nil
+	case "textDocument/didOpen":
+		return nil, nil
+	case "textDocument/didChange":
+		return nil, nil
+	case "textDocument/hover":
+		return nil, nil
+	case "textDocument/definition":
+		return nil, nil
+	case "textDocument/references":
+		return nil, nil
+	case "textDocument/completion":
+		return CompletionList{Items: []CompletionItem{}}, nil
+	case "textDocument/documentSymbol":
+		return []DocumentSymbol{}, nil
+	case "workspace/symbol":
+		return []SymbolInformation{}, nil
+	default:
+		return nil, &jsonrpc2.Error{Code: jsonrpc2.CodeMethodNotFound, Message: fmt.Sprintf("method %q not handled", req.Method)}
+	}
 }
 
 func (s *Server) Stop(ctx context.Context) error {
@@ -494,18 +565,4 @@ func (s *Server) Stop(ctx context.Context) error {
 		return s.conn.Close()
 	}
 	return nil
-}
-
-func (s *Server) Send(ctx context.Context, msg json.RawMessage) error {
-	s.stdin <- msg
-	return nil
-}
-
-func (s *Server) Receive(ctx context.Context) (json.RawMessage, error) {
-	select {
-	case msg := <-s.stdout:
-		return msg, nil
-	case <-ctx.Done():
-		return nil, ctx.Err()
-	}
 }

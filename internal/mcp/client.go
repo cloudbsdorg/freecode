@@ -29,7 +29,7 @@ type Tool struct {
 }
 
 type CallRequest struct {
-	Method  string `json:"method"`
+	Method string `json:"method"`
 	Params *struct {
 		Name      string                 `json:"name"`
 		Arguments map[string]interface{} `json:"arguments,omitempty"`

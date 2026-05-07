@@ -404,7 +404,7 @@ func TestCatalogService_MergeWithConfig(t *testing.T) {
 	c := NewModelCatalog()
 	c.SetProvider("anthropic", &ProviderModels{
 		Provider: "anthropic",
-		Name:      "anthropic",
+		Name:     "anthropic",
 		Models: []Model{
 			{ID: "claude-3", Name: "Claude 3"},
 		},

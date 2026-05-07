@@ -26,16 +26,16 @@ func init() {
 }
 
 type exportedSession struct {
-	ID        string    `json:"id"`
-	Title     string    `json:"title"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        string            `json:"id"`
+	Title     string            `json:"title"`
+	CreatedAt time.Time         `json:"created_at"`
+	UpdatedAt time.Time         `json:"updated_at"`
 	Messages  []exportedMessage `json:"messages,omitempty"`
 }
 
 type exportedMessage struct {
-	Role    string    `json:"role"`
-	Content string    `json:"content"`
+	Role      string    `json:"role"`
+	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

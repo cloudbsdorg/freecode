@@ -6,16 +6,16 @@ import (
 )
 
 type Model struct {
-	width             int
-	height            int
-	tabs              []TabModel
-	active            int
-	session           *session.Session
-	yolo              bool
-	quitting          bool
+	width              int
+	height             int
+	tabs               []TabModel
+	active             int
+	session            *session.Session
+	yolo               bool
+	quitting           bool
 	commandPaletteOpen bool
-	sidebarOpen       bool
-	fleetPanelOpen    bool
+	sidebarOpen        bool
+	fleetPanelOpen     bool
 }
 
 type TabModel struct {

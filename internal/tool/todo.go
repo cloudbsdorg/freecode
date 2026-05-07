@@ -45,7 +45,7 @@ func (t *TodoTool) Schema() ToolSchema {
 				Type:        "string",
 				Description: "Action to perform: list, add, update, delete",
 				Required:    true,
-				Enum:       []string{"list", "add", "update", "delete"},
+				Enum:        []string{"list", "add", "update", "delete"},
 			},
 			"content": {
 				Type:        "string",
@@ -58,12 +58,12 @@ func (t *TodoTool) Schema() ToolSchema {
 			"status": {
 				Type:        "string",
 				Description: "Todo status",
-				Enum:       []string{"pending", "in_progress", "completed", "cancelled"},
+				Enum:        []string{"pending", "in_progress", "completed", "cancelled"},
 			},
 			"priority": {
 				Type:        "string",
 				Description: "Todo priority",
-				Enum:       []string{"high", "medium", "low"},
+				Enum:        []string{"high", "medium", "low"},
 			},
 		},
 	}

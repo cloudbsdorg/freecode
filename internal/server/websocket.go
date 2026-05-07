@@ -23,17 +23,17 @@ var upgrader = websocket.Upgrader{
 type WebSocketServer struct {
 	mu          sync.RWMutex
 	connections map[string]*WebSocketConn
-	handler    WebSocketHandler
-	server     *http.Server
-	mux        *http.ServeMux
+	handler     WebSocketHandler
+	server      *http.Server
+	mux         *http.ServeMux
 }
 
 type WebSocketConn struct {
-	ID       string
-	conn     *websocket.Conn
-	send     chan []byte
-	closed   bool
-	server   *WebSocketServer
+	ID     string
+	conn   *websocket.Conn
+	send   chan []byte
+	closed bool
+	server *WebSocketServer
 }
 
 type WebSocketHandler interface {
@@ -48,15 +48,15 @@ type WSMessage struct {
 }
 
 type WSResponse struct {
-	Type    string `json:"type"`
+	Type    string      `json:"type"`
 	Payload interface{} `json:"payload,omitempty"`
-	Error   string `json:"error,omitempty"`
+	Error   string      `json:"error,omitempty"`
 }
 
 func NewWebSocketServer(addr string, handler WebSocketHandler) *WebSocketServer {
 	ws := &WebSocketServer{
 		connections: make(map[string]*WebSocketConn),
-		handler:    handler,
+		handler:     handler,
 	}
 
 	mux := http.NewServeMux()

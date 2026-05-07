@@ -14,14 +14,14 @@ var uninstallCmd = &cobra.Command{
 	Short: "Uninstall freecode and remove related files",
 	Long: `Remove freecode binary and optionally configuration/data directories.
 Use --keep-config to preserve configuration and --keep-data to preserve session data.`,
-	RunE:  runUninstall,
+	RunE: runUninstall,
 }
 
 var (
 	uninstallKeepConfig bool
-	uninstallKeepData  bool
-	uninstallDryRun    bool
-	uninstallForce     bool
+	uninstallKeepData   bool
+	uninstallDryRun     bool
+	uninstallForce      bool
 )
 
 func init() {

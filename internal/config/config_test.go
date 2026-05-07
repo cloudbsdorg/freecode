@@ -37,7 +37,7 @@ func TestConfigValidate(t *testing.T) {
 		{
 			name: "valid config",
 			cfg: Config{
-				Server: ServerConfig{Port: 18792},
+				Server:  ServerConfig{Port: 18792},
 				Timeout: 60,
 				Session: SessionConfig{HistorySize: 100},
 			},
@@ -67,7 +67,7 @@ func TestConfigValidate(t *testing.T) {
 		{
 			name: "invalid timeout - zero",
 			cfg: Config{
-				Server: ServerConfig{Port: 18792},
+				Server:  ServerConfig{Port: 18792},
 				Timeout: 0,
 			},
 			wantErr: true,
@@ -75,7 +75,7 @@ func TestConfigValidate(t *testing.T) {
 		{
 			name: "invalid timeout - negative",
 			cfg: Config{
-				Server: ServerConfig{Port: 18792},
+				Server:  ServerConfig{Port: 18792},
 				Timeout: -1,
 			},
 			wantErr: true,

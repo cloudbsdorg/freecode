@@ -18,11 +18,11 @@ var attachCmd = &cobra.Command{
 }
 
 var (
-	attachDir       string
-	attachContinue  bool
-	attachSession   string
-	attachFork      bool
-	attachPassword  string
+	attachDir      string
+	attachContinue bool
+	attachSession  string
+	attachFork     bool
+	attachPassword string
 )
 
 func init() {

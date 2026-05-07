@@ -35,10 +35,10 @@ type OAuthToken struct {
 }
 
 type OAuthState struct {
-	ServerID   string
-	Provider   string
-	ReturnURL  string
-	CreatedAt  time.Time
+	ServerID    string
+	Provider    string
+	ReturnURL   string
+	CreatedAt   time.Time
 	CallbackURL string
 }
 
@@ -48,7 +48,7 @@ type OAuthHandler struct {
 	tokens      map[string]*OAuthToken
 	states      map[string]*OAuthState
 	port        int
- callbackURL string
+	callbackURL string
 }
 
 func NewOAuthHandler(port int) *OAuthHandler {
@@ -79,10 +79,10 @@ func (h *OAuthHandler) GetAuthURL(providerID, serverID, returnURL string) (strin
 
 	state := generateState()
 	h.states[state] = &OAuthState{
-		ServerID:   serverID,
-		Provider:   providerID,
-		ReturnURL:  returnURL,
-		CreatedAt:  time.Now(),
+		ServerID:    serverID,
+		Provider:    providerID,
+		ReturnURL:   returnURL,
+		CreatedAt:   time.Now(),
 		CallbackURL: h.callbackURL,
 	}
 

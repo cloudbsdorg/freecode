@@ -10,14 +10,14 @@ import (
 )
 
 type OpenAIProvider struct {
-	APIKey string
+	APIKey  string
 	BaseURL string
-	Client *http.Client
+	Client  *http.Client
 }
 
 func NewOpenAIProvider(apiKey string) *OpenAIProvider {
 	return &OpenAIProvider{
-		APIKey: apiKey,
+		APIKey:  apiKey,
 		BaseURL: "https://api.openai.com/v1",
 		Client: &http.Client{
 			Timeout: 60 * time.Second,

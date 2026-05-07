@@ -25,17 +25,17 @@ type Tool interface {
 }
 
 type ToolSchema struct {
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-	Parameters  map[string]Parameter  `json:"parameters"`
+	Name        string               `json:"name"`
+	Description string               `json:"description"`
+	Parameters  map[string]Parameter `json:"parameters"`
 }
 
 type Parameter struct {
-	Type        string   `json:"type"`
-	Description string   `json:"description"`
-	Default     any      `json:"default,omitempty"`
-	Required    bool     `json:"required"`
-	Enum        []string `json:"enum,omitempty"`
+	Type        string     `json:"type"`
+	Description string     `json:"description"`
+	Default     any        `json:"default,omitempty"`
+	Required    bool       `json:"required"`
+	Enum        []string   `json:"enum,omitempty"`
 	Items       *Parameter `json:"items,omitempty"`
 }
 

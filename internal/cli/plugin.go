@@ -15,12 +15,12 @@ var pluginCmd = &cobra.Command{
 	Long: `Install a plugin from npm and update configuration.
 The module should be an npm package name or URL.`,
 	Args: cobra.ExactArgs(1),
-	RunE:  runPlugin,
+	RunE: runPlugin,
 }
 
 var (
-	pluginGlobal  bool
-	pluginForce   bool
+	pluginGlobal bool
+	pluginForce  bool
 )
 
 func init() {

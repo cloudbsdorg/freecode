@@ -159,7 +159,7 @@ func refreshProviders(cfg *config.Config, svc *provider.CatalogService) error {
 func displayModels(providers map[string]*provider.ProviderModels, simple bool) {
 	type modelEntry struct {
 		provider string
-		model   provider.Model
+		model    provider.Model
 	}
 
 	var all []modelEntry

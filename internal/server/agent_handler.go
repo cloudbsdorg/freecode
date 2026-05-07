@@ -22,10 +22,10 @@ func NewAgentHandler(engine *agent.Engine, session *session.Manager) *AgentHandl
 }
 
 type RunRequest struct {
-	SessionID string            `json:"session_id"`
-	Prompt   string             `json:"prompt"`
-	Agent    string             `json:"agent"`
-	Tools    []string           `json:"tools"`
+	SessionID string   `json:"session_id"`
+	Prompt    string   `json:"prompt"`
+	Agent     string   `json:"agent"`
+	Tools     []string `json:"tools"`
 }
 
 func (h *AgentHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {

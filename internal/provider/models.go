@@ -12,11 +12,11 @@ import (
 )
 
 type Model struct {
-	ID            string
-	Name          string
-	Provider      string
-	Capabilities  ModelCapabilities
-	Cost          ModelCost
+	ID           string
+	Name         string
+	Provider     string
+	Capabilities ModelCapabilities
+	Cost         ModelCost
 	Limit        ModelLimit
 	Created      int64
 	OwnedBy      string
@@ -24,10 +24,10 @@ type Model struct {
 
 type ModelCapabilities struct {
 	Temperature bool
-	Reasoning  bool
-	ToolCall   bool
-	Vision     bool
-	Audio      bool
+	Reasoning   bool
+	ToolCall    bool
+	Vision      bool
+	Audio       bool
 }
 
 type ModelCost struct {
@@ -52,10 +52,10 @@ type ProviderModels struct {
 }
 
 var (
-	modelCache     = make(map[string]*ProviderModels)
-	modelCacheMu   sync.RWMutex
-	cacheTTL       = 5 * time.Minute
-	cacheDir       string
+	modelCache   = make(map[string]*ProviderModels)
+	modelCacheMu sync.RWMutex
+	cacheTTL     = 5 * time.Minute
+	cacheDir     string
 )
 
 func init() {
@@ -116,10 +116,10 @@ func (pm *ProviderModels) IsStale() bool {
 type modelListResponse struct {
 	Object string `json:"object"`
 	Data   []struct {
-		ID       string `json:"id"`
-		Object   string `json:"object"`
-		Created  int64  `json:"created"`
-		OwnedBy  string `json:"owned_by"`
+		ID      string `json:"id"`
+		Object  string `json:"object"`
+		Created int64  `json:"created"`
+		OwnedBy string `json:"owned_by"`
 	} `json:"data"`
 }
 
@@ -152,10 +152,10 @@ func fetchModelsFromURL(ctx context.Context, url, apiKey string) ([]Model, error
 			OwnedBy:  m.OwnedBy,
 			Capabilities: ModelCapabilities{
 				Temperature: true,
-				Reasoning:  false,
-				ToolCall:   true,
-				Vision:     false,
-				Audio:     false,
+				Reasoning:   false,
+				ToolCall:    true,
+				Vision:      false,
+				Audio:       false,
 			},
 			Cost: ModelCost{Input: 0, Output: 0},
 			Limit: ModelLimit{
@@ -210,9 +210,9 @@ type CatalogService struct {
 
 func NewCatalogService() *CatalogService {
 	return &CatalogService{
-		catalog: NewModelCatalog(),
+		catalog:    NewModelCatalog(),
 		httpClient: &http.Client{Timeout: 30 * time.Second},
-		cachePath: filepath.Join(cacheDir, "catalog.json"),
+		cachePath:  filepath.Join(cacheDir, "catalog.json"),
 	}
 }
 

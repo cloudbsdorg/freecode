@@ -9,9 +9,9 @@ type testPlugin struct {
 	name string
 }
 
-func (p *testPlugin) Name() string                    { return p.name }
-func (p *testPlugin) Init(ctx context.Context) error  { return nil }
-func (p *testPlugin) Close() error                    { return nil }
+func (p *testPlugin) Name() string                   { return p.name }
+func (p *testPlugin) Init(ctx context.Context) error { return nil }
+func (p *testPlugin) Close() error                   { return nil }
 
 func TestRegistry(t *testing.T) {
 	r := NewMemoryRegistry()

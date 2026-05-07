@@ -5,18 +5,18 @@ import (
 )
 
 type TabState struct {
-	mu          sync.RWMutex
-	tabs        []Tab
-	active      int
-	width       int
-	height      int
+	mu     sync.RWMutex
+	tabs   []Tab
+	active int
+	width  int
+	height int
 }
 
 type Tab struct {
-	ID             string
-	Name           string
-	Sessions       []string
-	ActiveSession  string
+	ID            string
+	Name          string
+	Sessions      []string
+	ActiveSession string
 	SplitVertical bool
 	SplitRatio    float64
 }

@@ -11,13 +11,13 @@ var sessionCmd = &cobra.Command{
 }
 
 var (
-	sessionList    bool
-	sessionRead    string
-	sessionSearch  string
-	sessionExport  string
-	sessionImport  string
-	sessionDelete  string
-	sessionInfo    string
+	sessionList   bool
+	sessionRead   string
+	sessionSearch string
+	sessionExport string
+	sessionImport string
+	sessionDelete string
+	sessionInfo   string
 )
 
 func init() {

@@ -30,10 +30,10 @@ Note: The full interactive experience is in the TUI application.`,
 }
 
 var (
-	webPort        int
-	webHost        string
-	webNoBrowser   bool
-	webDisableUI   bool
+	webPort      int
+	webHost      string
+	webNoBrowser bool
+	webDisableUI bool
 )
 
 func init() {

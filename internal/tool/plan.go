@@ -28,7 +28,7 @@ func (t *PlanTool) Schema() ToolSchema {
 				Type:        "string",
 				Description: "Action: create, update, execute, list",
 				Required:    true,
-				Enum:       []string{"create", "update", "execute", "list"},
+				Enum:        []string{"create", "update", "execute", "list"},
 			},
 			"plan_id": {
 				Type:        "string",

@@ -3,16 +3,16 @@ package api
 import "encoding/json"
 
 type Request struct {
-	Method  string          `json:"method"`
-	Params  json.RawMessage `json:"params,omitempty"`
+	Method string          `json:"method"`
+	Params json.RawMessage `json:"params,omitempty"`
 	ID     interface{}     `json:"id,omitempty"`
 }
 
 type Response struct {
 	JSONRPC string      `json:"jsonrpc"`
 	Result  interface{} `json:"result,omitempty"`
-	Error  *Error      `json:"error,omitempty"`
-	ID     interface{} `json:"id,omitempty"`
+	Error   *Error      `json:"error,omitempty"`
+	ID      interface{} `json:"id,omitempty"`
 }
 
 type Error struct {
@@ -23,7 +23,7 @@ type Error struct {
 type InitParams struct {
 	ProtocolVersion string `json:"protocolVersion"`
 	Capabilities    struct {
-		Tools    bool `json:"tools"`
+		Tools     bool `json:"tools"`
 		Resources bool `json:"resources"`
 	} `json:"capabilities"`
 	ClientInfo struct {

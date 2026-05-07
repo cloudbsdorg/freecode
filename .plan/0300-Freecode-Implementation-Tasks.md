@@ -360,9 +360,25 @@ Phase 7 ── 7.1 Server ── 7.2 Platform ── 7.3 Packaging ────�
 
 | Task | File | Status | Dependencies |
 |------|------|--------|--------------|
-| LSP client | `internal/lsp/client.go` | ⏳ Planned | 8.1 |
-| Diagnostics | `internal/lsp/diagnostic.go` | ⏳ Planned | 8.3.1 |
-| Server management | `internal/lsp/server.go` | ⏳ Planned | 8.3.1 |
+| LSP client core | `internal/lsp/lsp.go` | ✅ DONE | 8.1 |
+| Diagnostics | `internal/lsp/diagnostic.go` | ✅ DONE | 8.3.1 |
+| Server management | `internal/lsp/server.go` | ✅ DONE | 8.3.1 |
+| Language detection | `internal/lsp/language.go` | ✅ DONE | 8.3.1 |
+| Tool integration | `internal/tool/lsp.go` | ✅ DONE | 8.3.1 |
+
+**Implementation Status (2026-05-06):**
+- ✅ FIXED: `map[string]any{}{` → `map[string]any{` on 7 lines (syntax errors resolved)
+- ✅ DONE: Bidirectional handlers using `jsonrpc2.HandlerWithError`
+- ✅ DONE: stdin/stdout wrapper (`stdinStdout` struct)
+- ✅ DONE: LSP types (Client, Server, textDocument, Range, Position, etc.)
+- ✅ DONE: Connect, Initialize, Shutdown
+- ✅ DONE: DidOpen, DidChange notifications
+- ✅ DONE: Hover, Definition, References, Completion, DocumentSymbol, WorkspaceSymbol
+- ✅ DONE: Diagnostic store with 150ms debouncing
+- ✅ DONE: Server lifecycle management with auto-detection
+- ✅ DONE: Tool integration with all LSP operations
+
+**Reference:** `packages/opencode/src/lsp/client.ts` (697 lines) - bidirectional LSP client with push/pull diagnostics
 
 ### 8.4 PTY/Terminal
 
@@ -403,10 +419,17 @@ Phase 7 ── 7.1 Server ── 7.2 Platform ── 7.3 Packaging ────�
 
 ---
 
+## LSP Implementation Reference
+
+**Detailed Plan:** [LSP-IMPLEMENTATION.md](./LSP-IMPLEMENTATION.md)
+
+---
+
 ## Change Log
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-05-06 | 3.0 | Updated 8.3 LSP status to BROKEN, added implementation plan reference |
 | 2026-05-01 | 1.0 | Initial task breakdown |
 | 2026-05-02 | 2.0 | Phase 8 added - Module parity plan |
 

@@ -8,9 +8,9 @@ import (
 type Action string
 
 const (
-	ActionRead   Action = "read"
-	ActionWrite  Action = "write"
-	ActionDelete Action = "delete"
+	ActionRead    Action = "read"
+	ActionWrite   Action = "write"
+	ActionDelete  Action = "delete"
 	ActionExecute Action = "execute"
 )
 

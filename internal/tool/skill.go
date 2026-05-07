@@ -28,7 +28,7 @@ func (t *SkillTool) Schema() ToolSchema {
 				Type:        "string",
 				Description: "Action: list, invoke",
 				Required:    true,
-				Enum:       []string{"list", "invoke"},
+				Enum:        []string{"list", "invoke"},
 			},
 			"name": {
 				Type:        "string",

@@ -11,8 +11,8 @@ func TestLoadJSON(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "valid minimal json",
-			input: `{"shell":"/bin/zsh","yolo":true,"log_level":"debug"}`,
+			name:    "valid minimal json",
+			input:   `{"shell":"/bin/zsh","yolo":true,"log_level":"debug"}`,
 			wantErr: false,
 		},
 		{

@@ -21,8 +21,8 @@ type Storage interface {
 }
 
 type fileStorage struct {
-	mu   sync.RWMutex
-	dir  string
+	mu    sync.RWMutex
+	dir   string
 	locks map[string]*sync.Mutex
 }
 
@@ -31,7 +31,7 @@ func New(dir string) (Storage, error) {
 		return nil, err
 	}
 	return &fileStorage{
-		dir:  dir,
+		dir:   dir,
 		locks: make(map[string]*sync.Mutex),
 	}, nil
 }

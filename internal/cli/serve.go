@@ -22,9 +22,9 @@ var serveCmd = &cobra.Command{
 }
 
 var (
-	servePort    int
-	serveHost    string
-	serveMDNS    bool
+	servePort       int
+	serveHost       string
+	serveMDNS       bool
 	serveMDNSDomain string
 )
 

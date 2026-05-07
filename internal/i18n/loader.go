@@ -34,7 +34,7 @@ func newLoaderWithFS(defaultLang string, files fs.FS) (*Loader, error) {
 	bundle.RegisterUnmarshalFunc("toml", toml.Unmarshal)
 
 	l := &Loader{
-		bundle:  bundle,
+		bundle:   bundle,
 		language: tag,
 	}
 

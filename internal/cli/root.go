@@ -26,7 +26,7 @@ var rootCmd = &cobra.Command{
 
 Built with Go for FreeBSD 16, Linux, macOS, and IllumOS.`,
 	SilenceErrors: true,
-	SilenceUsage:   true,
+	SilenceUsage:  true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println(logo)
 		fmt.Println()

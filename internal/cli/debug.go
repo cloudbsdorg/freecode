@@ -213,11 +213,11 @@ func defaultDebugConfig() *debugConfig {
 }
 
 type debugConfig struct {
-	LogLevel  string
-	Shell     string
-	Timeout   int
-	Server    serverConfig
-	Agent     agentConfig
+	LogLevel string
+	Shell    string
+	Timeout  int
+	Server   serverConfig
+	Agent    agentConfig
 }
 
 type serverConfig struct {

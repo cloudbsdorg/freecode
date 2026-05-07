@@ -41,7 +41,7 @@ func (p *GoogleProvider) Generate(ctx context.Context, req *Request) (*Response,
 			},
 		},
 		"generationConfig": map[string]interface{}{
-			"temperature":  req.Temperature,
+			"temperature":     req.Temperature,
 			"maxOutputTokens": req.MaxTokens,
 		},
 	}

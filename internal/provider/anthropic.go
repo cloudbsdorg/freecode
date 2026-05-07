@@ -10,14 +10,14 @@ import (
 )
 
 type AnthropicProvider struct {
-	APIKey string
+	APIKey  string
 	BaseURL string
-	Client *http.Client
+	Client  *http.Client
 }
 
 func NewAnthropicProvider(apiKey string) *AnthropicProvider {
 	return &AnthropicProvider{
-		APIKey: apiKey,
+		APIKey:  apiKey,
 		BaseURL: "https://api.anthropic.com/v1",
 		Client: &http.Client{
 			Timeout: 60 * time.Second,

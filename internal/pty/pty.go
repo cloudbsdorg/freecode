@@ -51,8 +51,8 @@ func Start(ctx context.Context, command string, args []string, opts Options) (*P
 	}
 
 	p := &PTY{
-		ptty:    ptty,
-		cmd:     cmd,
+		ptty:     ptty,
+		cmd:      cmd,
 		stdoutCh: make(chan []byte, 1024),
 		stderrCh: make(chan []byte, 1024),
 		inputCh:  make(chan []byte, 1024),

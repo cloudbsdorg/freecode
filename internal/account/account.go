@@ -18,9 +18,9 @@ type AccessToken string
 type RefreshToken string
 
 type Info struct {
-	ID         AccountID
-	Email      string
-	URL        string
+	ID          AccountID
+	Email       string
+	URL         string
 	ActiveOrgID OrgID
 }
 
@@ -63,8 +63,8 @@ type AccountRepo interface {
 }
 
 type memoryAccountRepo struct {
-	mu      sync.RWMutex
-	active  *Info
+	mu       sync.RWMutex
+	active   *Info
 	accounts map[AccountID]*Info
 }
 

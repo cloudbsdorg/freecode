@@ -34,7 +34,7 @@ type Store struct {
 
 var (
 	globalStore *Store
-	once sync.Once
+	once        sync.Once
 )
 
 func DefaultPath() string {

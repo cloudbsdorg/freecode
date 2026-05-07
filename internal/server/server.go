@@ -11,9 +11,9 @@ import (
 )
 
 type Server struct {
-	Addr    string
-	Router  *chi.Mux
-	Server  *http.Server
+	Addr   string
+	Router *chi.Mux
+	Server *http.Server
 }
 
 func New(addr string) *Server {

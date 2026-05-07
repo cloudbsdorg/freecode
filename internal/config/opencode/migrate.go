@@ -13,8 +13,8 @@ func Migrate(oc *OpenCodeConfig) *config.Config {
 
 	if oc.Provider != "" {
 		cfg.Providers["default"] = config.ProviderConfig{
-			Type:   oc.Provider,
-			APIKey: oc.APIKey,
+			Type:    oc.Provider,
+			APIKey:  oc.APIKey,
 			BaseURL: oc.BaseURL,
 		}
 	}

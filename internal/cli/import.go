@@ -25,9 +25,9 @@ func init() {
 }
 
 type importSession struct {
-	ID        string `json:"id"`
-	Title     string `json:"title"`
-	CreatedAt string `json:"created_at"`
+	ID        string          `json:"id"`
+	Title     string          `json:"title"`
+	CreatedAt string          `json:"created_at"`
 	Messages  []importMessage `json:"messages,omitempty"`
 }
 

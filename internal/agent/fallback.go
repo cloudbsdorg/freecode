@@ -8,21 +8,21 @@ import (
 )
 
 type ModelFallback struct {
-	mu          sync.RWMutex
-	primary     string
-	fallbacks   []string
-	currentIdx  int
-	maxRetries  int
-	retryDelay  time.Duration
-	attempts    map[string]int
-	disabled    map[string]bool
+	mu         sync.RWMutex
+	primary    string
+	fallbacks  []string
+	currentIdx int
+	maxRetries int
+	retryDelay time.Duration
+	attempts   map[string]int
+	disabled   map[string]bool
 }
 
 type FallbackConfig struct {
-	Primary     string
-	Fallbacks   []string
-	MaxRetries  int
-	RetryDelay  time.Duration
+	Primary    string
+	Fallbacks  []string
+	MaxRetries int
+	RetryDelay time.Duration
 }
 
 func NewModelFallback(cfg FallbackConfig) *ModelFallback {

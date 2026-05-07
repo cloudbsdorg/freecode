@@ -11,11 +11,11 @@ var tabCmd = &cobra.Command{
 }
 
 var (
-	tabNew      bool
-	tabClose    string
-	tabList     bool
-	tabMove     string
-	tabRename   string
+	tabNew    bool
+	tabClose  string
+	tabList   bool
+	tabMove   string
+	tabRename string
 )
 
 func init() {

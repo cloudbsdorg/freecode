@@ -6,8 +6,8 @@ import (
 )
 
 type Env struct {
-	mu    sync.RWMutex
-	vars  map[string]string
+	mu   sync.RWMutex
+	vars map[string]string
 }
 
 func New() *Env {

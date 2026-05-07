@@ -29,11 +29,11 @@ type Session struct {
 }
 
 type Tab struct {
-	ID             string
-	Name           string
-	CreatedAt      time.Time
-	Sessions       []string
-	ActiveSession  string
+	ID            string
+	Name          string
+	CreatedAt     time.Time
+	Sessions      []string
+	ActiveSession string
 }
 
 type Message struct {

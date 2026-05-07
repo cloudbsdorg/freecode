@@ -10,9 +10,9 @@ import (
 )
 
 type GitHubCopilotProvider struct {
-	Token    string
-	BaseURL  string
-	Client   *http.Client
+	Token   string
+	BaseURL string
+	Client  *http.Client
 }
 
 func NewGitHubCopilotProvider(token string) *GitHubCopilotProvider {
@@ -33,7 +33,7 @@ func (p *GitHubCopilotProvider) Generate(ctx context.Context, req *Request) (*Re
 	url := p.BaseURL + "/chat/completions"
 
 	payload := map[string]interface{}{
-		"model": req.Model,
+		"model":    req.Model,
 		"messages": req.Messages,
 	}
 

@@ -10,12 +10,12 @@ import (
 )
 
 type BedrockProvider struct {
-	Region      string
-	Profile     string
-	Endpoint    string
-	AccessKey   string
-	SecretKey   string
-	Client      *http.Client
+	Region    string
+	Profile   string
+	Endpoint  string
+	AccessKey string
+	SecretKey string
+	Client    *http.Client
 }
 
 func NewBedrockProvider(region, profile, endpoint, accessKey, secretKey string) *BedrockProvider {

@@ -10,9 +10,9 @@ import (
 )
 
 type GitLabProvider struct {
-	Token    string
-	BaseURL  string
-	Client   *http.Client
+	Token   string
+	BaseURL string
+	Client  *http.Client
 }
 
 func NewGitLabProvider(token string) *GitLabProvider {
@@ -41,7 +41,7 @@ func (p *GitLabProvider) Generate(ctx context.Context, req *Request) (*Response,
 	}
 
 	payload := map[string]interface{}{
-		"model": req.Model,
+		"model":    req.Model,
 		"messages": messages,
 	}
 

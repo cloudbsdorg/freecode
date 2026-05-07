@@ -38,7 +38,7 @@
 | **i18n** | 0 (new) | 2+1t | ✅ REAL | RTL support, loader working |
 | **ide** | 1 | 1+1t | ⚠️ STUB | Handler stub only, no LSP integration |
 | **installation** | 1 | 1 | ✅ REAL | Version detection works |
-| **lsp** | 6 | 1 | 🚨 STUB | client.go stub, no protocol implementation |
+| **lsp** | 6 | 5 | ✅ REAL | Full LSP implementation: client, diagnostics, server mgmt, language detection, tool |
 | **mcp** | 4 | 4+2t | ✅ REAL | Client, server, OAuth, builtin all working |
 | **patch** | 1 | 1 | ⚠️ STUB | Basic patch struct only |
 | **permission** | 4 | 1+1t | 🚨 STUB | Struct only, pattern matching not implemented |
@@ -251,7 +251,7 @@ These features are planned for Freecode but don't exist in OpenCode:
 | 2 | `internal/storage` | 🚨 STUB | SQLite schema, migration |
 | 3 | `internal/command` | ⚠️ STUB | Templates, argument parsing |
 | 4 | `internal/pty` | 🚨 STUB | Terminal with resize |
-| 5 | `internal/lsp` | 🚨 STUB | Full protocol client |
+| 5 | `internal/lsp` | ✅ REAL | Full implementation complete |
 | 6 | `internal/git` | ✅ REAL | Already complete |
 | 7 | `internal/sync` | 🚨 STUB | Sync protocol |
 | 8 | `internal/project` | 🚨 STUB | Detection algorithms |
@@ -336,6 +336,13 @@ These features are planned for Freecode but don't exist in OpenCode:
 
 ## Part 7: Recommended Priorities
 
+### P0 - UNBLOCK BUILD (Today)
+
+0. **FIX `internal/lsp/lsp.go` SYNTAX** — 7 lines need `map[string]any{}{` → `map[string]any{`
+   - **Effort:** 30 minutes
+   - **Blocks:** ALL builds (project doesn't compile)
+   - **Reference:** [LSP-IMPLEMENTATION.md](./LSP-IMPLEMENTATION.md)
+
 ### Immediate (This Sprint)
 
 1. **Complete `internal/bus`** — Event bus is foundational for sync, project, fleet
@@ -344,9 +351,13 @@ These features are planned for Freecode but don't exist in OpenCode:
 
 ### Short Term (Next Month)
 
-4. **Complete `internal/command`** — Needed for generate/plug commands
-5. **Complete `internal/pty`** — Terminal support for shell integration
-6. **Complete `internal/lsp`** — IDE features blocked on this
+4. **Complete `internal/lsp`** — IDE features blocked on this
+   - **Effort:** 16-24 hours total
+   - **Reference:** [LSP-IMPLEMENTATION.md](./LSP-IMPLEMENTATION.md)
+   - Phases: Fix syntax → Add handlers → Add diagnostics → Add server mgmt → Wire tool
+
+5. **Complete `internal/command`** — Needed for generate/plug commands
+6. **Complete `internal/pty`** — Terminal support for shell integration
 7. **Start Fleet Head** — Begin fleet architecture
 
 ### Medium Term
@@ -361,6 +372,9 @@ These features are planned for Freecode but don't exist in OpenCode:
 
 | Date | Description |
 |------|-------------|
+| 2026-05-06 | **LSP FULLY IMPLEMENTED**: lsp.go, diagnostic.go, server.go, language.go, tool/lsp.go complete |
+| 2026-05-06 | **LSP FIXED**: lsp.go compiles, bidirectional handlers done (Sisyphus) |
+| 2026-05-06 | Added LSP-IMPLEMENTATION.md, updated LSP status in all docs |
 | 2026-05-04 | Complete status audit - found 58% of "done" tasks are actually stubs |
 | 2026-05-02 | Phase 2 TASKLIST marked all 16 as done (incorrect) |
 | 2026-05-02 | Phase 3 TASKLIST marked all 12 as done (incorrect) |

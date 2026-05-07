@@ -38,9 +38,9 @@ type ollamaMessage struct {
 }
 
 type ollamaRequest struct {
-	Model    string           `json:"model"`
-	Messages []ollamaMessage  `json:"messages"`
-	Stream   bool             `json:"stream"`
+	Model    string          `json:"model"`
+	Messages []ollamaMessage `json:"messages"`
+	Stream   bool            `json:"stream"`
 }
 
 type ollamaResponse struct {
@@ -48,10 +48,10 @@ type ollamaResponse struct {
 		Content string `json:"content"`
 		Role    string `json:"role"`
 	} `json:"message"`
-	Done           bool `json:"done"`
-	TotalDuration int64 `json:"total_duration"`
-	EvalCount     int   `json:"eval_count"`
-	PromptEvalCount int `json:"prompt_eval_count"`
+	Done            bool  `json:"done"`
+	TotalDuration   int64 `json:"total_duration"`
+	EvalCount       int   `json:"eval_count"`
+	PromptEvalCount int   `json:"prompt_eval_count"`
 }
 
 type ollamaTagsResponse struct {
@@ -156,7 +156,7 @@ func (p *OllamaProvider) ListModels(ctx context.Context) ([]Model, error) {
 				Reasoning:   false,
 				ToolCall:    false,
 				Vision:      false,
-				Audio:      false,
+				Audio:       false,
 			},
 			Cost: ModelCost{Input: 0, Output: 0},
 			Limit: ModelLimit{

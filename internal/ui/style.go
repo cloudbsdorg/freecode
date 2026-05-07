@@ -37,26 +37,26 @@ var (
 )
 
 type Theme struct {
-	ActiveTab    lipgloss.Style
-	InactiveTab  lipgloss.Style
-	TabBar       lipgloss.Style
-	Content      lipgloss.Style
-	StatusLine   lipgloss.Style
-	Error        lipgloss.Style
-	Warning      lipgloss.Style
-	Success      lipgloss.Style
+	ActiveTab   lipgloss.Style
+	InactiveTab lipgloss.Style
+	TabBar      lipgloss.Style
+	Content     lipgloss.Style
+	StatusLine  lipgloss.Style
+	Error       lipgloss.Style
+	Warning     lipgloss.Style
+	Success     lipgloss.Style
 }
 
 func DefaultTheme() Theme {
 	return Theme{
-		ActiveTab:    ActiveTab,
-		InactiveTab:  InactiveTab,
-		TabBar:       TabBar,
-		Content:      Content,
-		StatusLine:   StatusLine,
-		Error:        Error,
-		Warning:      Warning,
-		Success:      Success,
+		ActiveTab:   ActiveTab,
+		InactiveTab: InactiveTab,
+		TabBar:      TabBar,
+		Content:     Content,
+		StatusLine:  StatusLine,
+		Error:       Error,
+		Warning:     Warning,
+		Success:     Success,
 	}
 }
 

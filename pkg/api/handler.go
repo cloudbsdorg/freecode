@@ -47,7 +47,7 @@ func (h *Handler) handle(req *Request) *Response {
 			Result: map[string]interface{}{
 				"protocolVersion": "2024-11-05",
 				"capabilities": map[string]interface{}{
-					"tools":    true,
+					"tools":     true,
 					"resources": true,
 				},
 				"serverInfo": map[string]interface{}{
