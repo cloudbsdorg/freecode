@@ -1,6 +1,6 @@
 # Freecode — Implementation Status & Revised Plan
 
-**Last Updated:** 2026-05-04
+**Last Updated:** 2026-05-07
 **Author:** Mark LaPointe <mark@cloudbsd.org>
 **Build Status:** ✅ Builds Successfully | ⚠️ Tests Unknown (timeout)
 
@@ -372,6 +372,7 @@ These features are planned for Freecode but don't exist in OpenCode:
 
 | Date | Description |
 |------|-------------|
+| 2026-05-07 | **TUI STARTUP + SESSION INTEGRATION**: Args context provider (`internal/args`), CLI flags (`--continue`, `--session`, `--agent`, `--model`, `--prompt`, `--fork`), session store integration, `handleInit()` for auto-resume |
 | 2026-05-06 | **LSP FULLY IMPLEMENTED**: lsp.go, diagnostic.go, server.go, language.go, tool/lsp.go complete |
 | 2026-05-06 | **LSP FIXED**: lsp.go compiles, bidirectional handlers done (Sisyphus) |
 | 2026-05-06 | Added LSP-IMPLEMENTATION.md, updated LSP status in all docs |

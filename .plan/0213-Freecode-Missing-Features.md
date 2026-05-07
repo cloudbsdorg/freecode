@@ -195,7 +195,7 @@ Opencode has extensive context management in `packages/opencode/src/cli/cmd/tui/
 
 | Context | opencode | freecode | Status |
 |---------|----------|----------|--------|
-| Args | ✅ args.tsx | ❌ | Missing |
+| Args | ✅ args.tsx | ✅ | Done - `internal/args/args.go` |
 | Directory | ✅ directory.ts | ❌ | Missing |
 | Editor (zed) | ✅ editor-zed.ts | ❌ | Missing |
 | Editor | ✅ editor.ts | ❌ | Missing |
@@ -213,6 +213,30 @@ Opencode has extensive context management in `packages/opencode/src/cli/cmd/tui/
 | Sync | ✅ sync.tsx | ❌ | Missing |
 | Theme | ✅ theme.tsx (31002 bytes) | ❌ | Missing |
 | TUI Config | ✅ tui-config.tsx | ❌ | Missing |
+
+#### CLI Arguments ✅ DONE
+
+Freecode now supports all major CLI arguments:
+
+| Flag | opencode | freecode | Status |
+|------|----------|----------|--------|
+| `--continue` | ✅ | ✅ | Done |
+| `--session` | ✅ | ✅ | Done |
+| `--agent` | ✅ | ✅ | Done |
+| `--model` | ✅ | ✅ | Done |
+| `--prompt` | ✅ | ✅ | Done |
+| `--fork` | ✅ | ✅ | Done |
+
+**Implementation:**
+- `internal/args/args.go` - Args struct definition
+- `internal/cli/root.go` - CLI flag registration
+- `internal/ui/model.go` - `handleInit()` processes args on startup
+
+**Session Integration:**
+- Sessions loaded from `~/.config/freecode/sessions/`
+- `--continue` auto-resumes most recent session
+- `--session` loads specific session by ID
+- Sidebar populated with session list sorted by update time
 
 ---
 
@@ -486,7 +510,7 @@ Instead of trying to port TypeScript/Solid.js:
 
 **Author:** Mark LaPointe <mark@cloudbsd.org>
 
-**Last Updated:** 2026-05-02 (Phase 3: 12 remaining modules added)
+**Last Updated:** 2026-05-07 (Args context provider + CLI arguments + session store integration)
 
 ---
 

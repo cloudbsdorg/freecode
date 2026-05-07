@@ -39,7 +39,7 @@ func NewInputArea() *InputArea {
 		value:       "",
 		cursorPos:   0,
 		prompt:      "> ",
-		placeholder: "Type a message...",
+		placeholder: "Ask anything... (e.g., 'Fix a bug', 'Explain this code')",
 		focused:     true,
 		width:       80,
 		height:      3,
@@ -157,26 +157,23 @@ func (in *InputArea) Submit() string {
 }
 
 func (in *InputArea) Render() string {
-	display := in.value
-	placeholder := in.placeholder
+	promptStr := PromptStyle.Render(in.prompt)
+	promptLen := len(in.prompt)
 
-	if display == "" && !in.focused {
-		placeholder = lipgloss.NewStyle().
+	display := in.value
+	if display == "" {
+		placeholder := lipgloss.NewStyle().
 			Foreground(lipgloss.Color("#606060")).
 			Italic(true).
-			Render(placeholder)
+			Render(in.placeholder)
 		display = placeholder
 	}
 
-	before := ""
-	after := ""
-	if in.cursorPos <= len(in.value) {
-		before = in.value[:in.cursorPos]
-		after = in.value[in.cursorPos:]
-	} else {
-		before = in.value
-		after = ""
-	}
+	before := display[:in.cursorPos]
+	after := display[in.cursorPos:]
+
+	inputBefore := InputStyle.Render(before)
+	inputAfter := InputStyle.Render(after)
 
 	var cursor string
 	if in.focused {
@@ -188,29 +185,37 @@ func (in *InputArea) Render() string {
 		cursor = " "
 	}
 
-	promptStr := PromptStyle.Render(in.prompt)
-	inputBefore := InputStyle.Render(before)
-	inputAfter := InputStyle.Render(after)
+	maxWidth := in.width - 2
+	totalLen := promptLen + len(before) + 1 + len(after)
+
+	if totalLen > maxWidth && maxWidth > promptLen {
+		availInput := maxWidth - promptLen - 1
+		if availInput < 0 {
+			availInput = 0
+		}
+		if len(before) > availInput {
+			before = before[len(before)-availInput:]
+			if len(before) > 3 {
+				before = "..." + before[3:]
+			}
+			after = ""
+		} else if len(before)+len(after) > availInput {
+			availAfter := availInput - len(before)
+			if availAfter < 0 {
+				availAfter = 0
+			}
+			if availAfter < len(after) && availAfter > 3 {
+				after = after[:availAfter-3] + "..."
+			} else if availAfter <= 3 {
+				after = ""
+			}
+		}
+		inputBefore = InputStyle.Render(before)
+		inputAfter = InputStyle.Render(after)
+	}
 
 	line := promptStr + inputBefore + cursor + inputAfter
 
-	availWidth := in.width - 4
-	if len(line) > availWidth && availWidth > 0 {
-		prefixLen := lipgloss.Width(promptStr)
-		inputLen := lipgloss.Width(inputBefore) + 1 + lipgloss.Width(inputAfter)
-		if prefixLen + inputLen > availWidth {
-			maxInput := availWidth - prefixLen - 1
-			if maxInput > 0 {
-				if lipgloss.Width(inputBefore) > maxInput {
-					cutoff := lipgloss.Width(inputBefore) - maxInput
-					if cutoff < lipgloss.Width(inputBefore) {
-						inputBefore = inputBefore[cutoff:]
-					}
-				}
-			}
-		}
-		line = promptStr + inputBefore + cursor + inputAfter
-	}
-
-	return InputContainerStyle.Render(line)
+	style := InputContainerStyle.Width(in.width)
+	return style.Render(line)
 }

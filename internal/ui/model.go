@@ -2,12 +2,17 @@ package ui
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/common-nighthawk/go-figure"
+	"github.com/freecode/freecode/internal/args"
+	"github.com/freecode/freecode/internal/session"
 	"github.com/google/uuid"
 )
 
@@ -20,20 +25,23 @@ const (
 
 type Model struct {
 	width           int
-	height         int
+	height          int
 	route           Route
 	tabBar          *TabBarComponent
 	statusBar       *StatusBar
 	messageList     *MessageList
-	inputArea      *InputArea
-	commandPalette *CommandPalette
-	sidebar        *Sidebar
-	quitting       bool
-	focus          focusArea
-	yolo           bool
-	activeTabIdx   int
-	tabs           []*TabState
-	banner         string
+	inputArea       *InputArea
+	commandPalette  *CommandPalette
+	sidebar         *Sidebar
+	quitting        bool
+	focus           focusArea
+	yolo            bool
+	activeTabIdx    int
+	tabs            []*TabState
+	banner          string
+	cliArgs         args.Args
+	promptSubmitted bool
+	sessions        []*session.Session
 }
 
 func getBanner() string {
@@ -55,10 +63,10 @@ type TabState struct {
 	SessionID string
 }
 
-func NewModel() *Model {
+func NewModel(args args.Args) *Model {
 	m := &Model{
 		width:           80,
-		height:         24,
+		height:          24,
 		route:           RouteHome,
 		tabBar:          NewTabBar(),
 		statusBar:       NewStatusBar(),
@@ -68,15 +76,27 @@ func NewModel() *Model {
 		sidebar:         NewSidebar(),
 		quitting:        false,
 		focus:           focusInput,
-		yolo:           false,
-		activeTabIdx:   0,
+		yolo:            false,
+		activeTabIdx:    0,
 		tabs:           make([]*TabState, 0),
 		banner:         getBanner(),
+		cliArgs:        args,
+		promptSubmitted: false,
 	}
 
 	m.tabBar.AddTab("main", "main")
 	m.tabs = append(m.tabs, &TabState{ID: uuid.New().String(), Name: "main", SessionID: ""})
 	m.statusBar.SetTabCount(1)
+
+	if args.Agent != "" {
+		m.statusBar.SetAgent(args.Agent)
+	}
+	if args.Model != "" {
+		m.statusBar.SetModel(args.Model)
+	}
+	if args.Continue || args.SessionID != "" {
+		m.route = RouteSession
+	}
 
 	m.registerCommands()
 
@@ -163,7 +183,10 @@ func (m *Model) registerCommands() {
 }
 
 func (m *Model) Init() tea.Cmd {
-	return nil
+	return func() tea.Msg {
+		time.Sleep(100 * time.Millisecond)
+		return initTick{}
+	}
 }
 
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -172,6 +195,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = msg.Width
 		m.height = msg.Height
 		m.updateLayout()
+
+	case initTick:
+		m.handleInit()
 
 	case tea.KeyMsg:
 		return m.handleKey(msg)
@@ -579,3 +605,102 @@ type SwitchTabMsg struct {
 type ToggleYolo struct{}
 
 type quitMsg struct{}
+
+type initTick struct{}
+
+func (m *Model) handleInit() {
+	m.loadSessions()
+
+	if m.cliArgs.Prompt != "" && !m.promptSubmitted {
+		m.promptSubmitted = true
+		m.inputArea.SetValue(m.cliArgs.Prompt)
+		m.route = RouteSession
+		m.addUserMessage(m.cliArgs.Prompt)
+		return
+	}
+
+	if m.cliArgs.SessionID != "" {
+		m.route = RouteSession
+		m.loadSessionMessages(m.cliArgs.SessionID)
+		return
+	}
+
+	if m.cliArgs.Continue && len(m.sessions) > 0 {
+		m.route = RouteSession
+		m.loadSessionMessages(m.sessions[0].ID)
+	}
+}
+
+func (m *Model) loadSessions() {
+	store := session.NewStore(filepath.Join(m.configDir(), "sessions"))
+	sessions, err := store.ListSessions()
+	if err != nil || sessions == nil {
+		return
+	}
+
+	sort.Slice(sessions, func(i, j int) bool {
+		return sessions[i].UpdatedAt.After(sessions[j].UpdatedAt)
+	})
+
+	m.sessions = sessions
+
+	items := make([]SidebarItem, 0, len(sessions))
+	for _, sess := range sessions {
+		item := SidebarItem{
+			ID:        sess.ID,
+			Title:     sess.Title,
+			Timestamp: formatTimestamp(sess.UpdatedAt),
+		}
+		if item.Title == "" {
+			item.Title = "Untitled session"
+		}
+		items = append(items, item)
+	}
+
+	m.sidebar.SetItems(items)
+}
+
+func (m *Model) loadSessionMessages(sessionID string) {
+	store := session.NewStore(filepath.Join(m.configDir(), "sessions"))
+	sess, err := store.LoadSession(sessionID)
+	if err != nil || sess == nil {
+		return
+	}
+
+	for _, msg := range sess.Messages {
+		m.addUserMessage(msg.Content)
+	}
+}
+
+func (m *Model) configDir() string {
+	homeDir, _ := os.UserHomeDir()
+	if homeDir == "" {
+		homeDir = os.Getenv("HOME")
+	}
+	if homeDir == "" {
+		return ".freecode"
+	}
+	return filepath.Join(homeDir, ".config", "freecode")
+}
+
+func formatTimestamp(t time.Time) string {
+	now := time.Now()
+	diff := now.Sub(t)
+
+	if diff < time.Minute {
+		return "just now"
+	}
+	if diff < time.Hour {
+		mins := int(diff.Minutes())
+		return fmt.Sprintf("%dm ago", mins)
+	}
+	if diff < 24*time.Hour {
+		hours := int(diff.Hours())
+		return fmt.Sprintf("%dh ago", hours)
+	}
+	if diff < 7*24*time.Hour {
+		days := int(diff.Hours() / 24)
+		return fmt.Sprintf("%dd ago", days)
+	}
+	return t.Format("Jan 2")
+}

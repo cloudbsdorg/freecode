@@ -4,39 +4,40 @@ import (
 	"fmt"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
-	"github.com/common-nighthawk/go-figure"
+	"github.com/freecode/freecode/internal/args"
 	"github.com/freecode/freecode/internal/ui"
 	"github.com/spf13/cobra"
 )
 
 var (
-	cfgFile string
-	yolo    bool
+	cfgFile    string
+	yolo       bool
+	continue_  bool // 'continue' is reserved keyword
+	tuiSession string
+	tuiAgent   string
+	tuiModel   string
+	tuiPrompt  string
+	tuiFork    bool
 )
-
-var bannerStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#007ACC")).
-	Bold(true)
-
-func getBanner() string {
-	f := figure.NewFigure("FREECODE", "cosmike", true)
-	return bannerStyle.Render(f.String())
-}
 
 var rootCmd = &cobra.Command{
 	Use:   "freecode",
 	Short: "Freecode - AI coding assistant",
 	Long: `Freecode is a platform-independent AI coding assistant.
 
-Built with Go for FreeBSD 16, Linux, macOS, and IllumOS.`,
+Built with Go for FreeBSD, Linux, macOS, and IllumOS.`,
 	SilenceErrors: true,
 	SilenceUsage:  true,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println(getBanner())
-		fmt.Println()
-
-		p := tea.NewProgram(ui.NewModel(), tea.WithAltScreen())
+	RunE: func(cmd *cobra.Command, cmdArgs []string) error {
+		tuiArgs := args.Args{
+			Continue:  continue_,
+			SessionID: tuiSession,
+			Agent:     tuiAgent,
+			Model:     tuiModel,
+			Prompt:    tuiPrompt,
+			Fork:      tuiFork,
+		}
+		p := tea.NewProgram(ui.NewModel(tuiArgs), tea.WithAltScreen())
 		if _, err := p.Run(); err != nil {
 			return fmt.Errorf("failed to start TUI: %w", err)
 		}
@@ -51,6 +52,12 @@ func Execute() error {
 func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ~/.config/freecode/config.yaml)")
 	rootCmd.PersistentFlags().BoolVar(&yolo, "yolo", false, "skip all confirmations")
+	rootCmd.PersistentFlags().BoolVar(&continue_, "continue", false, "continue last session")
+	rootCmd.PersistentFlags().StringVar(&tuiSession, "session", "", "session ID to resume")
+	rootCmd.PersistentFlags().StringVar(&tuiAgent, "agent", "", "agent to use (e.g., sisyphus, oracle)")
+	rootCmd.PersistentFlags().StringVar(&tuiModel, "model", "", "model to use (e.g., provider/model)")
+	rootCmd.PersistentFlags().StringVar(&tuiPrompt, "prompt", "", "prompt to execute (non-interactive)")
+	rootCmd.PersistentFlags().BoolVar(&tuiFork, "fork", false, "fork the session before executing")
 	rootCmd.AddCommand(runCmd)
 	rootCmd.AddCommand(agentCmd)
 	rootCmd.AddCommand(sessionCmd)
