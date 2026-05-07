@@ -2,29 +2,43 @@ package ui
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/common-nighthawk/go-figure"
 	"github.com/google/uuid"
-	"github.com/freecode/freecode/internal/session"
+)
+
+type Route string
+
+const (
+	RouteHome    Route = "home"
+	RouteSession Route = "session"
 )
 
 type Model struct {
-	width            int
-	height          int
+	width           int
+	height         int
+	route           Route
 	tabBar          *TabBarComponent
 	statusBar       *StatusBar
 	messageList     *MessageList
-	inputArea       *InputArea
-	commandPalette  *CommandPalette
-	sidebar         *Sidebar
-	sessionManager  *session.Manager
-	quitting        bool
-	focus           focusArea
-	yolo            bool
-	activeTabIdx    int
-	tabs            []*TabState
+	inputArea      *InputArea
+	commandPalette *CommandPalette
+	sidebar        *Sidebar
+	quitting       bool
+	focus          focusArea
+	yolo           bool
+	activeTabIdx   int
+	tabs           []*TabState
+	banner         string
+}
+
+func getBanner() string {
+	f := figure.NewFigure("FREECODE", "cosmike", true)
+	return f.String()
 }
 
 type focusArea int
@@ -45,21 +59,24 @@ func NewModel() *Model {
 	m := &Model{
 		width:           80,
 		height:         24,
-		tabBar:         NewTabBar(),
-		statusBar:      NewStatusBar(),
-		messageList:    NewMessageList(),
-		inputArea:      NewInputArea(),
-		commandPalette: NewCommandPalette(),
-		sidebar:        NewSidebar(),
-		quitting:       false,
-		focus:          focusInput,
+		route:           RouteHome,
+		tabBar:          NewTabBar(),
+		statusBar:       NewStatusBar(),
+		messageList:     NewMessageList(),
+		inputArea:       NewInputArea(),
+		commandPalette:  NewCommandPalette(),
+		sidebar:         NewSidebar(),
+		quitting:        false,
+		focus:           focusInput,
 		yolo:           false,
 		activeTabIdx:   0,
 		tabs:           make([]*TabState, 0),
+		banner:         getBanner(),
 	}
 
 	m.tabBar.AddTab("main", "main")
 	m.tabs = append(m.tabs, &TabState{ID: uuid.New().String(), Name: "main", SessionID: ""})
+	m.statusBar.SetTabCount(1)
 
 	m.registerCommands()
 
@@ -94,6 +111,7 @@ func (m *Model) registerCommands() {
 		Category:    "View",
 		Handler: func() {
 			m.sidebar.Toggle()
+			m.updateLayout()
 		},
 	})
 
@@ -124,20 +142,22 @@ func (m *Model) registerCommands() {
 	})
 
 	m.commandPalette.Register(PaletteCommand{
-		Name:        "Split Vertical",
-		Description: "Split the current view vertically",
-		Keybind:     "Ctrl+Shift+V",
-		Category:    "Tab",
+		Name:        "Go to Home",
+		Description: "Return to home screen",
+		Keybind:     "Ctrl+H",
+		Category:    "Navigation",
 		Handler: func() {
+			m.route = RouteHome
 		},
 	})
 
 	m.commandPalette.Register(PaletteCommand{
-		Name:        "Split Horizontal",
-		Description: "Split the current view horizontally",
-		Keybind:     "Ctrl+Shift+H",
-		Category:    "Tab",
+		Name:        "Start Session",
+		Description: "Start a new session",
+		Keybind:     "Enter",
+		Category:    "Navigation",
 		Handler: func() {
+			m.route = RouteSession
 		},
 	})
 }
@@ -151,15 +171,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
-		m.tabBar.SetWidth(m.width)
-		m.statusBar.SetWidth(m.width)
-		m.messageList.SetWidth(m.width - (m.sidebar.Width() + 4))
-		m.messageList.SetHeight(m.height - 6)
-		m.inputArea.SetWidth(m.width - 4)
-		m.commandPalette.SetWidth(m.width / 2)
-		m.commandPalette.SetHeight(m.height / 2)
-		m.sidebar.SetWidth(42)
-		m.sidebar.SetHeight(m.height - 3)
+		m.updateLayout()
 
 	case tea.KeyMsg:
 		return m.handleKey(msg)
@@ -183,6 +195,32 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	return m, nil
+}
+
+func (m *Model) updateLayout() {
+	sidebarWidth := 0
+	if m.sidebar.IsOpen() {
+		sidebarWidth = 42
+		if sidebarWidth > m.width/4 {
+			sidebarWidth = m.width / 4
+		}
+	}
+
+	contentWidth := m.width - sidebarWidth - 4
+	if contentWidth < 40 {
+		contentWidth = m.width - 4
+		sidebarWidth = 0
+	}
+
+	m.tabBar.SetWidth(m.width)
+	m.statusBar.SetWidth(m.width)
+	m.messageList.SetWidth(contentWidth)
+	m.messageList.SetHeight(m.height - 6)
+	m.inputArea.SetWidth(contentWidth)
+	m.commandPalette.SetWidth(m.width / 2)
+	m.commandPalette.SetHeight(m.height / 2)
+	m.sidebar.SetWidth(sidebarWidth)
+	m.sidebar.SetHeight(m.height - 3)
 }
 
 func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
@@ -219,10 +257,14 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 	case "ctrl+b":
 		m.sidebar.Toggle()
+		m.updateLayout()
 
 	case "ctrl+y":
 		m.yolo = !m.yolo
 		m.statusBar.SetYOLO(m.yolo)
+
+	case "ctrl+h":
+		m.route = RouteHome
 
 	case "tab":
 		m.tabBar.NextTab()
@@ -231,9 +273,6 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	case "shift+tab":
 		m.tabBar.PrevTab()
 		m.activeTabIdx = m.tabBar.activeIdx
-
-	case "ctrl+shift+v":
-	case "ctrl+shift+h":
 
 	case "j", "down":
 		if m.focus == focusSidebar {
@@ -253,31 +292,39 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			m.messageList.ScrollUp()
 		}
 
-	case "enter":
-		if m.focus == focusSidebar {
-			selected := m.sidebar.SelectedItem()
-			if selected != nil {
-				m.switchTabByID(selected.ID)
-			}
-		}
-
 	case "g":
 		m.messageList.ScrollToBottom()
 
 	case "G":
 		m.messageList.scrollToTop()
+
+	case "enter":
+		if m.focus == focusSidebar {
+			selected := m.sidebar.SelectedItem()
+			if selected != nil {
+				m.route = RouteSession
+				m.switchTabByID(selected.ID)
+			}
+		} else if m.route == RouteHome {
+			value := m.inputArea.Submit()
+			if value != "" {
+				m.route = RouteSession
+				m.addUserMessage(value)
+			}
+		}
 	}
 
 	if m.focus == focusInput {
 		switch msg.Type {
 		case tea.KeyRunes, tea.KeyLeft, tea.KeyRight, tea.KeyHome, tea.KeyEnd,
-			tea.KeyBackspace, tea.KeyDelete, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
+			tea.KeyBackspace, tea.KeyDelete, tea.KeyUp, tea.KeyDown:
 			m.inputArea.HandleKey(msg)
 
-			if msg.Type == tea.KeyEnter && msg.Runes != nil {
+			if msg.Type == tea.KeyEnter && len(msg.Runes) > 0 {
 				value := m.inputArea.Submit()
 				if value != "" {
 					m.addUserMessage(value)
+					m.route = RouteSession
 				}
 			}
 		}
@@ -293,31 +340,139 @@ func (m *Model) View() string {
 			Render("Goodbye!\n")
 	}
 
-	tabBar := m.tabBar.Render()
+	switch m.route {
+	case RouteHome:
+		return m.renderHome()
+	case RouteSession:
+		return m.renderSession()
+	default:
+		return m.renderHome()
+	}
+}
 
-	var content string
-	if m.sidebar.IsOpen() {
-		content = m.sidebar.Render() + "\n" + m.messageList.Render()
-	} else {
-		content = m.messageList.Render()
+func (m *Model) renderHome() string {
+	bannerLines := strings.Split(m.banner, "\n")
+	bannerHeight := len(bannerLines)
+	bannerWidth := 0
+	for _, line := range bannerLines {
+		if len(line) > bannerWidth {
+			bannerWidth = len(line)
+		}
 	}
 
-	content += "\n" + m.inputArea.Render()
+	startY := (m.height - bannerHeight - 5) / 2
+	if startY < 0 {
+		startY = 0
+	}
 
-	statusBar := m.statusBar.Render()
+	var s strings.Builder
+
+	for i := 0; i < startY; i++ {
+		s.WriteString("\n")
+	}
+
+	for _, line := range bannerLines {
+		padding := (m.width - len(line)) / 2
+		if padding < 0 {
+			padding = 0
+		}
+		s.WriteString(strings.Repeat(" ", padding))
+		s.WriteString(line)
+		s.WriteString("\n")
+	}
+
+	s.WriteString("\n")
+
+	inputWidth := m.width / 2
+	if inputWidth < 40 {
+		inputWidth = 40
+	}
+	inputPadding := (m.width - inputWidth) / 2
+	inputContent := m.inputArea.Render()
+	for _, line := range strings.Split(inputContent, "\n") {
+		s.WriteString(strings.Repeat(" ", inputPadding))
+		s.WriteString(line)
+		s.WriteString("\n")
+	}
+
+	s.WriteString("\n")
+
+	hintY := m.height - 3
+	currentY := startY + bannerHeight + 5
+	for currentY < hintY {
+		s.WriteString("\n")
+		currentY++
+	}
+
+	hintStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#606060")).
+		Align(lipgloss.Center)
+
+	hintText := "Ctrl+P: Command Palette  |  Ctrl+B: Toggle Sidebar  |  Ctrl+H: Home  |  Ctrl+Q: Quit"
+	hintPadding := (m.width - len(hintText)) / 2
+	if hintPadding > 0 {
+		hintText = strings.Repeat(" ", hintPadding) + hintText
+	}
+	s.WriteString(hintStyle.Render(hintText))
+	s.WriteString("\n")
+
+	s.WriteString(m.statusBar.Render())
 
 	paletteView := ""
 	if m.commandPalette.IsOpen() {
-		paletteView = m.commandPalette.Render()
+		paletteView = "\n" + m.commandPalette.Render()
 	}
 
-	result := tabBar + "\n" + content + "\n" + statusBar
+	return s.String() + paletteView
+}
 
-	if paletteView != "" {
-		result += "\n" + paletteView
+func (m *Model) renderSession() string {
+	tabBar := m.tabBar.Render()
+
+	var content string
+
+	if m.sidebar.IsOpen() {
+		sidebarWidth := m.sidebar.Width()
+		if sidebarWidth > 0 {
+			sidebarRender := m.sidebar.Render()
+			content = sidebarRender + " " + m.renderSessionContent()
+		} else {
+			content = m.renderSessionContent()
+		}
+	} else {
+		content = m.renderSessionContent()
 	}
 
-	return result
+	input := m.inputArea.Render()
+	status := m.statusBar.Render()
+
+	paletteView := ""
+	if m.commandPalette.IsOpen() {
+		paletteView = "\n" + m.commandPalette.Render()
+	}
+
+	return tabBar + "\n" + content + "\n" + input + "\n" + status + paletteView
+}
+
+func (m *Model) renderSessionContent() string {
+	sidebarWidth := 0
+	if m.sidebar.IsOpen() {
+		sidebarWidth = m.sidebar.Width()
+	}
+	contentWidth := m.width - sidebarWidth - 4
+
+	msgs := m.messageList.Render()
+	if len(msgs) > contentWidth {
+		lines := strings.Split(msgs, "\n")
+		for i, line := range lines {
+			if len(line) > contentWidth {
+				lines[i] = line[:contentWidth-3] + "..."
+			}
+		}
+		msgs = strings.Join(lines, "\n")
+	}
+
+	return msgs
 }
 
 func (m *Model) addTab() {

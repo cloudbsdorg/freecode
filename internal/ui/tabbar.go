@@ -94,25 +94,19 @@ func (t *TabBarComponent) Render() string {
 		return ""
 	}
 
-	const (
-		tabPrefix    = "["
-		tabSuffix    = "]"
-		newTabButton = "[+]"
-		separator    = ""
-	)
-
-	fixedWidth := len(tabPrefix) + len(tabSuffix) + len(newTabButton) + len(separator)
-	availableWidth := t.width - fixedWidth
-
-	if availableWidth < 20 {
-		availableWidth = 80
-	}
+	tabPrefix := "["
+	tabSuffix := "]"
+	newTabButton := "[+]"
 
 	tabStr := ""
 	for i, tab := range t.tabs {
 		name := tab.Name
-		if len(name) > 20 {
-			name = name[:17] + "..."
+		maxNameLen := (t.width - len(newTabButton))/(len(tabPrefix)+len(tabSuffix)+1) - 2
+		if maxNameLen < 5 {
+			maxNameLen = 10
+		}
+		if len(name) > maxNameLen {
+			name = name[:maxNameLen-3] + "..."
 		}
 
 		var itemStr string
@@ -121,25 +115,27 @@ func (t *TabBarComponent) Render() string {
 		} else {
 			itemStr = InactiveTabStyle.Render(fmt.Sprintf("%s%s%s", tabPrefix, name, tabSuffix))
 		}
-		tabStr += itemStr + separator
+		tabStr += itemStr
 	}
 
 	newTabStr := InactiveTabStyle.Render(newTabButton)
 
-	totalLen := len(tabStr) + len(newTabStr)
-	if totalLen > t.width && t.width > 0 {
-		maxTabLen := (t.width - len(newTabStr)) / (len(tabPrefix) + len(tabSuffix) + 1)
+	totalWidth := lipgloss.Width(tabStr) + lipgloss.Width(newTabStr)
+	if totalWidth > t.width && t.width > 0 {
+		availPerTab := (t.width - lipgloss.Width(newTabStr)) / len(t.tabs)
+		if availPerTab < 6 {
+			availPerTab = 6
+		}
 		truncated := ""
-		for i := 0; i < len(t.tabs) && i < maxTabLen; i++ {
-			tab := t.tabs[i]
+		for i, tab := range t.tabs {
 			name := tab.Name
-			if len(name) > 15 {
-				name = name[:12] + "..."
+			if len(name) > availPerTab-2 {
+				name = name[:availPerTab-5] + ".."
 			}
 			if i == t.activeIdx {
-				truncated += ActiveTabStyle.Render(fmt.Sprintf("%s%s%s", tabPrefix, name, tabSuffix)) + separator
+				truncated += ActiveTabStyle.Render(fmt.Sprintf("%s%s%s", tabPrefix, name, tabSuffix))
 			} else {
-				truncated += InactiveTabStyle.Render(fmt.Sprintf("%s%s%s", tabPrefix, name, tabSuffix)) + separator
+				truncated += InactiveTabStyle.Render(fmt.Sprintf("%s%s%s", tabPrefix, name, tabSuffix))
 			}
 		}
 		tabStr = truncated
