@@ -27,3 +27,5 @@ Thumbs.db
 # Session data
 *.session
 *.db
+*.png
+

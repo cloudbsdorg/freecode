@@ -6,9 +6,11 @@ import (
 )
 
 var InputContainerStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#2D2D2D")).
+	Background(lipgloss.Color("#1E1E1E")).
 	Foreground(lipgloss.Color("#E0E0E0")).
-	Padding(1, 2)
+	BorderForeground(lipgloss.Color("#3D3D3D")).
+	BorderStyle(lipgloss.NormalBorder()).
+	Padding(0, 1)
 
 var InputStyle = lipgloss.NewStyle().
 	Foreground(lipgloss.Color("#FFFFFF"))
@@ -156,34 +158,58 @@ func (in *InputArea) Submit() string {
 
 func (in *InputArea) Render() string {
 	display := in.value
-	if !in.focused && display == "" {
-		display = in.placeholder
-		_ = PlaceholderStyle
+	placeholder := in.placeholder
+
+	if display == "" && !in.focused {
+		placeholder = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#606060")).
+			Italic(true).
+			Render(placeholder)
+		display = placeholder
 	}
 
 	before := ""
 	after := ""
-	if in.cursorPos <= len(display) {
-		before = display[:in.cursorPos]
-		after = display[in.cursorPos:]
+	if in.cursorPos <= len(in.value) {
+		before = in.value[:in.cursorPos]
+		after = in.value[in.cursorPos:]
 	} else {
-		before = display
+		before = in.value
 		after = ""
 	}
 
-	cursor := " "
+	var cursor string
 	if in.focused {
 		cursor = lipgloss.NewStyle().
-			Reverse(true).
+			Background(lipgloss.Color("#007ACC")).
+			Foreground(lipgloss.Color("#FFFFFF")).
 			Render(" ")
+	} else {
+		cursor = " "
 	}
 
 	promptStr := PromptStyle.Render(in.prompt)
-	inputStr := InputStyle.Render(before) + cursor + InputStyle.Render(after)
+	inputBefore := InputStyle.Render(before)
+	inputAfter := InputStyle.Render(after)
 
-	line := promptStr + inputStr
-	if len(line) > in.width {
-		line = line[:in.width]
+	line := promptStr + inputBefore + cursor + inputAfter
+
+	availWidth := in.width - 4
+	if len(line) > availWidth && availWidth > 0 {
+		prefixLen := lipgloss.Width(promptStr)
+		inputLen := lipgloss.Width(inputBefore) + 1 + lipgloss.Width(inputAfter)
+		if prefixLen + inputLen > availWidth {
+			maxInput := availWidth - prefixLen - 1
+			if maxInput > 0 {
+				if lipgloss.Width(inputBefore) > maxInput {
+					cutoff := lipgloss.Width(inputBefore) - maxInput
+					if cutoff < lipgloss.Width(inputBefore) {
+						inputBefore = inputBefore[cutoff:]
+					}
+				}
+			}
+		}
+		line = promptStr + inputBefore + cursor + inputAfter
 	}
 
 	return InputContainerStyle.Render(line)

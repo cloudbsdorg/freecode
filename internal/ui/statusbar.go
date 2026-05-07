@@ -9,6 +9,8 @@ import (
 var StatusBarStyle = lipgloss.NewStyle().
 	Background(lipgloss.Color("#2D2D2D")).
 	Foreground(lipgloss.Color("#808080")).
+	Height(1).
+	Width(100).
 	Padding(0, 1)
 
 var StatusBarActiveStyle = lipgloss.NewStyle().
