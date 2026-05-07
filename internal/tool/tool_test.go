@@ -553,6 +553,7 @@ func TestLSPToolExecuteGoto(t *testing.T) {
 	_, err := tool.Execute(context.Background(), Request{
 		Arguments: map[string]interface{}{
 			"action":    "goto",
+			"file":      "/test/file.go",
 			"line":      10,
 			"character": 5,
 		},
@@ -567,6 +568,7 @@ func TestLSPToolExecuteHover(t *testing.T) {
 	_, err := tool.Execute(context.Background(), Request{
 		Arguments: map[string]interface{}{
 			"action":    "hover",
+			"file":      "/test/file.go",
 			"line":      10,
 			"character": 5,
 		},
@@ -579,7 +581,10 @@ func TestLSPToolExecuteHover(t *testing.T) {
 func TestLSPToolExecuteCompletions(t *testing.T) {
 	tool := NewLSPTool()
 	_, err := tool.Execute(context.Background(), Request{
-		Arguments: map[string]interface{}{"action": "completions"},
+		Arguments: map[string]interface{}{
+			"action": "completions",
+			"file":   "/test/file.go",
+		},
 	})
 	if err != nil {
 		t.Fatalf("Execute() error = %v", err)
