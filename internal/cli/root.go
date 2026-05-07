@@ -3,9 +3,9 @@ package cli
 import (
 	"fmt"
 
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/common-nighthawk/go-figure"
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/freecode/freecode/internal/ui"
 	"github.com/spf13/cobra"
 )
@@ -20,7 +20,7 @@ var bannerStyle = lipgloss.NewStyle().
 	Bold(true)
 
 func getBanner() string {
-	f := figure.NewFigure("FREECODE", "", true)
+	f := figure.NewFigure("FREECODE", "cosmike", true)
 	return bannerStyle.Render(f.String())
 }
 

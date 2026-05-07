@@ -1,7 +1,7 @@
 # Freecode Feature Parity Plan
 
-**Status**: Analysis Complete
-**Last Updated**: 2026-05-02
+**Status**: TUI Implementation In Progress
+**Last Updated**: 2026-05-06
 **Related Document**: [0213-Freecode-Missing-Features.md](./0213-Freecode-Missing-Features.md) - Comprehensive gap analysis
 
 ## Executive Summary
@@ -15,29 +15,49 @@ OpenCode and Freecode have fundamentally different architectures that make full 
 | Aspect | OpenCode | Freecode | Parity Status |
 |--------|----------|----------|---------------|
 | **Language** | TypeScript (Node/Bun) | Go | Incompatible - different languages |
-| **TUI Framework** | Solid.js + @opentui/* | Bubble Tea (Go) | **Cannot port - requires complete rewrite** |
-| **TUI Code Size** | 27,000+ lines (app.tsx alone) | 160 lines (stub) | **Not achievable without years of work** |
+| **TUI Framework** | Solid.js + @opentui/* | Bubble Tea (Go) | **Requires complete rewrite** |
+| **TUI Code Size** | 27,000+ lines (app.tsx alone) | ~800 lines (in progress) | **In progress** |
 | **Commands** | 21 files | 27 files | **1 command missing** |
-| **UI Complexity** | 20+ context providers, 15+ dialog types | None | **Not achievable** |
+| **UI Complexity** | 20+ context providers, 15+ dialog types | Components being built | **In progress** |
 
-## TUI Reality
+## TUI Implementation (2026-05-06)
 
-OpenCode's TUI is a sophisticated Solid.js application with:
-- 20+ nested context providers
-- 15+ dialog types (providers, agents, models, sessions, MCPs, themes, help, etc.)
-- Route-based navigation (Home, Session, Plugin)
-- 50+ registered commands
-- Full keyboard/mouse support via @opentui/core
+Freecode's TUI is now being built with Bubble Tea:
 
-**This cannot be ported to Go/Bubble Tea** without essentially writing an entirely new UI framework.
+### Implemented Components
+- `TabBarComponent` - Horizontal tab bar with active/inactive styling
+- `StatusBar` - Status bar with model, agent, YOLO indicator
+- `MessageList` - Scrollable message history display
+- `InputArea` - Input with cursor, history navigation
+- `CommandPalette` - Fuzzy-searchable command palette
+- `Sidebar` - Session list with selection
 
-### Recommendation: Keep Bubble Tea, Enhance Incrementally
+### TUI Features
+- Tab management: Ctrl+T (new), Ctrl+W (close), Tab/Shift+Tab (switch)
+- Command palette: Ctrl+P with fuzzy search
+- Sidebar toggle: Ctrl+B
+- YOLO mode: Ctrl+Y
+- Split views: Ctrl+Shift+V/H (placeholder)
+- Message scrolling: j/k or arrow keys
 
-Instead of trying to match OpenCode's Solid.js TUI:
-1. Keep the existing Bubble Tea implementation
-2. Add missing commands as CLI tools (which work regardless of TUI)
-3. Focus on making the CLI commands feature-complete
-4. Incrementally enhance the TUI where feasible
+### Key Files
+| File | Purpose |
+|------|---------|
+| `internal/ui/model.go` | Main TUI model, wires all components |
+| `internal/ui/tabbar.go` | Tab bar component |
+| `internal/ui/statusbar.go` | Status bar component |
+| `internal/ui/messagelist.go` | Message display |
+| `internal/ui/inputarea.go` | Input handling |
+| `internal/ui/palette.go` | Command palette |
+| `internal/ui/sidebar.go` | Session sidebar |
+
+### OpenCode TUI Reference (for parity)
+OpenCode's TUI uses @opentui/core which is TypeScript-only. Key areas to implement:
+- Route-based navigation (Home, Session)
+- Dialog system (providers, agents, models, sessions, MCPs, themes, help)
+- Session/thread view with message rendering
+- Permission prompts
+- Timeline/fork dialogs
 
 ## Missing Commands (Accurate as of 2026-05-02)
 
