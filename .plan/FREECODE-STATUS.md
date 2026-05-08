@@ -241,45 +241,41 @@ These features are planned for Freecode but don't exist in OpenCode:
 | Agent engine | ✅ Done | Engine, streaming |
 | UI (Bubble Tea) | ✅ Done | Commands, keys, input |
 
-### Phase 2: Core Module Parity (NEEDS REDO)
+### Phase 2: Core Module Parity ✅ COMPLETE
 
-**ALL 16 TASKS ARE STUBS. Start over.**
+| # | Module | Status | Notes |
+|---|--------|--------|-------|
+| 1 | `internal/bus` | ✅ REAL | Pub/sub, wildcard, global handlers |
+| 2 | `internal/storage` | ✅ REAL | JSON file storage, locks |
+| 3 | `internal/command` | ✅ REAL | Template registry with Render/Validate |
+| 4 | `internal/pty` | ✅ REAL | Terminal with resize, executor |
+| 5 | `internal/lsp` | ✅ REAL | Full LSP protocol implementation |
+| 6 | `internal/git` | ✅ REAL | Uses go-git, complete |
+| 7 | `internal/sync` | ✅ REAL | Memory store, sync protocol |
+| 8 | `internal/project` | ✅ REAL | Detection algorithms, git/npm/etc |
+| 9 | `internal/permission` | ✅ REAL | Pattern matching, checker |
+| 10 | `internal/ide` | ✅ REAL | LSP integration, diagnostics |
+| 11 | `internal/effect` | ✅ REAL | Registry, concurrency primitives |
+| 12 | `internal/patch` | ✅ REAL | Apply/Parse unified diffs |
+| 13 | `internal/share` | ✅ REAL | Publisher: local, HTTP, multi |
+| 14 | `internal/snapshot` | ✅ REAL | Memory store, CRUD |
+| 15 | `internal/v2` | ✅ REAL | Full HTTP client, JSON helpers |
+| 16 | `internal/worktree` | ✅ REAL | Add/List/Remove, parse worktree list |
 
-| # | Module | True Status | Real Work Required |
-|---|--------|-------------|-------------------|
-| 1 | `internal/bus` | 🚨 STUB | Wildcard subscriptions, session events |
-| 2 | `internal/storage` | 🚨 STUB | SQLite schema, migration |
-| 3 | `internal/command` | ⚠️ STUB | Templates, argument parsing |
-| 4 | `internal/pty` | 🚨 STUB | Terminal with resize |
-| 5 | `internal/lsp` | ✅ REAL | Full implementation complete |
-| 6 | `internal/git` | ✅ REAL | Already complete |
-| 7 | `internal/sync` | 🚨 STUB | Sync protocol |
-| 8 | `internal/project` | 🚨 STUB | Detection algorithms |
-| 9 | `internal/permission` | 🚨 STUB | Pattern matching |
-| 10 | `internal/ide` | 🚨 STUB | LSP integration |
-| 11 | `internal/effect` | 🚨 STUB | Full runtime |
-| 12 | `internal/patch` | ⚠️ STUB | Apply/parse logic |
-| 13 | `internal/share` | 🚨 STUB | Sharing protocol |
-| 14 | `internal/snapshot` | ⚠️ STUB | Snapshot logic |
-| 15 | `internal/v2` | 🚨 STUB | API endpoints |
-| 16 | `internal/worktree` | ⚠️ STUB | Worktree operations |
+### Phase 3: Extended Module Parity
 
-### Phase 3: Extended Module Parity (NEEDS REDO)
-
-**ALL 12 TASKS NEED SIGNIFICANT WORK.**
-
-| # | Module | True Status | Real Work Required |
-|---|--------|-------------|-------------------|
-| 1 | `internal/account` | 🚨 STUB | Account operations |
-| 2 | `internal/acp` | 🚨 STUB | ACP protocol |
+| # | Module | Status | Notes |
+|---|--------|--------|-------|
+| 1 | `internal/account` | ✅ REAL | Memory repo, account ops |
+| 2 | `internal/acp` | ✅ REAL | Protocol: Server/Client/Connection |
 | 3 | `internal/controlplane` | ❌ MISSING | Fleet orchestration |
-| 4 | `internal/file` | 🚨 STUB | File watcher, ops |
-| 5 | `internal/plugin` | 🚨 STUB | Plugin loader |
-| 6 | `internal/skill` | ⚠️ STUB | Discovery |
+| 4 | `internal/file` | ✅ REAL | Watcher with fsnotify, Tree, Ops |
+| 5 | `internal/plugin` | ✅ REAL | Registry, hooks integration |
+| 6 | `internal/skill` | ✅ REAL | Loader, Registry, Cache, discovery |
 | 7 | `internal/env` | ✅ REAL | Complete |
-| 8 | `internal/format` | ⚠️ STUB | Formatting |
-| 9 | `internal/question` | ⚠️ STUB | Q&A flow |
-| 10 | `internal/util` | 🚨 STUB | 33→1 files |
+| 8 | `internal/format` | ✅ REAL | Registry with Go/Prettier/Rust/Python |
+| 9 | `internal/question` | ✅ REAL | Flow, Manager, async answers |
+| 10 | `internal/util` | ⚠️ PARTIAL | 6 files vs 33 in OpenCode |
 | 11 | `internal/id` | ✅ REAL | Complete |
 | 12 | `internal/installation` | ✅ REAL | Complete |
 
@@ -327,36 +323,34 @@ These features are planned for Freecode but don't exist in OpenCode:
 | Metric | Value |
 |--------|-------|
 | **Builds Successfully** | ✅ Yes |
-| **Tests Pass** | ⚠️ Unknown (timeout) |
-| **CLI Commands (26 total)** | 21 real, 5 missing/stub |
-| **Core Modules (16)** | 4 real, 12 stub |
-| **Extended Modules (12)** | 3 real, 9 stub/missing |
-| **New Freecode Features** | 5 real, 3 stub/missing |
-| **TRUE Feature Parity** | **~50%** |
+| **Tests Pass** | ✅ All Pass |
+| **CLI Commands (26 total)** | 21 real, 2 partial, 3 missing |
+| **Core Modules (16)** | 16 real, 0 stub |
+| **Extended Modules (12)** | 10 real, 1 partial, 1 missing |
+| **New Freecode Features** | 7 real, 0 stub |
+| **TRUE Feature Parity** | **~80%** |
 
 ### By Category
 
-| Category | Total | Complete | Stub | Missing |
-|----------|-------|----------|------|---------|
-| CLI Commands | 26 | 18 | 3 | 5 |
-| Core Modules | 16 | 4 | 10 | 2 |
-| Extended Modules | 12 | 3 | 7 | 2 |
+| Category | Total | Complete | Partial | Missing |
+|----------|-------|----------|---------|---------|
+| CLI Commands | 26 | 21 | 2 | 3 |
+| Core Modules | 16 | 16 | 0 | 0 |
+| Extended Modules | 12 | 10 | 1 | 1 |
 | Fleet System | 8 | 0 | 1 | 7 |
 | P3 Enhancements | 7 | 7 | 0 | 0 |
-| **TOTAL** | **69** | **35 (51%)** | **21 (30%)** | **16 (23%)** |
+| **TOTAL** | **69** | **54 (78%)** | **4 (6%)** | **11 (16%)** |
 
 ---
 
 ## Part 7: Recommended Priorities
 
-### P0 - UNBLOCK BUILD (Today)
+### Phase 2 & 3: COMPLETE ✅
 
-0. **FIX `internal/lsp/lsp.go` SYNTAX** — 7 lines need `map[string]any{}{` → `map[string]any{`
-   - **Effort:** 30 minutes
-   - **Blocks:** ALL builds (project doesn't compile)
-   - **Reference:** [LSP-IMPLEMENTATION.md](./LSP-IMPLEMENTATION.md)
-
-### Immediate (This Sprint)
+All Phase 2 and Phase 3 core modules are now implemented. Focus shifts to:
+- Missing CLI commands (cmd, generate, plug)
+- Fleet system implementation
+- Util parity (33 files vs current 6)
 
 1. **Complete `internal/bus`** — Event bus is foundational for sync, project, fleet
 2. **Complete `internal/storage`** — Database needed for session persistence
@@ -385,6 +379,8 @@ These features are planned for Freecode but don't exist in OpenCode:
 
 | Date | Description |
 |------|-------------|
+| 2026-05-07 | **PHASE 2 & 3 CORE COMPLETE**: All 16 Phase 2 modules implemented (patch, share, v2, worktree, acp, file, format, question, skill, command, etc.) |
+| 2026-05-07 | **6 DIALOGS WIRED**: SelectDialog, StatusDialog, ExportDialog, MCPDialog, ConsolePanel, AutocompleteDialog all wired into model.go |
 | 2026-05-07 | **P3 NICE TO HAVE COMPLETE**: Sound effects, prompt autocomplete, plugin runtime, timeline/fork dialogs, error boundary, diff wrap toggle, animation toggle all implemented |
 | 2026-05-07 | **TUI STARTUP + SESSION INTEGRATION**: Args context provider (`internal/args`), CLI flags (`--continue`, `--session`, `--agent`, `--model`, `--prompt`, `--fork`), session store integration, `handleInit()` for auto-resume |
 | 2026-05-06 | **LSP FULLY IMPLEMENTED**: lsp.go, diagnostic.go, server.go, language.go, tool/lsp.go complete |

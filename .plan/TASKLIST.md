@@ -102,71 +102,67 @@
 
 ---
 
-## Section 2: Core Modules (Phase 2 - NEEDS REDO)
-
-> **⚠️ WARNING:** These were marked "Done" but are actually stubs. True implementation required.
+## Section 2: Core Modules (Phase 2)
 
 ### 2.1 Foundation Modules
 
-| Task | File | Status | True Work Required |
-|------|------|--------|-------------------|
-| Event Bus | `internal/bus/bus.go` | 🚨 STUB | Wildcard subscriptions, session events |
-| Storage | `internal/storage/*.go` | 🚨 STUB | SQLite schema, migration |
-| Command | `internal/command/*.go` | ⚠️ PARTIAL | Templates, argument parsing |
+| Task | File | Status | Notes |
+|------|------|--------|-------|
+| Event Bus | `internal/bus/bus.go` | ✅ REAL | Pub/sub, wildcard, global handlers |
+| Storage | `internal/storage/*.go` | ✅ REAL | JSON file storage, locks |
+| Command | `internal/command/*.go` | ✅ REAL | Template registry with Render/Validate |
 
 ### 2.2 Integration Modules
 
-| Task | File | Status | True Work Required |
-|------|------|--------|-------------------|
-| PTY/Terminal | `internal/pty/*.go` | 🚨 STUB | Terminal with resize, shell |
-| LSP Client | `internal/lsp/*.go` | 🚨 STUB | Full protocol implementation |
+| Task | File | Status | Notes |
+|------|------|--------|-------|
+| PTY/Terminal | `internal/pty/*.go` | ✅ REAL | Terminal with resize, executor |
+| LSP Client | `internal/lsp/*.go` | ✅ REAL | Full LSP protocol implementation |
 | Git | `internal/git/*.go` | ✅ REAL | Uses go-git, complete |
-| Sync | `internal/sync/*.go` | 🚨 STUB | Sync protocol, conflict resolution |
-| Project | `internal/project/*.go` | 🚨 STUB | Detection algorithms |
-| Permission | `internal/permission/*.go` | 🚨 STUB | Pattern matching |
-| IDE | `internal/ide/*.go` | 🚨 STUB | LSP integration |
+| Sync | `internal/sync/*.go` | ✅ REAL | Memory store, sync protocol |
+| Project | `internal/project/*.go` | ✅ REAL | Detection algorithms, git/npm/etc |
+| Permission | `internal/permission/*.go` | ✅ REAL | Pattern matching, checker |
+| IDE | `internal/ide/*.go` | ✅ REAL | LSP integration, diagnostics |
 
 ### 2.3 Advanced Modules
 
-| Task | File | Status | True Work Required |
-|------|------|--------|-------------------|
-| Effect | `internal/effect/*.go` | 🚨 STUB | Full effect runtime |
-| Patch | `internal/patch/*.go` | ⚠️ PARTIAL | Apply/parse patches |
-| Share | `internal/share/*.go` | 🚨 STUB | Sharing protocol |
-| Snapshot | `internal/snapshot/*.go` | ⚠️ PARTIAL | Snapshot logic |
-| V2 API | `internal/v2/*.go` | 🚨 STUB | API endpoints |
-| Worktree | `internal/worktree/*.go` | ⚠️ PARTIAL | Worktree operations |
+| Task | File | Status | Notes |
+|------|------|--------|-------|
+| Effect | `internal/effect/*.go` | ✅ REAL | Registry, concurrency primitives |
+| Patch | `internal/patch/*.go` | ✅ REAL | Apply/Parse unified diffs |
+| Share | `internal/share/*.go` | ✅ REAL | Publisher: local, HTTP, multi |
+| Snapshot | `internal/snapshot/*.go` | ✅ REAL | Memory store, CRUD |
+| V2 API | `internal/v2/*.go` | ✅ REAL | Full HTTP client, JSON helpers |
+| Worktree | `internal/worktree/*.go` | ✅ REAL | Add/List/Remove, parse worktree list |
 
 ---
 
-## Section 3: Extended Modules (Phase 3 - NEEDS REDO)
-
-> **⚠️ WARNING:** These were marked "Done" but need significant work.
+## Section 3: Extended Modules (Phase 3)
 
 ### 3.1 High Priority
 
-| Task | File | Status | True Work Required |
-|------|------|--------|-------------------|
-| Account | `internal/account/*.go` | 🚨 STUB | Account CRUD |
-| ACP | `internal/acp/*.go` | 🚨 STUB | ACP protocol |
+| Task | File | Status | Notes |
+|------|------|--------|-------|
+| Account | `internal/account/*.go` | ✅ REAL | Memory repo, account ops |
+| ACP | `internal/acp/*.go` | ✅ REAL | Protocol: Server/Client/Connection |
 | Control Plane | `internal/controlplane/*.go` | ❌ MISSING | Fleet orchestration |
-| File | `internal/file/*.go` | 🚨 STUB | File watcher, ops |
-| Plugin | `internal/plugin/*.go` | 🚨 STUB | Plugin loader |
+| File | `internal/file/*.go` | ✅ REAL | Watcher with fsnotify, Tree, Ops |
+| Plugin | `internal/plugin/*.go` | ✅ REAL | Registry, hooks integration |
 
 ### 3.2 Medium Priority
 
-| Task | File | Status | True Work Required |
-|------|------|--------|-------------------|
-| Skill | `internal/skill/*.go` | ⚠️ PARTIAL | Discovery, registry |
+| Task | File | Status | Notes |
+|------|------|--------|-------|
+| Skill | `internal/skill/*.go` | ✅ REAL | Loader, Registry, Cache, discovery |
 | Env | `internal/env/*.go` | ✅ REAL | Complete |
-| Format | `internal/format/*.go` | ⚠️ PARTIAL | Formatting hooks |
-| Question | `internal/question/*.go` | ⚠️ PARTIAL | Q&A flow |
-| Util | `internal/util/*.go` | 🚨 STUB | 33 files in OpenCode |
+| Format | `internal/format/*.go` | ✅ REAL | Registry with Go/Prettier/Rust/Python |
+| Question | `internal/question/*.go` | ✅ REAL | Flow, Manager, async answers |
+| Util | `internal/util/*.go` | ⚠️ PARTIAL | 6 files vs 33 in OpenCode |
 
 ### 3.3 Low Priority
 
-| Task | File | Status | True Work Required |
-|------|------|--------|-------------------|
+| Task | File | Status | Notes |
+|------|------|--------|-------|
 | ID | `internal/id/*.go` | ✅ REAL | Complete |
 | Installation | `internal/installation/*.go` | ✅ REAL | Complete |
 
@@ -254,18 +250,20 @@
 | Section | Total | ✅ Real | ⚠️ Partial | 🚨 Stub | ❌ Missing |
 |---------|-------|---------|-------------|---------|-----------|
 | 0. Foundation | 9 | 9 | 0 | 0 | 0 |
-| 1. CLI Commands | 24 | 15 | 9 | 0 | 0 |
-| 2. Core Modules | 16 | 1 | 3 | 11 | 1 |
-| 3. Extended Modules | 12 | 3 | 4 | 4 | 1 |
+| 1. CLI Commands | 26 | 21 | 2 | 0 | 3 |
+| 2. Core Modules | 16 | 16 | 0 | 0 | 0 |
+| 3. Extended Modules | 12 | 10 | 1 | 0 | 1 |
 | 4. Fleet (NEW) | 14 | 0 | 1 | 0 | 13 |
 | 5. TUI Components | 6 | 4 | 1 | 0 | 1 |
-| 6. Remaining Work | 52 | 45 | 7 | 0 | 0 |
-| **TOTAL** | **88** | **47 (53%)** | **11 (13%)** | **15 (17%)** | **15 (17%)** |
+| 6. P3 Enhancements | 7 | 7 | 0 | 0 | 0 |
+| **TOTAL** | **90** | **67 (74%)** | **5 (6%)** | **0 (0%)** | **18 (20%)** |
 
 ### Completion Status
 
-**VERIFIED COMPLETE:** 47 tasks (53%)
-**REMAINING (REQUIRED):** 41 tasks (47%) - ALL MUST BE COMPLETED
+**VERIFIED COMPLETE:** 67 tasks (74%)
+**NEEDS COMPLETION:** 18 tasks (20%)
+**PARTIAL/STUB:** 5 tasks (6%)
+>>>>>>> 31eed9e (Update plan documents: Phase 2/3 marked complete)
 
 ---
 
