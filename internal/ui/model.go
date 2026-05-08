@@ -49,6 +49,7 @@ type Model struct {
 	consolePanel      *ConsolePanel
 	autocompleteDialog *AutocompleteDialog
 	fleetPanel        *FleetPanel
+	fleetTicking      bool
 	quitting          bool
 	focus             focusArea
 	yolo              bool
@@ -439,6 +440,13 @@ func (m *Model) registerCommands() {
 	})
 }
 
+func fleetTickCmd() tea.Cmd {
+	return func() tea.Msg {
+		time.Sleep(5 * time.Second)
+		return fleetTickMsg{}
+	}
+}
+
 func (m *Model) Init() tea.Cmd {
 	m.setTerminalTitle("Freecode")
 	return func() tea.Msg {
@@ -456,6 +464,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case initTick:
 		m.handleInit()
+
+	case fleetTickMsg:
+		if m.fleetPanel.IsOpen() {
+			m.fleetPanel.refresh()
+			return m, tea.Batch(fleetTickCmd())
+		}
+		m.fleetTicking = false
 
 	case tea.KeyMsg:
 		return m.handleKey(msg)
@@ -710,6 +725,11 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 				}
 			}
 		}
+	}
+
+	if m.fleetPanel.IsOpen() && !m.fleetTicking {
+		m.fleetTicking = true
+		return m, fleetTickCmd()
 	}
 
 	return m, nil
@@ -1035,6 +1055,8 @@ type ToggleYolo struct{}
 type quitMsg struct{}
 
 type initTick struct{}
+
+type fleetTickMsg struct{}
 
 type PermissionRequestMsg struct {
 	Request *PermissionRequest

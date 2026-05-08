@@ -278,6 +278,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-05-07 | **FLEET PANEL AUTO-REFRESH**: Fleet panel refreshes every 5 seconds when open |
 | 2026-05-07 | **FLEET PANEL REAL**: Fleet management panel with agents/tasks view, navigation, refresh |
 | 2026-05-07 | **CONTROLPLANE REAL**: Fleet orchestration with HTTP+WebSocket server, task queue, agent registry |
 | 2026-05-07 | **CLI STATUS CORRECTED**: cmd, generate, plug verified REAL (not missing). CLI now 24 real, 2 partial, 0 missing |
