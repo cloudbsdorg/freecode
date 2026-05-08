@@ -19,7 +19,7 @@ Freecode est un CLI basé sur Go qui combine le meilleur d'opencode avec des age
 
 | Plateforme | État | Notes |
 |-----------|------|-------|
-| FreeBSD 16 | Primaire | Go 1.25 dans les ports |
+| FreeBSD | Primaire | Go 1.25 dans les ports |
 | Linux | Supporté | Empaquetage Flatpak |
 | macOS | Supporté | Homebrew |
 | IllumOS | Supporté | tarball |

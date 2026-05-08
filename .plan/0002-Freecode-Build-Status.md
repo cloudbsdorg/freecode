@@ -84,8 +84,8 @@ make test && make fmt && make tidy && golangci-lint run
 
 | Platform | Architecture | Status | Artifact |
 |----------|--------------|--------|----------|
-| FreeBSD 16 | amd64 | ✅ PASS | freecode-freebsd-amd64 |
-| FreeBSD 16 | arm64 | ✅ PASS | freecode-freebsd-arm64 |
+| FreeBSD | amd64 | ✅ PASS | freecode-freebsd-amd64 |
+| FreeBSD | arm64 | ✅ PASS | freecode-freebsd-arm64 |
 | Linux | amd64 | ✅ PASS | freecode-linux-amd64 |
 | Linux | arm64 | ✅ PASS | freecode-linux-arm64 |
 | macOS | amd64 | ✅ PASS | freecode-darwin-amd64 |

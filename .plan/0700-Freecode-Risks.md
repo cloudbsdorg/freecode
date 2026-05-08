@@ -195,7 +195,7 @@ This document outlines identified risks, their severity, likelihood, and mitigat
 
 **Plan:**
 - Mark platform as "best effort"
-- Focus on primary platform (FreeBSD 16)
+- Focus on primary platform (FreeBSD)
 - Document known limitations
 - Accept community contributions for unsupported platforms
 

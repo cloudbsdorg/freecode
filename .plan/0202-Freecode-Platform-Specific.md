@@ -2,11 +2,11 @@
 
 ## 1.0 Purpose
 
-This document details platform-specific implementations for FreeBSD 16, macOS, Linux, and IllumOS (OpenSolaris).
+This document details platform-specific implementations for FreeBSD, macOS, Linux, and IllumOS (OpenSolaris).
 
 ---
 
-## 2.0 FreeBSD 16 (Primary)
+## 2.0 FreeBSD (Primary)
 
 ### 2.1 Platform Identification
 

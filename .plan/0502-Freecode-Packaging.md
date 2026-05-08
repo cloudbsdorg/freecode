@@ -2,11 +2,11 @@
 
 ## 1.0 Purpose
 
-This document specifies packaging for all supported platforms: FreeBSD 16, Linux (Flatpak), macOS (Homebrew), and IllumOS (OpenSolaris).
+This document specifies packaging for all supported platforms: FreeBSD, Linux (Flatpak), macOS (Homebrew), and IllumOS (OpenSolaris).
 
 ---
 
-## 2.0 FreeBSD 16
+## 2.0 FreeBSD
 
 ### 2.1 Package Format
 

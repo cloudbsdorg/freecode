@@ -6,14 +6,14 @@ This document provides instructions for installing all dependencies required to 
 
 ---
 
-## 2.0 FreeBSD 16
+## 2.0 FreeBSD
 
-> **Note:** FreeBSD 16 ports has **Go 1.25.20** as the default. If building on FreeBSD directly, use this version. For cross-compilation from macOS/Linux, goreleaser handles this automatically.
+> **Note:** FreeBSD ports has **Go 1.25.20** as the default. If building on FreeBSD directly, use this version. For cross-compilation from macOS/Linux, goreleaser handles this automatically.
 
 ### 2.1 Required Dependencies (Admin Required)
 
 ```bash
-# Install Go compiler (1.25.20 in FreeBSD 16 ports)
+# Install Go compiler (1.25.20 in FreeBSD ports)
 sudo pkg install golang
 
 # Or install specific version

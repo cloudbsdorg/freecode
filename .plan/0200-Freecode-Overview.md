@@ -7,7 +7,7 @@
 **What is Freecode?** A unified, platform-independent AI coding assistant that combines the best of opencode with the enhancements from oh-my-openagent—all as a single cohesive product. Freecode is NOT opencode + a plugin; it is a standalone product with all features built in.
 
 **Goals:**
-- Runs on FreeBSD 16, Linux, macOS, and IllumOS (OpenSolaris)
+- Runs on FreeBSD, Linux, macOS, and IllumOS (OpenSolaris)
 - Migrates from opencode configurations seamlessly
 - Provides all features from oh-my-openagent (agents, hooks, categories) built directly in
 - Includes session tabbing for multiple concurrent sessions
@@ -126,8 +126,8 @@ Sessions can be organized in tabs:
 ## 9.0 Platform Support
 
 | Platform | Package Format | Status |
-|----------|---------------|--------|
-| FreeBSD 16 | .pkg or tarball | Primary target |
+|---------|---------------|--------|
+| FreeBSD | .pkg or tarball | Primary target |
 | Linux | Flatpak | Secondary |
 | macOS | Homebrew | Secondary |
 | IllumOS | tarball | Experimental |
