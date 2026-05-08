@@ -443,7 +443,7 @@ func (cp *memoryControlPlane) handleFailTask(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	if err := cp.FailTask(r.Context(), id, fmt.Errorf(req.Error)); err != nil {
+	if err := cp.FailTask(r.Context(), id, fmt.Errorf("%s", req.Error)); err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}

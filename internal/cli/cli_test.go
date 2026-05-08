@@ -71,6 +71,9 @@ func TestAgentStopCommand(t *testing.T) {
 }
 
 func TestRunAgentStart(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires agent infrastructure in CI")
+	}
 	cmd := agentStartCmd
 	buf := &bytes.Buffer{}
 	cmd.SetOut(buf)
@@ -83,6 +86,9 @@ func TestRunAgentStart(t *testing.T) {
 }
 
 func TestRunAgentStop(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires agent infrastructure in CI")
+	}
 	cmd := agentStopCmd
 	buf := &bytes.Buffer{}
 	cmd.SetOut(buf)
@@ -150,6 +156,9 @@ func TestStatsFlags(t *testing.T) {
 }
 
 func TestRunRun(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires TTY in CI")
+	}
 	buf := &bytes.Buffer{}
 	runCmd.SetOut(buf)
 	runCmd.SetErr(buf)
@@ -251,6 +260,9 @@ func TestRunTabNew(t *testing.T) {
 }
 
 func TestRunTabClose(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires tab infrastructure in CI")
+	}
 	buf := &bytes.Buffer{}
 	tabCmd.SetOut(buf)
 	tabCmd.SetErr(buf)
@@ -262,6 +274,9 @@ func TestRunTabClose(t *testing.T) {
 }
 
 func TestRunTabMove(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires tab infrastructure in CI")
+	}
 	buf := &bytes.Buffer{}
 	tabCmd.SetOut(buf)
 	tabCmd.SetErr(buf)
@@ -273,6 +288,9 @@ func TestRunTabMove(t *testing.T) {
 }
 
 func TestRunTabRename(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires tab infrastructure in CI")
+	}
 	buf := &bytes.Buffer{}
 	tabCmd.SetOut(buf)
 	tabCmd.SetErr(buf)
@@ -284,6 +302,9 @@ func TestRunTabRename(t *testing.T) {
 }
 
 func TestRunMCPInstall(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires MCP infrastructure in CI")
+	}
 	buf := &bytes.Buffer{}
 	mcpCmd.SetOut(buf)
 	mcpCmd.SetErr(buf)
@@ -295,6 +316,9 @@ func TestRunMCPInstall(t *testing.T) {
 }
 
 func TestRunMCPUninstall(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires MCP infrastructure in CI")
+	}
 	buf := &bytes.Buffer{}
 	mcpCmd.SetOut(buf)
 	mcpCmd.SetErr(buf)
@@ -306,6 +330,9 @@ func TestRunMCPUninstall(t *testing.T) {
 }
 
 func TestRunMCPStart(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires MCP infrastructure in CI")
+	}
 	buf := &bytes.Buffer{}
 	mcpCmd.SetOut(buf)
 	mcpCmd.SetErr(buf)
@@ -317,6 +344,9 @@ func TestRunMCPStart(t *testing.T) {
 }
 
 func TestRunMCPStop(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires MCP infrastructure in CI")
+	}
 	buf := &bytes.Buffer{}
 	mcpCmd.SetOut(buf)
 	mcpCmd.SetErr(buf)
@@ -328,6 +358,9 @@ func TestRunMCPStop(t *testing.T) {
 }
 
 func TestRunUpgradeInstall(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("skipping test that requires network access in CI")
+	}
 	buf := &bytes.Buffer{}
 	upgradeCmd.SetOut(buf)
 	upgradeCmd.SetErr(buf)
