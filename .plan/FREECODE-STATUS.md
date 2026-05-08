@@ -306,7 +306,7 @@ These features are planned for Freecode but don't exist in OpenCode:
 | `account` | ⚠️ STUB | Full implementation |
 | `web` | ⚠️ STUB | Web interface |
 
-### Phase 6: P3 Nice to Have (Enhancements) ✅ COMPLETE
+### Phase 6: UI Enhancements ✅ COMPLETE
 
 | Feature | File | Status | Description |
 |---------|------|--------|-------------|

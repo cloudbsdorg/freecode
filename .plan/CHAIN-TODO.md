@@ -190,7 +190,7 @@ worktree ──────────────────────┘  
 
 ---
 
-## Phase E: P3 Nice to Have (Enhancements) ✅ COMPLETE
+## Phase E: UI Enhancements ✅ COMPLETE
 
 | Step | Feature | File | Status |
 |------|---------|------|--------|
@@ -201,6 +201,8 @@ worktree ──────────────────────┘  
 | E5 | Error boundary | `internal/ui/error.go` | ✅ Done |
 | E6 | Diff wrap toggle | `internal/ui/diff.go` | ✅ Done |
 | E7 | Animation toggle | `internal/ui/animation.go` | ✅ Done |
+
+> ⚠️ **NOTE:** ALL remaining tasks in Phases A-D are REQUIRED, not optional. See TASKLIST.md for full list.
 
 ---
 
