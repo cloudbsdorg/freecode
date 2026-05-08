@@ -250,20 +250,27 @@
 | Section | Total | ✅ Real | ⚠️ Partial | 🚨 Stub | ❌ Missing |
 |---------|-------|---------|-------------|---------|-----------|
 | 0. Foundation | 9 | 9 | 0 | 0 | 0 |
-| 1. CLI Commands | 26 | 21 | 2 | 0 | 3 |
+| 1. CLI Commands | 26 | 24 | 2 | 0 | 0 |
 | 2. Core Modules | 16 | 16 | 0 | 0 | 0 |
 | 3. Extended Modules | 12 | 10 | 1 | 0 | 1 |
 | 4. Fleet (NEW) | 14 | 0 | 1 | 0 | 13 |
 | 5. TUI Components | 6 | 4 | 1 | 0 | 1 |
 | 6. P3 Enhancements | 7 | 7 | 0 | 0 | 0 |
-| **TOTAL** | **90** | **67 (74%)** | **5 (6%)** | **0 (0%)** | **18 (20%)** |
+| **TOTAL** | **90** | **70 (78%)** | **5 (6%)** | **0 (0%)** | **15 (17%)** |
 
 ### Completion Status
 
-**VERIFIED COMPLETE:** 67 tasks (74%)
-**NEEDS COMPLETION:** 18 tasks (20%)
+**VERIFIED COMPLETE:** 70 tasks (78%)
+**NEEDS COMPLETION:** 15 tasks (17%)
 **PARTIAL/STUB:** 5 tasks (6%)
->>>>>>> 31eed9e (Update plan documents: Phase 2/3 marked complete)
+
+### 1.4 CLI Commands Status Correction (2026-05-07)
+
+| Task | File | Status | Verification |
+|------|------|--------|--------------|
+| cmd framework | `internal/cli/cmd.go` | ✅ REAL | `freecode cmd --help` works |
+| generate command | `internal/cli/generate.go` | ✅ REAL | `freecode generate --help` works |
+| plug command | `internal/cli/plug.go` | ✅ REAL | `freecode plug --help` works |
 
 ---
 
@@ -271,6 +278,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-05-07 | **CLI STATUS CORRECTED**: cmd, generate, plug verified REAL (not missing). CLI now 24 real, 2 partial, 0 missing |
 | 2026-05-07 | **CLI STUBS COMPLETE**: doctor, upgrade, agent, mcp, stats, run, session, tab all implemented |
 | 2026-05-07 | CLI audit complete: Corrected status - 7→15 complete, 9 partial, 0 stubs |
 | 2026-05-07 | Section 6 completed: All remaining tasks are REQUIRED, not optional |
