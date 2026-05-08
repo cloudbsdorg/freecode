@@ -3,6 +3,7 @@ package worktree
 import (
 	"context"
 	"os/exec"
+	"strings"
 )
 
 type Worktree struct {
@@ -31,7 +32,44 @@ func List(ctx context.Context, repoPath string) ([]*Worktree, error) {
 }
 
 func parseList(output string) []*Worktree {
-	return []*Worktree{}
+	var worktrees []*Worktree
+	lines := strings.Split(output, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		wt := parseWorktreeLine(line)
+		if wt != nil {
+			worktrees = append(worktrees, wt)
+		}
+	}
+	return worktrees
+}
+
+func parseWorktreeLine(line string) *Worktree {
+	parts := strings.Fields(line)
+	if len(parts) < 2 {
+		return nil
+	}
+	wt := &Worktree{
+		Path: parts[0],
+	}
+	if len(parts) >= 2 {
+		wt.Branch = parts[1]
+	}
+	if strings.Contains(line, "(detached)") {
+		wt.Branch = "(detached)"
+	}
+	if strings.Contains(line, "(pruned)") {
+		wt.Branch = "(pruned)"
+	}
+	if strings.Contains(line, "[") {
+		if idx := strings.Index(wt.Branch, "["); idx > 0 {
+			wt.Branch = wt.Branch[:idx]
+		}
+	}
+	return wt
 }
 
 func Remove(ctx context.Context, repoPath, name string) error {
