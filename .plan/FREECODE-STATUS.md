@@ -268,7 +268,7 @@ These features are planned for Freecode but don't exist in OpenCode:
 |---|--------|--------|-------|
 | 1 | `internal/account` | ✅ REAL | Memory repo, account ops |
 | 2 | `internal/acp` | ✅ REAL | Protocol: Server/Client/Connection |
-| 3 | `internal/controlplane` | ❌ MISSING | Fleet orchestration |
+| 3 | `internal/controlplane` | ✅ REAL | Fleet head, task queue, WS server |
 | 4 | `internal/file` | ✅ REAL | Watcher with fsnotify, Tree, Ops |
 | 5 | `internal/plugin` | ✅ REAL | Registry, hooks integration |
 | 6 | `internal/skill` | ✅ REAL | Loader, Registry, Cache, discovery |
@@ -328,18 +328,18 @@ These features are planned for Freecode but don't exist in OpenCode:
 | **Core Modules (16)** | 16 real, 0 stub |
 | **Extended Modules (12)** | 10 real, 1 partial, 1 missing |
 | **New Freecode Features** | 7 real, 0 stub |
-| **TRUE Feature Parity** | **~80%** |
+| **TRUE Feature Parity** | **~82%** |
 
 ### By Category
 
 | Category | Total | Complete | Partial | Missing |
 |----------|-------|----------|---------|---------|
-| CLI Commands | 26 | 21 | 2 | 3 |
+| CLI Commands | 26 | 24 | 2 | 0 |
 | Core Modules | 16 | 16 | 0 | 0 |
-| Extended Modules | 12 | 10 | 1 | 1 |
+| Extended Modules | 12 | 11 | 1 | 0 |
 | Fleet System | 8 | 0 | 1 | 7 |
 | P3 Enhancements | 7 | 7 | 0 | 0 |
-| **TOTAL** | **69** | **54 (78%)** | **4 (6%)** | **11 (16%)** |
+| **TOTAL** | **69** | **58 (84%)** | **4 (6%)** | **7 (10%)** |
 
 ---
 
