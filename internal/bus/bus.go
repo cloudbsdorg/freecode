@@ -2,6 +2,7 @@ package bus
 
 import (
 	"context"
+	"strings"
 	"sync"
 	"sync/atomic"
 )
@@ -22,6 +23,7 @@ type State struct {
 	mu       sync.RWMutex
 	wildcard []GlobalHandler
 	typed    map[string][]Handler
+	patterns []PatternHandler
 	closed   bool
 	nextID   int32
 }
@@ -37,7 +39,14 @@ type GlobalHandler struct {
 	callback func(GlobalEvent)
 }
 
+type PatternHandler struct {
+	id       int
+	pattern  string
+	callback func(GlobalEvent)
+}
+
 type GlobalEvent struct {
+	SessionID string
 	Directory string
 	Project   string
 	Workspace string
@@ -45,16 +54,18 @@ type GlobalEvent struct {
 }
 
 var (
-	globalState     *State
-	globalStateOnce sync.Once
-	handlerID       int32
-	globalHandlerID int32
+	globalState       *State
+	globalStateOnce    sync.Once
+	handlerID          int32
+	globalHandlerID    int32
+	patternHandlerID   int32
 )
 
 func getState() *State {
 	globalStateOnce.Do(func() {
 		globalState = &State{
-			typed: make(map[string][]Handler),
+			typed:    make(map[string][]Handler),
+			patterns: make([]PatternHandler, 0),
 		}
 	})
 	if globalState.closed {
@@ -62,16 +73,21 @@ func getState() *State {
 		globalState.closed = false
 		globalState.typed = make(map[string][]Handler)
 		globalState.wildcard = nil
+		globalState.patterns = make([]PatternHandler, 0)
 		globalState.mu.Unlock()
 	}
 	return globalState
 }
 
 func Publish(ctx context.Context, def Definition, properties any) error {
-	return publishTo(getState(), def, properties)
+	return publishTo(getState(), "", def, properties)
 }
 
-func publishTo(s *State, def Definition, properties any) error {
+func PublishWithSession(ctx context.Context, sessionID string, def Definition, properties any) error {
+	return publishTo(getState(), sessionID, def, properties)
+}
+
+func publishTo(s *State, sessionID string, def Definition, properties any) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -80,16 +96,45 @@ func publishTo(s *State, def Definition, properties any) error {
 	}
 
 	payload := Payload{Type: def.Type, Properties: properties}
+	globalEvent := GlobalEvent{
+		SessionID: sessionID,
+		Payload:   payload,
+	}
 
 	for _, h := range s.typed[def.Type] {
 		h.callback(payload)
 	}
 
 	for _, h := range s.wildcard {
-		h.callback(GlobalEvent{Payload: payload})
+		h.callback(globalEvent)
+	}
+
+	for _, h := range s.patterns {
+		if matchPattern(def.Type, h.pattern) {
+			h.callback(globalEvent)
+		}
 	}
 
 	return nil
+}
+
+func matchPattern(topic, pattern string) bool {
+	topicParts := strings.Split(topic, ".")
+	patternParts := strings.Split(pattern, ".")
+
+	if len(topicParts) != len(patternParts) {
+		return false
+	}
+
+	for i := range topicParts {
+		if patternParts[i] == "*" {
+			continue
+		}
+		if topicParts[i] != patternParts[i] {
+			return false
+		}
+	}
+	return true
 }
 
 func Subscribe(def Definition, callback EventHandler) func() {
@@ -153,6 +198,36 @@ func unsubscribeAll(s *State, id int) {
 	}
 }
 
+func SubscribePattern(pattern string, callback func(GlobalEvent)) func() {
+	return subscribePatternTo(getState(), pattern, callback)
+}
+
+func subscribePatternTo(s *State, pattern string, callback func(GlobalEvent)) func() {
+	id := atomic.AddInt32(&patternHandlerID, 1)
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	h := PatternHandler{id: int(id), pattern: pattern, callback: callback}
+	s.patterns = append(s.patterns, h)
+
+	return func() {
+		unsubscribePattern(s, int(id))
+	}
+}
+
+func unsubscribePattern(s *State, id int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for i, h := range s.patterns {
+		if h.id == id {
+			s.patterns = append(s.patterns[:i], s.patterns[i+1:]...)
+			return
+		}
+	}
+}
+
 func Define(eventType string, properties any) Definition {
 	return Definition{Type: eventType, Properties: properties}
 }
@@ -164,6 +239,7 @@ func Close() {
 	s.closed = true
 	s.typed = make(map[string][]Handler)
 	s.wildcard = nil
+	s.patterns = make([]PatternHandler, 0)
 }
 
 func Reset() {
@@ -173,4 +249,5 @@ func Reset() {
 	s.closed = false
 	s.typed = make(map[string][]Handler)
 	s.wildcard = nil
+	s.patterns = make([]PatternHandler, 0)
 }
