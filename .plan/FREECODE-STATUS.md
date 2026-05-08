@@ -306,6 +306,18 @@ These features are planned for Freecode but don't exist in OpenCode:
 | `account` | ⚠️ STUB | Full implementation |
 | `web` | ⚠️ STUB | Web interface |
 
+### Phase 6: P3 Nice to Have (Enhancements)
+
+| Feature | File | Status | Description |
+|---------|------|--------|-------------|
+| Sound effects | `internal/ui/sound.go` | 🔄 IN PROGRESS | Terminal bell/beep on events |
+| Prompt autocomplete | `internal/ui/autocomplete.go` | 🔄 IN PROGRESS | Full frecency/history support |
+| Plugin Runtime | `internal/plugin/runtime.go` | 🔄 IN PROGRESS | Complete plugin loader |
+| Timeline/fork dialogs | `internal/ui/timeline.go` | 🔄 IN PROGRESS | Advanced session timeline |
+| Error boundary | `internal/ui/error.go` | 🔄 IN PROGRESS | Error recovery component |
+| Diff wrap toggle | `internal/ui/diff.go` | 🔄 IN PROGRESS | Toggle diff line wrapping |
+| Animation toggle | `internal/ui/animation.go` | 🔄 IN PROGRESS | Animation settings |
+
 ---
 
 ## Part 6: True Progress Metrics

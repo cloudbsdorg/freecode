@@ -190,8 +190,23 @@ worktree ──────────────────────┘  
 
 ---
 
+## Phase E: P3 Nice to Have (Enhancements)
+
+| Step | Feature | File | Description |
+|------|---------|------|-------------|
+| E1 | Sound effects | `internal/ui/sound.go` | Terminal bell/beep on events |
+| E2 | Prompt autocomplete | `internal/ui/autocomplete.go` | Frecency-based history |
+| E3 | Plugin Runtime | `internal/plugin/runtime.go` | Plugin loader runtime |
+| E4 | Timeline/fork dialogs | `internal/ui/timeline.go` | Session timeline view |
+| E5 | Error boundary | `internal/ui/error.go` | Error recovery component |
+| E6 | Diff wrap toggle | `internal/ui/diff.go` | Diff viewer with wrap toggle |
+| E7 | Animation toggle | `internal/ui/animation.go` | Animation settings |
+
+---
+
 ## Change Log
 
 | Date | Description |
 |------|-------------|
+| 2026-05-07 | Added Phase E: P3 Nice to Have |
 | 2026-05-02 | Initial chain creation |

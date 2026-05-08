@@ -219,6 +219,22 @@
 
 ---
 
+## Section 6: P3 Nice to Have (Enhancements)
+
+### 6.1 P3 Enhancements
+
+| Task | File | Status | Description |
+|------|------|--------|-------------|
+| Sound effects | `internal/ui/sound.go` | 🔄 IN PROGRESS | Terminal bell/beep on events |
+| Prompt autocomplete | `internal/ui/autocomplete.go` | 🔄 IN PROGRESS | Full frecency/history support |
+| Plugin Runtime | `internal/plugin/*.go` | 🔄 IN PROGRESS | Complete plugin loader |
+| Timeline/fork dialogs | `internal/ui/timeline.go` | 🔄 IN PROGRESS | Advanced session timeline |
+| Error boundary | `internal/ui/error.go` | 🔄 IN PROGRESS | Error recovery component |
+| Diff wrap toggle | `internal/ui/diff.go` | 🔄 IN PROGRESS | Toggle diff line wrapping |
+| Animation toggle | `internal/ui/animation.go` | 🔄 IN PROGRESS | Enable/disable animations |
+
+---
+
 ## Progress Summary
 
 ### By Section
@@ -230,12 +246,14 @@
 | 2. Core Modules | 16 | 1 | 3 | 11 | 1 |
 | 3. Extended Modules | 12 | 3 | 4 | 4 | 1 |
 | 4. Fleet (NEW) | 14 | 0 | 1 | 0 | 13 |
-| **TOTAL** | **77** | **34 (44%)** | **10 (13%)** | **15 (20%)** | **18 (23%)** |
+| 5. TUI Components | 6 | 4 | 1 | 0 | 1 |
+| 6. P3 Nice to Have | 7 | 0 | 0 | 0 | 7 |
+| **TOTAL** | **90** | **38 (42%)** | **11 (12%)** | **15 (17%)** | **26 (29%)** |
 
 ### True Completion Rate
 
-**VERIFIED COMPLETE (working implementation):** 34 tasks (44%)
-**NEEDS COMPLETION:** 43 tasks (56%)
+**VERIFIED COMPLETE (working implementation):** 38 tasks (42%)
+**NEEDS COMPLETION:** 52 tasks (58%)
 
 ---
 
@@ -243,6 +261,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-05-07 | Added Section 6: P3 Nice to Have with 7 enhancement tasks |
 | 2026-05-04 | Complete rewrite - found 58% of "done" tasks were actually stubs |
 | 2026-05-02 | Phase 2/3 TASKLISTs created with incorrect "Done" status |
 | 2026-05-02 | Initial task tracking started |

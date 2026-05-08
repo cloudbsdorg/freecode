@@ -363,9 +363,26 @@ Skills are defined in `.skills/` directory with SKILL.md format matching opencod
 8. **Context Providers** - File context, global sync
 9. **Missing Modules** - skill discovery, lsp, pty, sync
 
-### Tier 4: Nice to Have (Deferred)
+### Tier 4: Nice to Have (P3 Enhancements)
 
-10. **Full TUI Parity** - Logo, complex dialogs (not achievable without significant work)
+| # | Feature | Description | Status |
+|---|---------|-------------|--------|
+| P3.1 | Sound effects | Terminal bell/beep on events | 🔄 IN PROGRESS |
+| P3.2 | Prompt autocomplete | Full frecency/history support | 🔄 IN PROGRESS |
+| P3.3 | Plugin Runtime | Complete plugin loader | 🔄 IN PROGRESS |
+| P3.4 | Timeline/fork dialogs | Advanced session timeline | 🔄 IN PROGRESS |
+| P3.5 | Error boundary | Error recovery component | 🔄 IN PROGRESS |
+| P3.6 | Diff wrap toggle | Toggle diff line wrapping | 🔄 IN PROGRESS |
+| P3.7 | Animation toggle | Enable/disable animations | 🔄 IN PROGRESS |
+
+**Files to create:**
+- `internal/ui/sound.go` - Sound effect manager
+- `internal/ui/autocomplete.go` - Frecency-based history
+- `internal/plugin/runtime.go` - Plugin loader runtime
+- `internal/ui/timeline.go` - Session timeline view
+- `internal/ui/error.go` - Error boundary component
+- `internal/ui/diff.go` - Diff viewer with wrap toggle
+- `internal/ui/animation.go` - Animation settings
 
 ---
 
