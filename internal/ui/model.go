@@ -48,6 +48,7 @@ type Model struct {
 	mcpDialog         *MCPDialog
 	consolePanel      *ConsolePanel
 	autocompleteDialog *AutocompleteDialog
+	fleetPanel        *FleetPanel
 	quitting          bool
 	focus             focusArea
 	yolo              bool
@@ -109,6 +110,7 @@ func NewModel(args args.Args) *Model {
 		mcpDialog:          NewMCPDialog(),
 		consolePanel:       NewConsolePanel(),
 		autocompleteDialog: NewAutocompleteDialog(),
+		fleetPanel:         NewFleetPanel(),
 		quitting:          false,
 		focus:             focusInput,
 		yolo:              false,
@@ -425,6 +427,16 @@ func (m *Model) registerCommands() {
 			})
 		},
 	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Fleet Panel",
+		Description: "Show fleet management panel",
+		Keybind:     "",
+		Category:    "System",
+		Handler: func() {
+			m.fleetPanel.Toggle()
+		},
+	})
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -508,6 +520,8 @@ func (m *Model) updateLayout() {
 	m.consolePanel.SetWidth(m.width - 4)
 	m.consolePanel.SetHeight(m.height - 4)
 	m.autocompleteDialog.SetWidth(m.width / 2)
+	m.fleetPanel.SetWidth(m.width / 2)
+	m.fleetPanel.SetHeight(m.height / 2)
 }
 
 func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
@@ -575,6 +589,13 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 	if m.autocompleteDialog.IsVisible() {
 		handled := m.autocompleteDialog.HandleKey(msg.String())
+		if handled {
+			return m, nil
+		}
+	}
+
+	if m.fleetPanel.IsOpen() {
+		handled := m.fleetPanel.HandleKey(msg.String())
 		if handled {
 			return m, nil
 		}
@@ -820,13 +841,14 @@ func (m *Model) renderSession() string {
 	mcpView := m.mcpDialog.Render()
 	consoleView := m.consolePanel.Render()
 	autocompleteView := m.autocompleteDialog.Render()
+	fleetView := m.fleetPanel.Render()
 
 	paletteView := ""
 	if m.commandPalette.IsOpen() {
 		paletteView = "\n" + m.commandPalette.Render()
 	}
 
-	return tabBar + "\n" + content + "\n" + input + "\n" + status + toast + help + permission + question + selectView + statusView + exportView + mcpView + consoleView + autocompleteView + paletteView
+	return tabBar + "\n" + content + "\n" + input + "\n" + status + toast + help + permission + question + selectView + statusView + exportView + mcpView + consoleView + autocompleteView + fleetView + paletteView
 }
 
 func (m *Model) renderSessionContent() string {

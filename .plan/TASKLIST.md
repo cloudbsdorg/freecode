@@ -220,10 +220,10 @@
 
 ### 5.2 Fleet Panel (TUI)
 
-| Task | File | Status | Description |
-|------|------|--------|-------------|
-| Fleet Status Cmd | `internal/ui/commands.go` | ⚠️ PARTIAL | `FleetStatusCmd` stub |
-| Fleet Panel | `internal/ui/fleet.go` | ❌ MISSING | Full fleet management |
+| Task | File | Status | Assigned To | Start | Description |
+|------|------|--------|-------------|-------|-------------|
+| Fleet Status Cmd | `internal/ui/commands.go` | ⚠️ PARTIAL | | | `FleetStatusCmd` stub |
+| Fleet Panel | `internal/ui/fleet.go` | ✅ REAL | freecode | 2026-05-07 22:00 UTC | Full fleet management panel |
 
 ---
 
@@ -254,14 +254,14 @@
 | 2. Core Modules | 16 | 16 | 0 | 0 | 0 |
 | 3. Extended Modules | 12 | 11 | 0 | 0 | 1 |
 | 4. Fleet (NEW) | 14 | 0 | 1 | 0 | 13 |
-| 5. TUI Components | 6 | 4 | 1 | 0 | 1 |
+| 5. TUI Components | 6 | 5 | 0 | 0 | 1 |
 | 6. P3 Enhancements | 7 | 7 | 0 | 0 | 0 |
-| **TOTAL** | **90** | **71 (79%)** | **4 (4%)** | **0 (0%)** | **15 (17%)** |
+| **TOTAL** | **90** | **72 (80%)** | **4 (4%)** | **0 (0%)** | **14 (16%)** |
 
 ### Completion Status
 
-**VERIFIED COMPLETE:** 71 tasks (79%)
-**NEEDS COMPLETION:** 15 tasks (17%)
+**VERIFIED COMPLETE:** 72 tasks (80%)
+**NEEDS COMPLETION:** 14 tasks (16%)
 **PARTIAL/STUB:** 5 tasks (6%)
 
 ### 1.4 CLI Commands Status Correction (2026-05-07)
@@ -278,6 +278,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-05-07 | **FLEET PANEL REAL**: Fleet management panel with agents/tasks view, navigation, refresh |
 | 2026-05-07 | **CONTROLPLANE REAL**: Fleet orchestration with HTTP+WebSocket server, task queue, agent registry |
 | 2026-05-07 | **CLI STATUS CORRECTED**: cmd, generate, plug verified REAL (not missing). CLI now 24 real, 2 partial, 0 missing |
 | 2026-05-07 | **CLI STUBS COMPLETE**: doctor, upgrade, agent, mcp, stats, run, session, tab all implemented |
