@@ -4,7 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"path/filepath"
+	"sort"
+	"strings"
+	"time"
 
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/cobra"
 )
 
@@ -176,6 +181,103 @@ func runDBMigrate(cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("Database: %s\n", path)
 	fmt.Printf("Migrations: %s\n", migrationsDir)
-	fmt.Println("\nMigration system not yet implemented")
+
+	db, err := sql.Open("sqlite3", path)
+	if err != nil {
+		return fmt.Errorf("failed to open database: %w", err)
+	}
+	defer db.Close()
+
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS schema_migrations (
+			version TEXT PRIMARY KEY,
+			applied_at DATETIME NOT NULL
+		)
+	`)
+	if err != nil {
+		return fmt.Errorf("failed to create migrations table: %w", err)
+	}
+
+	applied := make(map[string]bool)
+	rows, err := db.Query("SELECT version FROM schema_migrations")
+	if err != nil {
+		return fmt.Errorf("failed to query migrations: %w", err)
+	}
+	for rows.Next() {
+		var version string
+		if err := rows.Scan(&version); err != nil {
+			rows.Close()
+			return fmt.Errorf("failed to scan migration: %w", err)
+		}
+		applied[version] = true
+	}
+	rows.Close()
+
+	entries, err := os.ReadDir(migrationsDir)
+	if err != nil {
+		return fmt.Errorf("failed to read migrations directory: %w", err)
+	}
+
+	var migrationFiles []string
+	for _, entry := range entries {
+		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".sql") {
+			migrationFiles = append(migrationFiles, entry.Name())
+		}
+	}
+	sort.Strings(migrationFiles)
+
+	if len(migrationFiles) == 0 {
+		fmt.Println("\nNo migration files found")
+		return nil
+	}
+
+	fmt.Printf("\nFound %d migration file(s)\n", len(migrationFiles))
+
+	appliedCount := 0
+	pendingCount := 0
+
+	for _, filename := range migrationFiles {
+		version := strings.TrimSuffix(filename, filepath.Ext(filename))
+
+		if applied[version] {
+			fmt.Printf("  [SKIP] %s (already applied)\n", version)
+			continue
+		}
+
+		pendingCount++
+
+		content, err := os.ReadFile(filepath.Join(migrationsDir, filename))
+		if err != nil {
+			return fmt.Errorf("failed to read migration %s: %w", filename, err)
+		}
+
+		tx, err := db.Begin()
+		if err != nil {
+			return fmt.Errorf("failed to begin transaction: %w", err)
+		}
+
+		_, err = tx.Exec(string(content))
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to execute migration %s: %w\n%s", version, err, string(content))
+		}
+
+		_, err = tx.Exec("INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)", version, time.Now().UTC())
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to record migration %s: %w", version, err)
+		}
+
+		if err := tx.Commit(); err != nil {
+			return fmt.Errorf("failed to commit migration %s: %w", version, err)
+		}
+
+		fmt.Printf("  [APPLIED] %s\n", version)
+		appliedCount++
+	}
+
+	fmt.Printf("\nMigration complete: %d applied, %d skipped (already applied), %d pending\n",
+		appliedCount, len(migrationFiles)-pendingCount, 0)
+
 	return nil
 }

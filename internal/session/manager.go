@@ -174,3 +174,58 @@ func (m *Manager) CloseTab(id string) error {
 	delete(m.tabs, id)
 	return nil
 }
+
+func (m *Manager) RenameTab(id, name string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	tab, ok := m.tabs[id]
+	if !ok {
+		return fmt.Errorf("tab not found: %s", id)
+	}
+	tab.Name = name
+	return nil
+}
+
+func (m *Manager) MoveSessionToTab(sessionID, tabID string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	sess, ok := m.sessions[sessionID]
+	if !ok {
+		return fmt.Errorf("session not found: %s", sessionID)
+	}
+
+	tab, ok := m.tabs[tabID]
+	if !ok {
+		return fmt.Errorf("tab not found: %s", tabID)
+	}
+
+	if sess.TabID != "" {
+		if oldTab, ok := m.tabs[sess.TabID]; ok {
+			for i, sid := range oldTab.Sessions {
+				if sid == sessionID {
+					oldTab.Sessions = append(oldTab.Sessions[:i], oldTab.Sessions[i+1:]...)
+					break
+				}
+			}
+		}
+	}
+
+	sess.TabID = tabID
+	tab.Sessions = append(tab.Sessions, sessionID)
+	tab.ActiveSession = sessionID
+
+	return nil
+}
+
+func (m *Manager) GetSessionsByTab(tabID string) []*Session {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	sessions := make([]*Session, 0)
+	for _, s := range m.sessions {
+		if s.TabID == tabID {
+			sessions = append(sessions, s)
+		}
+	}
+	return sessions
+}

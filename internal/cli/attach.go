@@ -7,6 +7,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/charmbracelet/bubbletea"
+	"github.com/freecode/freecode/internal/args"
+	"github.com/freecode/freecode/internal/ui"
 	"github.com/spf13/cobra"
 )
 
@@ -133,12 +136,42 @@ func btoa(s string) string {
 
 func startLocalTUI(serverURL string, headers http.Header) error {
 	fmt.Println("\nStarting TUI...")
-	fmt.Println("Note: Full TUI attach functionality requires server-side session support")
 
-	p := os.Getenv("FREECODE_TUI_URL")
-	if p == "" {
-		p = serverURL
+	// Set server URL for TUI to use
+	tuiURL := os.Getenv("FREECODE_TUI_URL")
+	if tuiURL == "" {
+		tuiURL = serverURL
 	}
-	fmt.Printf("TUI would connect to: %s\n", p)
+	os.Setenv("FREECODE_TUI_URL", tuiURL)
+
+	// Pass auth headers via environment
+	if auth := headers.Get("Authorization"); auth != "" {
+		os.Setenv("FREECODE_AUTH", auth)
+	}
+
+	// Construct args for the TUI
+	tuiArgs := args.Args{
+		Continue:  attachContinue,
+		SessionID: attachSession,
+		Fork:      attachFork,
+	}
+
+	fmt.Printf("Connecting to: %s\n", tuiURL)
+	if attachSession != "" {
+		fmt.Printf("Session: %s\n", attachSession)
+	}
+	if attachContinue {
+		fmt.Println("Mode: continue last session")
+	}
+	if attachFork {
+		fmt.Println("Mode: fork session")
+	}
+
+	// Launch the Bubble Tea TUI
+	p := tea.NewProgram(ui.NewModel(tuiArgs), tea.WithAltScreen())
+	if _, err := p.Run(); err != nil {
+		return fmt.Errorf("failed to start TUI: %w", err)
+	}
+
 	return nil
 }

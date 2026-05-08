@@ -1,6 +1,11 @@
 package cli
 
 import (
+	"fmt"
+
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/freecode/freecode/internal/args"
+	"github.com/freecode/freecode/internal/ui"
 	"github.com/spf13/cobra"
 )
 
@@ -28,6 +33,7 @@ var (
 	modelVariant string
 	showThinking bool
 	skipPerms    bool
+	prompt       string
 )
 
 func init() {
@@ -48,9 +54,21 @@ func init() {
 	runCmd.Flags().BoolVar(&showThinking, "thinking", false, "Show thinking blocks")
 	runCmd.Flags().BoolVar(&skipPerms, "dangerously-skip-permissions", false, "Skip permission checks")
 	runCmd.Flags().BoolVar(&yolo, "yolo", false, "Skip all confirmations")
+	runCmd.Flags().StringVar(&prompt, "prompt", "", "Prompt to execute")
 }
 
-func runRun(cmd *cobra.Command, args []string) error {
-	cmd.Help()
+func runRun(cmd *cobra.Command, cmdArgs []string) error {
+	tuiArgs := args.Args{
+		Continue:  continueLast,
+		SessionID: sessionID,
+		Agent:     agentName,
+		Model:     model,
+		Prompt:    prompt,
+		Fork:      forkSession,
+	}
+	p := tea.NewProgram(ui.NewModel(tuiArgs), tea.WithAltScreen())
+	if _, err := p.Run(); err != nil {
+		return fmt.Errorf("failed to start TUI: %w", err)
+	}
 	return nil
 }

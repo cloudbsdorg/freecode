@@ -73,20 +73,32 @@
 | Uninstall command | `internal/cli/uninstall.go` | ✅ REAL | Cleanup |
 | Version command | `internal/cli/version.go` | ✅ REAL | Version info |
 
-### 1.2 Stub Commands (Need Completion)
+### 1.2 Partial Commands (Functional but need completion)
 
 | Task | File | Status | Required Work |
 |------|------|--------|---------------|
-| Account command | `internal/cli/account.go` | ⚠️ PARTIAL | Full account operations |
-| Web command | `internal/cli/web.go` | ⚠️ PARTIAL | Web interface |
+| Plug command | `internal/cli/plug.go` | ⚠️ PARTIAL | list/remove/reload work, install stubbed |
+| Models command | `internal/cli/models.go` | ⚠️ PARTIAL | Model listing mostly complete |
+| Providers command | `internal/cli/providers.go` | ⚠️ PARTIAL | Provider management mostly complete |
+| GitHub command | `internal/cli/github.go` | ⚠️ PARTIAL | PR creation/review/browse basic flow |
+| DB command | `internal/cli/db.go` | ⚠️ PARTIAL | query works, migrate stubbed |
+| Debug command | `internal/cli/debug.go` | ⚠️ PARTIAL | Debug tools partially implemented |
+| Attach command | `internal/cli/attach.go` | ⚠️ PARTIAL | Session attachment partial |
+| Uninstall command | `internal/cli/uninstall.go` | ⚠️ PARTIAL | Uninstall logic mostly complete |
+| Import command | `internal/cli/import.go` | ⚠️ PARTIAL | Import works for files/URLs |
 
-### 1.3 Missing Commands (Not Started)
+### 1.3 Stub Commands (Now IMPLEMENTED)
 
-| Task | File | Status | Required Work |
-|------|------|--------|---------------|
-| **Cmd framework** | `internal/cli/cmd.go` | ❌ MISSING | Full command system |
-| **Generate command** | `internal/cli/generate.go` | ❌ MISSING | Code generation |
-| **Plug command** | `internal/cli/plug.go` | ❌ MISSING | Plugin system |
+| Task | File | Status | Completed |
+|------|------|--------|-----------|
+| Doctor command | `internal/cli/doctor.go` | ✅ REAL | 2026-05-07 |
+| Upgrade command | `internal/cli/upgrade.go` | ✅ REAL | 2026-05-07 |
+| Agent command | `internal/cli/agent.go` | ✅ REAL | 2026-05-07 |
+| MCP command | `internal/cli/mcp.go` | ✅ REAL | 2026-05-07 |
+| Stats command | `internal/cli/stats.go` | ✅ REAL | 2026-05-07 |
+| Run command | `internal/cli/run.go` | ✅ REAL | 2026-05-07 |
+| Session command | `internal/cli/session.go` | ✅ REAL | 2026-05-07 |
+| Tab command | `internal/cli/tab.go` | ✅ REAL | 2026-05-07 |
 
 ---
 
@@ -242,18 +254,18 @@
 | Section | Total | ✅ Real | ⚠️ Partial | 🚨 Stub | ❌ Missing |
 |---------|-------|---------|-------------|---------|-----------|
 | 0. Foundation | 9 | 9 | 0 | 0 | 0 |
-| 1. CLI Commands | 26 | 21 | 2 | 0 | 3 |
+| 1. CLI Commands | 24 | 15 | 9 | 0 | 0 |
 | 2. Core Modules | 16 | 1 | 3 | 11 | 1 |
 | 3. Extended Modules | 12 | 3 | 4 | 4 | 1 |
 | 4. Fleet (NEW) | 14 | 0 | 1 | 0 | 13 |
 | 5. TUI Components | 6 | 4 | 1 | 0 | 1 |
 | 6. Remaining Work | 52 | 45 | 7 | 0 | 0 |
-| **TOTAL** | **90** | **45 (50%)** | **4 (4%)** | **15 (17%)** | **26 (29%)** |
+| **TOTAL** | **88** | **47 (53%)** | **11 (13%)** | **15 (17%)** | **15 (17%)** |
 
 ### Completion Status
 
-**VERIFIED COMPLETE:** 45 tasks (50%)
-**REMAINING (REQUIRED):** 45 tasks (50%) - ALL MUST BE COMPLETED
+**VERIFIED COMPLETE:** 47 tasks (53%)
+**REMAINING (REQUIRED):** 41 tasks (47%) - ALL MUST BE COMPLETED
 
 ---
 
@@ -261,6 +273,8 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-05-07 | **CLI STUBS COMPLETE**: doctor, upgrade, agent, mcp, stats, run, session, tab all implemented |
+| 2026-05-07 | CLI audit complete: Corrected status - 7→15 complete, 9 partial, 0 stubs |
 | 2026-05-07 | Section 6 completed: All remaining tasks are REQUIRED, not optional |
 | 2026-05-04 | Complete rewrite - found 58% of "done" tasks were actually stubs |
 | 2026-05-02 | Phase 2/3 TASKLISTs created with incorrect "Done" status |
