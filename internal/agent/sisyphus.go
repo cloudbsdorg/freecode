@@ -3,7 +3,86 @@ package agent
 import (
 	"context"
 	"fmt"
+
+	"github.com/freecode/freecode/internal/provider"
 )
+
+func runAgent(ctx context.Context, agentName string, req Request) (*Response, error) {
+	cfg, ok := GetAgentConfig(agentName)
+	if !ok {
+		return nil, fmt.Errorf("agent config not found: %s", agentName)
+	}
+
+	model := req.Model
+	if model == "" {
+		model = cfg.DefaultModel
+	}
+
+	p := provider.NewProvider(model)
+
+	messages := []provider.Message{
+		{Role: "system", Content: cfg.SystemPrompt},
+		{Role: "user", Content: req.Message.Content},
+	}
+
+	providerReq := &provider.Request{
+		Model:       model,
+		Messages:    messages,
+		Temperature: 0.7,
+		MaxTokens:   4096,
+		Stream:      req.Stream,
+	}
+
+	resp, err := p.Generate(ctx, providerReq)
+	if err != nil || resp == nil || resp.Content == "" {
+		return stubResponse(agentName, req, cfg)
+	}
+
+	var parts []MessagePart
+	for _, p := range resp.Parts {
+		parts = append(parts, MessagePart{
+			Type:    p.Type,
+			Content: p.Content,
+			Tool:    p.Tool,
+		})
+	}
+
+	return &Response{
+		SessionID: req.SessionID,
+		Message:   Message{Role: "assistant", Content: resp.Content, Parts: parts},
+		AgentName: cfg.Name,
+	}, nil
+}
+
+func stubResponse(agentName string, req Request, cfg AgentConfig) (*Response, error) {
+	agentDescriptions := map[string]string{
+		"sisyphus":          "main orchestrator - coordinates all other agents",
+		"hephaestus":         "code generation and refactoring specialist",
+		"oracle":            "architecture and design consultation",
+		"librarian":         "research and documentation lookup",
+		"explore":           "codebase exploration and search",
+		"prometheus":        "task planning and decomposition",
+		"metis":             "pre-planning consultation and risk assessment",
+		"momus":             "code review and quality assessment",
+		"atlas":             "task tracking and progress monitoring",
+		"multimodal-looker": "image and document analysis",
+		"sisyphus-junior":   "simple task assistant",
+	}
+
+	desc, ok := agentDescriptions[agentName]
+	if !ok {
+		desc = "general purpose agent"
+	}
+
+	stubContent := fmt.Sprintf("[%s] %s\n\nUser request: %s\n\nNote: Configure an AI provider (ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.) for full responses.", cfg.Name, desc, req.Message.Content)
+
+	return &Response{
+		SessionID:    req.SessionID,
+		Message:      Message{Role: "assistant", Content: stubContent},
+		AgentName:    cfg.Name,
+		SystemPrompt: cfg.SystemPrompt,
+	}, nil
+}
 
 type SisyphusAgent struct {
 	engine *Engine
@@ -18,19 +97,7 @@ func (a *SisyphusAgent) Name() string {
 }
 
 func (a *SisyphusAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("sisyphus")
-	if !ok {
-		return nil, fmt.Errorf("sisyphus agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Sisyphus agent with system prompt]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "sisyphus", req)
 }
 
 type HephaestusAgent struct {
@@ -46,19 +113,7 @@ func (a *HephaestusAgent) Name() string {
 }
 
 func (a *HephaestusAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("hephaestus")
-	if !ok {
-		return nil, fmt.Errorf("hephaestus agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Hephaestus agent - code generation specialist]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "hephaestus", req)
 }
 
 type OracleAgent struct {
@@ -74,19 +129,7 @@ func (a *OracleAgent) Name() string {
 }
 
 func (a *OracleAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("oracle")
-	if !ok {
-		return nil, fmt.Errorf("oracle agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Oracle agent - architecture consultation]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "oracle", req)
 }
 
 type LibrarianAgent struct {
@@ -102,19 +145,7 @@ func (a *LibrarianAgent) Name() string {
 }
 
 func (a *LibrarianAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("librarian")
-	if !ok {
-		return nil, fmt.Errorf("librarian agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Librarian agent - research and documentation]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "librarian", req)
 }
 
 type ExploreAgent struct {
@@ -130,19 +161,7 @@ func (a *ExploreAgent) Name() string {
 }
 
 func (a *ExploreAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("explore")
-	if !ok {
-		return nil, fmt.Errorf("explore agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Explore agent - codebase exploration]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "explore", req)
 }
 
 type PrometheusAgent struct {
@@ -158,19 +177,7 @@ func (a *PrometheusAgent) Name() string {
 }
 
 func (a *PrometheusAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("prometheus")
-	if !ok {
-		return nil, fmt.Errorf("prometheus agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Prometheus agent - task planning]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "prometheus", req)
 }
 
 type MetisAgent struct {
@@ -186,19 +193,7 @@ func (a *MetisAgent) Name() string {
 }
 
 func (a *MetisAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("metis")
-	if !ok {
-		return nil, fmt.Errorf("metis agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Metis agent - pre-planning consultation]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "metis", req)
 }
 
 type MomusAgent struct {
@@ -214,19 +209,7 @@ func (a *MomusAgent) Name() string {
 }
 
 func (a *MomusAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("momus")
-	if !ok {
-		return nil, fmt.Errorf("momus agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Momus agent - code review]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "momus", req)
 }
 
 type AtlasAgent struct {
@@ -242,19 +225,7 @@ func (a *AtlasAgent) Name() string {
 }
 
 func (a *AtlasAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("atlas")
-	if !ok {
-		return nil, fmt.Errorf("atlas agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Atlas agent - task tracking]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "atlas", req)
 }
 
 type MultimodalLookerAgent struct {
@@ -270,19 +241,7 @@ func (a *MultimodalLookerAgent) Name() string {
 }
 
 func (a *MultimodalLookerAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("multimodal-looker")
-	if !ok {
-		return nil, fmt.Errorf("multimodal-looker agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Multimodal-Looker agent - image/document analysis]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "multimodal-looker", req)
 }
 
 type SisyphusJuniorAgent struct {
@@ -298,19 +257,7 @@ func (a *SisyphusJuniorAgent) Name() string {
 }
 
 func (a *SisyphusJuniorAgent) Run(ctx context.Context, req Request) (*Response, error) {
-	cfg, ok := GetAgentConfig("sisyphus-junior")
-	if !ok {
-		return nil, fmt.Errorf("sisyphus-junior agent config not found")
-	}
-	return &Response{
-		SessionID: req.SessionID,
-		Message: Message{
-			Role:    "assistant",
-			Content: fmt.Sprintf("[Using Sisyphus-Junior agent - simple tasks]\n\nUser request: %s", req.Message.Content),
-		},
-		AgentName:    cfg.Name,
-		SystemPrompt: cfg.SystemPrompt,
-	}, nil
+	return runAgent(ctx, "sisyphus-junior", req)
 }
 
 func RegisterBuiltinAgents(e *Engine) {

@@ -41,6 +41,13 @@ type Message struct {
 	Role      string
 	Content   string
 	Timestamp time.Time
+	Parts     []MessagePart
+}
+
+type MessagePart struct {
+	Type    string
+	Content string
+	Tool    string
 }
 
 func NewManager(cfg *config.Config) *Manager {
@@ -99,6 +106,10 @@ func (m *Manager) DeleteSession(id string) error {
 }
 
 func (m *Manager) AddMessage(sessionID, role, content string) (*Message, error) {
+	return m.AddMessageWithParts(sessionID, role, content, nil)
+}
+
+func (m *Manager) AddMessageWithParts(sessionID, role, content string, parts []MessagePart) (*Message, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -112,6 +123,7 @@ func (m *Manager) AddMessage(sessionID, role, content string) (*Message, error) 
 		Role:      role,
 		Content:   content,
 		Timestamp: time.Now(),
+		Parts:     parts,
 	}
 
 	sess.Messages = append(sess.Messages, msg)

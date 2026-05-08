@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,7 +12,9 @@ import (
 	"github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/common-nighthawk/go-figure"
+	"github.com/freecode/freecode/internal/agent"
 	"github.com/freecode/freecode/internal/args"
+	"github.com/freecode/freecode/internal/config"
 	"github.com/freecode/freecode/internal/session"
 	"github.com/google/uuid"
 )
@@ -24,24 +27,32 @@ const (
 )
 
 type Model struct {
-	width           int
-	height          int
-	route           Route
-	tabBar          *TabBarComponent
-	statusBar       *StatusBar
-	messageList     *MessageList
-	inputArea       *InputArea
-	commandPalette  *CommandPalette
-	sidebar         *Sidebar
-	quitting        bool
-	focus           focusArea
-	yolo            bool
-	activeTabIdx    int
-	tabs            []*TabState
-	banner          string
-	cliArgs         args.Args
-	promptSubmitted bool
-	sessions        []*session.Session
+	width             int
+	height            int
+	route             Route
+	tabBar            *TabBarComponent
+	statusBar         *StatusBar
+	messageList       *MessageList
+	inputArea         *InputArea
+	commandPalette    *CommandPalette
+	sidebar           *Sidebar
+	toastManager      *ToastManager
+	helpDialog        *HelpDialog
+	permissionDialog  *PermissionDialog
+	questionDialog    *QuestionDialog
+	quitting          bool
+	focus             focusArea
+	yolo              bool
+	activeTabIdx      int
+	tabs              []*TabState
+	banner            string
+	cliArgs           args.Args
+	promptSubmitted   bool
+	sessions          []*session.Session
+	engine            *agent.Engine
+	currentSession    *session.Session
+	theme             Theme
+	themeName         string
 }
 
 func getBanner() string {
@@ -64,24 +75,35 @@ type TabState struct {
 }
 
 func NewModel(args args.Args) *Model {
+	cfg := config.DefaultConfig()
+	engine := agent.NewEngine(cfg)
+	agent.RegisterBuiltinAgents(engine)
+
 	m := &Model{
-		width:           80,
-		height:          24,
-		route:           RouteHome,
-		tabBar:          NewTabBar(),
-		statusBar:       NewStatusBar(),
-		messageList:     NewMessageList(),
-		inputArea:       NewInputArea(),
-		commandPalette:  NewCommandPalette(),
-		sidebar:         NewSidebar(),
-		quitting:        false,
-		focus:           focusInput,
-		yolo:            false,
-		activeTabIdx:    0,
-		tabs:           make([]*TabState, 0),
-		banner:         getBanner(),
-		cliArgs:        args,
-		promptSubmitted: false,
+		width:             80,
+		height:            24,
+		route:             RouteHome,
+		tabBar:            NewTabBar(),
+		statusBar:         NewStatusBar(),
+		messageList:       NewMessageList(),
+		inputArea:         NewInputArea(),
+		commandPalette:    NewCommandPalette(),
+		sidebar:           NewSidebar(),
+		toastManager:      NewToastManager(),
+		helpDialog:        NewHelpDialog(),
+		permissionDialog:  NewPermissionDialog(),
+		questionDialog:    NewQuestionDialog(),
+		quitting:          false,
+		focus:             focusInput,
+		yolo:              false,
+		activeTabIdx:      0,
+		tabs:             make([]*TabState, 0),
+		banner:           getBanner(),
+		cliArgs:          args,
+		promptSubmitted:   false,
+		engine:           engine,
+		theme:            DarkTheme(),
+		themeName:        "dark",
 	}
 
 	m.tabBar.AddTab("main", "main")
@@ -180,9 +202,138 @@ func (m *Model) registerCommands() {
 			m.route = RouteSession
 		},
 	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Switch Theme",
+		Description: fmt.Sprintf("Change UI theme (current: %s)", m.themeName),
+		Keybind:     "",
+		Category:    "View",
+		Handler: func() {
+			themes := ListThemes()
+			if len(themes) == 0 {
+				return
+			}
+			currentIdx := 0
+			for i, t := range themes {
+				if t == m.themeName {
+					currentIdx = i
+					break
+				}
+			}
+			nextIdx := (currentIdx + 1) % len(themes)
+			m.themeName = themes[nextIdx]
+			m.theme = GetTheme(m.themeName)
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Switch Model",
+		Description: fmt.Sprintf("Change AI model (current: %s)", m.cliArgs.Model),
+		Keybind:     "",
+		Category:    "Agent",
+		Handler: func() {
+			models := m.getAvailableModels()
+			if len(models) == 0 {
+				return
+			}
+			currentIdx := 0
+			for i, model := range models {
+				if model == m.cliArgs.Model {
+					currentIdx = i
+					break
+				}
+			}
+			nextIdx := (currentIdx + 1) % len(models)
+			m.cliArgs.Model = models[nextIdx]
+			m.statusBar.SetModel(m.cliArgs.Model)
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Rename Session",
+		Description: "Rename the current session",
+		Keybind:     "",
+		Category:    "Session",
+		Handler: func() {
+			if m.currentSession == nil {
+				return
+			}
+			m.currentSession.Title = "Renamed Session"
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Fork Session",
+		Description: "Create a copy of the current session",
+		Keybind:     "",
+		Category:    "Session",
+		Handler: func() {
+			if m.currentSession == nil {
+				return
+			}
+			agentName := m.cliArgs.Agent
+			if agentName == "" {
+				agentName = "sisyphus"
+			}
+			model := m.cliArgs.Model
+			if model == "" {
+				model = "claude-opus-4-7"
+			}
+			newSess, _ := m.engine.SessionManager().CreateSession(m.currentSession.Title+" (fork)", model, agentName)
+			for _, msg := range m.currentSession.Messages {
+				m.engine.SessionManager().AddMessage(newSess.ID, msg.Role, msg.Content)
+			}
+			m.currentSession = newSess
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Undo",
+		Description: "Remove last assistant message",
+		Keybind:     "",
+		Category:    "Session",
+		Handler: func() {
+			if m.currentSession == nil || len(m.currentSession.Messages) == 0 {
+				return
+			}
+			m.messageList.RemoveLastAssistant()
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Copy Transcript",
+		Description: "Copy session transcript to clipboard",
+		Keybind:     "",
+		Category:    "Session",
+		Handler: func() {
+			if m.currentSession == nil {
+				return
+			}
+			var transcript strings.Builder
+			transcript.WriteString("# Session Transcript\n\n")
+			transcript.WriteString(fmt.Sprintf("Title: %s\n", m.currentSession.Title))
+			transcript.WriteString(fmt.Sprintf("Model: %s\n", m.currentSession.Model))
+			transcript.WriteString(fmt.Sprintf("Agent: %s\n\n", m.currentSession.Agent))
+			for _, msg := range m.currentSession.Messages {
+				transcript.WriteString(fmt.Sprintf("## %s\n\n%s\n\n", strings.ToUpper(msg.Role), msg.Content))
+			}
+			_ = transcript.String()
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Help",
+		Description: "Show keyboard shortcuts and help",
+		Keybind:     "",
+		Category:    "System",
+		Handler: func() {
+			m.helpDialog.Open()
+		},
+	})
 }
 
 func (m *Model) Init() tea.Cmd {
+	m.setTerminalTitle("Freecode")
 	return func() tea.Msg {
 		time.Sleep(100 * time.Millisecond)
 		return initTick{}
@@ -214,6 +365,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case SwitchTabMsg:
 		m.switchTab(msg.Tab)
+
+	case PermissionRequestMsg:
+		m.permissionDialog.SetRequest(msg.Request)
+
+	case QuestionRequestMsg:
+		m.questionDialog.SetRequest(msg.Request)
 
 	case quitMsg:
 		m.quitting = true
@@ -247,9 +404,18 @@ func (m *Model) updateLayout() {
 	m.commandPalette.SetHeight(m.height / 2)
 	m.sidebar.SetWidth(sidebarWidth)
 	m.sidebar.SetHeight(m.height - 3)
+	m.permissionDialog.SetWidth(m.width / 2)
+	m.questionDialog.SetWidth(m.width / 2)
 }
 
 func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	if m.helpDialog.IsOpen() {
+		handled := m.helpDialog.HandleKey(msg.String())
+		if handled {
+			return m, nil
+		}
+	}
+
 	if m.commandPalette.IsOpen() {
 		handled := m.commandPalette.HandleKey(msg)
 		if handled {
@@ -260,6 +426,14 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			m.focus = focusInput
 			return m, nil
 		}
+	}
+
+	if m.permissionDialog.IsVisible() {
+		return m.handlePermissionKey(msg)
+	}
+
+	if m.questionDialog.IsVisible() {
+		return m.handleQuestionKey(msg)
 	}
 
 	switch msg.String() {
@@ -289,8 +463,12 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.yolo = !m.yolo
 		m.statusBar.SetYOLO(m.yolo)
 
+	case "?":
+		m.helpDialog.Toggle()
+
 	case "ctrl+h":
 		m.route = RouteHome
+		m.setTerminalTitle("Freecode")
 
 	case "tab":
 		m.tabBar.NextTab()
@@ -330,6 +508,15 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			if selected != nil {
 				m.route = RouteSession
 				m.switchTabByID(selected.ID)
+				if selected.Title != "" && selected.Title != "New Session" {
+					title := selected.Title
+					if len(title) > 40 {
+						title = title[:37] + "..."
+					}
+					m.setTerminalTitle("FC | " + title)
+				} else {
+					m.setTerminalTitle("Freecode")
+				}
 			}
 		} else if m.route == RouteHome {
 			value := m.inputArea.Submit()
@@ -374,6 +561,10 @@ func (m *Model) View() string {
 	default:
 		return m.renderHome()
 	}
+}
+
+func (m *Model) renderToast() string {
+	return m.toastManager.Render()
 }
 
 func (m *Model) renderHome() string {
@@ -471,13 +662,17 @@ func (m *Model) renderSession() string {
 
 	input := m.inputArea.Render()
 	status := m.statusBar.Render()
+	toast := m.renderToast()
+	help := m.helpDialog.Render()
+	permission := m.permissionDialog.Render()
+	question := m.questionDialog.Render()
 
 	paletteView := ""
 	if m.commandPalette.IsOpen() {
 		paletteView = "\n" + m.commandPalette.Render()
 	}
 
-	return tabBar + "\n" + content + "\n" + input + "\n" + status + paletteView
+	return tabBar + "\n" + content + "\n" + input + "\n" + status + toast + help + permission + question + paletteView
 }
 
 func (m *Model) renderSessionContent() string {
@@ -559,14 +754,70 @@ func (m *Model) addUserMessage(content string) {
 	}
 	m.messageList.AddMessage(msg)
 	m.messageList.ScrollToBottom()
+
+	if m.currentSession == nil {
+		agentName := m.cliArgs.Agent
+		if agentName == "" {
+			agentName = "sisyphus"
+		}
+		model := m.cliArgs.Model
+		if model == "" {
+			model = "claude-opus-4-7"
+		}
+		sess, _ := m.engine.SessionManager().CreateSession("New Session", model, agentName)
+		m.currentSession = sess
+		m.tabs[m.activeTabIdx].SessionID = sess.ID
+		m.setTerminalTitle("Freecode")
+	} else if m.currentSession.Title != "" && m.currentSession.Title != "New Session" {
+		title := m.currentSession.Title
+		if len(title) > 40 {
+			title = title[:37] + "..."
+		}
+		m.setTerminalTitle("FC | " + title)
+	}
+
+	m.engine.SessionManager().AddMessage(m.currentSession.ID, "user", content)
+
+	agentName := m.cliArgs.Agent
+	if agentName == "" {
+		agentName = "sisyphus"
+	}
+	model := m.cliArgs.Model
+	if model == "" {
+		model = "claude-opus-4-7"
+	}
+
+	resp, err := m.engine.Run(context.Background(), agent.Request{
+		SessionID: m.currentSession.ID,
+		AgentName: agentName,
+		Model:     model,
+		Message: agent.Message{
+			Role:    "user",
+			Content: content,
+		},
+	})
+	if err != nil {
+		m.addAssistantMessage("Error: "+err.Error(), nil)
+		return
+	}
+	var parts []MessagePart
+	for _, p := range resp.Message.Parts {
+		parts = append(parts, MessagePart{
+			Type:    p.Type,
+			Content: p.Content,
+			Tool:    p.Tool,
+		})
+	}
+	m.addAssistantMessage(resp.Message.Content, parts)
 }
 
-func (m *Model) addAssistantMessage(content string) {
+func (m *Model) addAssistantMessage(content string, parts []MessagePart) {
 	msg := Message{
 		ID:        uuid.New().String(),
 		Role:      "assistant",
 		Content:   content,
 		Timestamp: time.Now(),
+		Parts:     parts,
 	}
 	m.messageList.AddMessage(msg)
 	m.messageList.ScrollToBottom()
@@ -608,6 +859,26 @@ type quitMsg struct{}
 
 type initTick struct{}
 
+type PermissionRequestMsg struct {
+	Request *PermissionRequest
+}
+
+type PermissionResponseMsg struct {
+	Response *PermissionResponse
+}
+
+type ShowPermissionMsg struct {
+	Request *PermissionRequest
+}
+
+type QuestionRequestMsg struct {
+	Request *QuestionRequest
+}
+
+type ShowQuestionMsg struct {
+	Request *QuestionRequest
+}
+
 func (m *Model) handleInit() {
 	m.loadSessions()
 
@@ -615,6 +886,7 @@ func (m *Model) handleInit() {
 		m.promptSubmitted = true
 		m.inputArea.SetValue(m.cliArgs.Prompt)
 		m.route = RouteSession
+		m.setTerminalTitle("Freecode")
 		m.addUserMessage(m.cliArgs.Prompt)
 		return
 	}
@@ -629,6 +901,111 @@ func (m *Model) handleInit() {
 		m.route = RouteSession
 		m.loadSessionMessages(m.sessions[0].ID)
 	}
+}
+
+func (m *Model) setTerminalTitle(title string) {
+	fmt.Print("\x1b]2;" + title + "\x1b\\")
+}
+
+func (m *Model) handlePermissionKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	stage := m.permissionDialog.GetStage()
+
+	switch msg.String() {
+	case "escape":
+		if stage == "always" {
+			m.permissionDialog.SetStage("permission")
+		} else if stage == "reject" {
+			m.permissionDialog.SetStage("permission")
+		} else {
+			m.permissionDialog.Clear()
+		}
+		return m, nil
+
+	case "enter":
+		if stage == "permission" {
+			m.permissionDialog.SetStage("always")
+		} else if stage == "always" {
+			m.permissionDialog.Clear()
+			m.toastManager.ShowInfo("Permission remembered for this session")
+		} else if stage == "reject" {
+			m.permissionDialog.Clear()
+			m.toastManager.ShowWarning("Permission denied")
+		}
+		return m, nil
+
+	case "left", "h":
+		if stage == "permission" {
+		}
+		return m, nil
+
+	case "right", "l":
+		if stage == "permission" {
+		}
+		return m, nil
+	}
+
+	return m, nil
+}
+
+func (m *Model) handleQuestionKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	if m.questionDialog.IsEditing() {
+		switch msg.String() {
+		case "escape":
+			m.questionDialog.SetEditing(false)
+			return m, nil
+		case "enter":
+			m.questionDialog.SetEditing(false)
+			return m, nil
+		}
+		return m, nil
+	}
+
+	switch msg.String() {
+	case "escape":
+		m.questionDialog.Clear()
+		return m, nil
+
+	case "enter":
+		if m.questionDialog.IsConfirm() {
+			answers := m.questionDialog.Submit()
+			m.questionDialog.Clear()
+			m.toastManager.ShowInfo("Question answered")
+			_ = answers
+		} else {
+			m.questionDialog.ToggleCurrentOption()
+		}
+		return m, nil
+
+	case "left", "h":
+		m.questionDialog.PrevTab()
+		return m, nil
+
+	case "right", "l":
+		m.questionDialog.NextTab()
+		return m, nil
+
+	case "up", "k":
+		m.questionDialog.PrevOption()
+		return m, nil
+
+	case "down", "j":
+		m.questionDialog.NextOption()
+		return m, nil
+
+	case "shift+tab":
+		m.questionDialog.PrevTab()
+		return m, nil
+
+	case "tab":
+		m.questionDialog.NextTab()
+		return m, nil
+	}
+
+	return m, nil
+}
+
+func (m *Model) ShowPermissionRequest(req *PermissionRequest) {
+	m.permissionDialog.SetRequest(req)
 }
 
 func (m *Model) loadSessions() {
@@ -703,4 +1080,49 @@ func formatTimestamp(t time.Time) string {
 		return fmt.Sprintf("%dd ago", days)
 	}
 	return t.Format("Jan 2")
+}
+
+func (m *Model) getAvailableModels() []string {
+	var models []string
+
+	if os.Getenv("ANTHROPIC_API_KEY") != "" {
+		models = append(models, "anthropic/claude-opus-4-7", "anthropic/claude-sonnet-4-5", "anthropic/claude-haiku-4-7")
+	}
+	if os.Getenv("OPENAI_API_KEY") != "" {
+		models = append(models, "openai/gpt-4o", "openai/gpt-4o-mini", "openai/gpt-4-turbo", "openai/o1-preview", "openai/o1-mini")
+	}
+	if os.Getenv("MINIMAX_API_KEY") != "" {
+		models = append(models, "minimax/minimax-coding-plan")
+	}
+	if os.Getenv("GROQ_API_KEY") != "" {
+		models = append(models, "groq/llama-3.3-70b-versatile", "groq/mixtral-8x7b-32768")
+	}
+	if os.Getenv("PERPLEXITY_API_KEY") != "" {
+		models = append(models, "perplexity/llama-3.1-sonar-large-128k-online", "perplexity/llama-3.1-sonar-huge-128k-online")
+	}
+	if os.Getenv("GOOGLE_API_KEY") != "" {
+		models = append(models, "google/gemini-2.5-pro", "google/gemini-2.5-flash")
+	}
+	if os.Getenv("DEEPSEEK_API_KEY") != "" {
+		models = append(models, "deepseek/deepseek-coder", "deepseek/deepseek-chat")
+	}
+	if os.Getenv("OLLAMA_BASE_URL") != "" || os.Getenv("OLLAMA_API_KEY") != "" {
+		models = append(models, "ollama/llama3.2", "ollama/codellama", "ollama/mistral")
+	}
+	if os.Getenv("OPENROUTER_API_KEY") != "" {
+		models = append(models, "openrouter/claude-3.5-sonnet", "openrouter/gpt-4", "openrouter/gemini-2.0-flash")
+	}
+
+	if len(models) == 0 {
+		models = []string{
+			"anthropic/claude-opus-4-7",
+			"openai/gpt-4o",
+			"minimax/minimax-coding-plan",
+			"groq/llama-3.3-70b-versatile",
+			"deepseek/deepseek-coder",
+			"ollama/llama3.2",
+		}
+	}
+
+	return models
 }

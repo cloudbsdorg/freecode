@@ -47,6 +47,13 @@ type Message struct {
 	Role     string
 	Content  string
 	Thinking string
+	Parts    []MessagePart
+}
+
+type MessagePart struct {
+	Type    string
+	Content string
+	Tool    string
 }
 
 type ToolCall struct {

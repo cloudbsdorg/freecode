@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"strings"
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
@@ -41,6 +42,7 @@ type Message struct {
 type MessagePart struct {
 	Type    string
 	Content string
+	Tool    string
 }
 
 type MessageList struct {
@@ -71,6 +73,19 @@ func (m *MessageList) SetMessages(msgs []Message) {
 
 func (m *MessageList) Clear() {
 	m.messages = make([]Message, 0)
+}
+
+func (m *MessageList) RemoveLastAssistant() {
+	for i := len(m.messages) - 1; i >= 0; i-- {
+		if m.messages[i].Role == "assistant" {
+			m.messages = append(m.messages[:i], m.messages[i+1:]...)
+			return
+		}
+	}
+}
+
+func (m *MessageList) GetMessages() []Message {
+	return m.messages
 }
 
 func (m *MessageList) SetWidth(w int) {
@@ -154,16 +169,54 @@ func (m *MessageList) renderMessage(msg Message) string {
 		style = ToolMessageStyle
 	}
 
-	content := msg.Content
-	if len(content) > m.width-10 {
-		content = content[:m.width-13] + "..."
-	}
-
 	var timestampStr string
 	if m.showTimestamps {
 		timestampStr = " " + TimestampStyle.Render(msg.Timestamp.Format("15:04"))
 	}
 
-	line := style.Render(roleLabel) + ": " + lipgloss.NewStyle().Render(content) + timestampStr + "\n"
-	return line
+	var result strings.Builder
+	result.WriteString(style.Render(roleLabel) + ": ")
+
+	if len(msg.Parts) > 0 {
+		for _, part := range msg.Parts {
+			switch part.Type {
+			case "text":
+				content := part.Content
+				if len(content) > m.width-15 {
+					content = content[:m.width-18] + "..."
+				}
+				result.WriteString(lipgloss.NewStyle().Render(content))
+			case "reasoning":
+				content := part.Content
+				if len(content) > m.width-20 {
+					content = content[:m.width-23] + "..."
+				}
+				reasoningStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080")).Italic(true)
+				result.WriteString(reasoningStyle.Render("[Thinking: " + content + "]"))
+			case "tool":
+				toolStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#CE9178"))
+				if part.Tool != "" {
+					result.WriteString(toolStyle.Render("[Tool: " + part.Tool + "]"))
+				} else {
+					result.WriteString(toolStyle.Render("[Tool]"))
+				}
+			default:
+				content := part.Content
+				if len(content) > m.width-15 {
+					content = content[:m.width-18] + "..."
+				}
+				result.WriteString(lipgloss.NewStyle().Render(content))
+			}
+		}
+	} else {
+		content := msg.Content
+		if len(content) > m.width-10 {
+			content = content[:m.width-13] + "..."
+		}
+		result.WriteString(lipgloss.NewStyle().Render(content))
+	}
+
+	result.WriteString(timestampStr)
+	result.WriteString("\n")
+	return result.String()
 }
