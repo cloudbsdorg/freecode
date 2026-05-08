@@ -28,7 +28,7 @@ func Format(ctx context.Context, code string, opts FormatOptions) (*Result, erro
 }
 
 func formatGo(ctx context.Context, code string) (*Result, error) {
-	cmd := exec.CommandContext(ctx, "gofmt", "-w")
+	cmd := exec.CommandContext(ctx, "gofmt")
 	cmd.Stdin = strings.NewReader(code)
 	out, err := cmd.Output()
 	if err != nil {
