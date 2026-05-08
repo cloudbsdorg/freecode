@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"time"
 )
 
 func RandomID() string {
@@ -46,10 +45,6 @@ func Replace(s, old, new string) string {
 func Matches(s, pattern string) (bool, error) {
 	matched, err := regexp.MatchString(pattern, s)
 	return matched, err
-}
-
-func FormatDuration(d time.Duration) string {
-	return d.Round(time.Second).String()
 }
 
 func ParseInt(s string) (int64, error) {
