@@ -141,13 +141,13 @@
 
 ### 3.1 High Priority
 
-| Task | File | Status | Notes |
-|------|------|--------|-------|
-| Account | `internal/account/*.go` | ✅ REAL | Memory repo, account ops |
-| ACP | `internal/acp/*.go` | ✅ REAL | Protocol: Server/Client/Connection |
-| Control Plane | `internal/controlplane/*.go` | ❌ MISSING | Fleet orchestration |
-| File | `internal/file/*.go` | ✅ REAL | Watcher with fsnotify, Tree, Ops |
-| Plugin | `internal/plugin/*.go` | ✅ REAL | Registry, hooks integration |
+| Task | File | Status | Assigned To | Start | Notes |
+|------|------|--------|-------------|-------|-------|
+| Account | `internal/account/*.go` | ✅ REAL | | | Memory repo, account ops |
+| ACP | `internal/acp/*.go` | ✅ REAL | | | Protocol: Server/Client/Connection |
+| Control Plane | `internal/controlplane/*.go` | ✅ REAL | freecode | 2026-05-07 21:30 UTC | Fleet head, task queue, WS server |
+| File | `internal/file/*.go` | ✅ REAL | | | Watcher with fsnotify, Tree, Ops |
+| Plugin | `internal/plugin/*.go` | ✅ REAL | | | Registry, hooks integration |
 
 ### 3.2 Medium Priority
 
@@ -252,15 +252,15 @@
 | 0. Foundation | 9 | 9 | 0 | 0 | 0 |
 | 1. CLI Commands | 26 | 24 | 2 | 0 | 0 |
 | 2. Core Modules | 16 | 16 | 0 | 0 | 0 |
-| 3. Extended Modules | 12 | 10 | 1 | 0 | 1 |
+| 3. Extended Modules | 12 | 11 | 0 | 0 | 1 |
 | 4. Fleet (NEW) | 14 | 0 | 1 | 0 | 13 |
 | 5. TUI Components | 6 | 4 | 1 | 0 | 1 |
 | 6. P3 Enhancements | 7 | 7 | 0 | 0 | 0 |
-| **TOTAL** | **90** | **70 (78%)** | **5 (6%)** | **0 (0%)** | **15 (17%)** |
+| **TOTAL** | **90** | **71 (79%)** | **4 (4%)** | **0 (0%)** | **15 (17%)** |
 
 ### Completion Status
 
-**VERIFIED COMPLETE:** 70 tasks (78%)
+**VERIFIED COMPLETE:** 71 tasks (79%)
 **NEEDS COMPLETION:** 15 tasks (17%)
 **PARTIAL/STUB:** 5 tasks (6%)
 
@@ -278,6 +278,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-05-07 | **CONTROLPLANE REAL**: Fleet orchestration with HTTP+WebSocket server, task queue, agent registry |
 | 2026-05-07 | **CLI STATUS CORRECTED**: cmd, generate, plug verified REAL (not missing). CLI now 24 real, 2 partial, 0 missing |
 | 2026-05-07 | **CLI STUBS COMPLETE**: doctor, upgrade, agent, mcp, stats, run, session, tab all implemented |
 | 2026-05-07 | CLI audit complete: Corrected status - 7→15 complete, 9 partial, 0 stubs |
