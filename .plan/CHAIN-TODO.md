@@ -190,17 +190,17 @@ worktree ──────────────────────┘  
 
 ---
 
-## Phase E: P3 Nice to Have (Enhancements)
+## Phase E: P3 Nice to Have (Enhancements) ✅ COMPLETE
 
-| Step | Feature | File | Description |
-|------|---------|------|-------------|
-| E1 | Sound effects | `internal/ui/sound.go` | Terminal bell/beep on events |
-| E2 | Prompt autocomplete | `internal/ui/autocomplete.go` | Frecency-based history |
-| E3 | Plugin Runtime | `internal/plugin/runtime.go` | Plugin loader runtime |
-| E4 | Timeline/fork dialogs | `internal/ui/timeline.go` | Session timeline view |
-| E5 | Error boundary | `internal/ui/error.go` | Error recovery component |
-| E6 | Diff wrap toggle | `internal/ui/diff.go` | Diff viewer with wrap toggle |
-| E7 | Animation toggle | `internal/ui/animation.go` | Animation settings |
+| Step | Feature | File | Status |
+|------|---------|------|--------|
+| E1 | Sound effects | `internal/ui/sound.go` | ✅ Done |
+| E2 | Prompt autocomplete | `internal/ui/autocomplete.go` | ✅ Done |
+| E3 | Plugin Runtime | `internal/plugin/runtime.go` | ✅ Done |
+| E4 | Timeline/fork dialogs | `internal/ui/timeline.go` | ✅ Done |
+| E5 | Error boundary | `internal/ui/error.go` | ✅ Done |
+| E6 | Diff wrap toggle | `internal/ui/diff.go` | ✅ Done |
+| E7 | Animation toggle | `internal/ui/animation.go` | ✅ Done |
 
 ---
 

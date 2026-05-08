@@ -225,13 +225,13 @@
 
 | Task | File | Status | Description |
 |------|------|--------|-------------|
-| Sound effects | `internal/ui/sound.go` | 🔄 IN PROGRESS | Terminal bell/beep on events |
-| Prompt autocomplete | `internal/ui/autocomplete.go` | 🔄 IN PROGRESS | Full frecency/history support |
-| Plugin Runtime | `internal/plugin/*.go` | 🔄 IN PROGRESS | Complete plugin loader |
-| Timeline/fork dialogs | `internal/ui/timeline.go` | 🔄 IN PROGRESS | Advanced session timeline |
-| Error boundary | `internal/ui/error.go` | 🔄 IN PROGRESS | Error recovery component |
-| Diff wrap toggle | `internal/ui/diff.go` | 🔄 IN PROGRESS | Toggle diff line wrapping |
-| Animation toggle | `internal/ui/animation.go` | 🔄 IN PROGRESS | Enable/disable animations |
+| Sound effects | `internal/ui/sound.go` | ✅ REAL | Terminal bell/beep on events |
+| Prompt autocomplete | `internal/ui/autocomplete.go` | ✅ REAL | Full frecency/history support |
+| Plugin Runtime | `internal/plugin/runtime.go` | ✅ REAL | Complete plugin loader |
+| Timeline/fork dialogs | `internal/ui/timeline.go` | ✅ REAL | Advanced session timeline |
+| Error boundary | `internal/ui/error.go` | ✅ REAL | Error recovery component |
+| Diff wrap toggle | `internal/ui/diff.go` | ✅ REAL | Toggle diff line wrapping |
+| Animation toggle | `internal/ui/animation.go` | ✅ REAL | Enable/disable animations |
 
 ---
 
@@ -247,13 +247,13 @@
 | 3. Extended Modules | 12 | 3 | 4 | 4 | 1 |
 | 4. Fleet (NEW) | 14 | 0 | 1 | 0 | 13 |
 | 5. TUI Components | 6 | 4 | 1 | 0 | 1 |
-| 6. P3 Nice to Have | 7 | 0 | 0 | 0 | 7 |
-| **TOTAL** | **90** | **38 (42%)** | **11 (12%)** | **15 (17%)** | **26 (29%)** |
+| 6. P3 Nice to Have | 7 | 7 | 0 | 0 | 0 |
+| **TOTAL** | **90** | **45 (50%)** | **4 (4%)** | **15 (17%)** | **26 (29%)** |
 
 ### True Completion Rate
 
-**VERIFIED COMPLETE (working implementation):** 38 tasks (42%)
-**NEEDS COMPLETION:** 52 tasks (58%)
+**VERIFIED COMPLETE (working implementation):** 45 tasks (50%)
+**NEEDS COMPLETION:** 45 tasks (50%)
 
 ---
 

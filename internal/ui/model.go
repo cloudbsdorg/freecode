@@ -37,6 +37,8 @@ type Model struct {
 	commandPalette    *CommandPalette
 	sidebar           *Sidebar
 	toastManager      *ToastManager
+	soundManager      *SoundManager
+	animationManager  *AnimationManager
 	helpDialog        *HelpDialog
 	permissionDialog  *PermissionDialog
 	questionDialog    *QuestionDialog
@@ -96,6 +98,8 @@ func NewModel(args args.Args) *Model {
 		commandPalette:    NewCommandPalette(),
 		sidebar:           NewSidebar(),
 		toastManager:      NewToastManager(),
+		soundManager:      NewSoundManager(),
+		animationManager:  NewAnimationManager(),
 		helpDialog:        NewHelpDialog(),
 		permissionDialog:   NewPermissionDialog(),
 		questionDialog:     NewQuestionDialog(),
@@ -177,6 +181,17 @@ func (m *Model) registerCommands() {
 		Handler: func() {
 			m.yolo = !m.yolo
 			m.statusBar.SetYOLO(m.yolo)
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Toggle Animation",
+		Description: fmt.Sprintf("Cycle animation level (current: %s)", m.animationManager.Level().String()),
+		Keybind:     "Ctrl+Shift+A",
+		Category:    "View",
+		Handler: func() {
+			m.animationManager.Toggle()
+			m.toastManager.ShowInfo("Animation: " + m.animationManager.Level().String())
 		},
 	})
 
@@ -592,6 +607,10 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.yolo = !m.yolo
 		m.statusBar.SetYOLO(m.yolo)
 
+	case "ctrl+shift+a":
+		m.animationManager.Toggle()
+		m.toastManager.ShowInfo("Animation: " + m.animationManager.Level().String())
+
 	case "?":
 		m.helpDialog.Toggle()
 
@@ -956,6 +975,7 @@ func (m *Model) addAssistantMessage(content string, parts []MessagePart) {
 	}
 	m.messageList.AddMessage(msg)
 	m.messageList.ScrollToBottom()
+	m.soundManager.Play(SoundEventMessageReceived)
 }
 
 func (m *Model) SetMessages(msgs []Message) {

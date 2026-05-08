@@ -16,7 +16,9 @@ type Config struct {
 	Verbose       bool                      `mapstructure:"verbose"`
 	Debug         bool                      `mapstructure:"debug"`
 	Color         bool                      `mapstructure:"color"`
+	SoundEnabled  bool                      `mapstructure:"sound_enabled"`
 	Theme         string                    `mapstructure:"theme"`
+	Animation     string                    `mapstructure:"animation"`
 	Width         int                       `mapstructure:"width"`
 	Height        int                       `mapstructure:"height"`
 	Editor        string                    `mapstructure:"editor"`
@@ -499,12 +501,14 @@ func DefaultConfig() *Config {
 	cacheDir := filepath.Join(tempDir, "freecode-cache")
 
 	return &Config{
-		Shell:     "/bin/bash",
-		LogLevel:  "info",
-		LogFormat: "text",
-		Yolo:      true,
-		Color:     true,
-		Theme:     "default",
+		Shell:        "/bin/bash",
+		LogLevel:     "info",
+		LogFormat:    "text",
+		Yolo:         true,
+		Color:        true,
+		SoundEnabled: true,
+		Theme:        "default",
+		Animation:    "full",
 		Width:     120,
 		Height:    80,
 		Editor:    os.Getenv("EDITOR"),

@@ -35,7 +35,7 @@ go test ./...             # All tests pass
 - **Export Dialog** - `exportdialog.go`: Format selection (Markdown/JSON/Text)
 - **MCP Dialog** - `mcpdialog.go`: Server management
 - **Console Panel** - `console.go`: Debug log display
-- **Autocomplete** - `autocomplete.go`: Basic autocomplete framework
+- **Autocomplete** - `autocomplete.go`: Frecency-based history with fuzzy matching
 
 ### P2 - Session Features ✅
 - **Terminal title updates** - Dynamic ANSI escape sequences
@@ -43,6 +43,15 @@ go test ./...             # All tests pass
 - **Session actions** - Rename, Fork, Undo, Copy Transcript
 - **Theme system** - 8 themes (default, dark, light, dracula, nord, monokai, gruvbox, solarized)
 - **Message parts streaming** - text/reasoning/tool parts rendered
+
+### P3 - Nice to Have (Enhancements) ✅ NEW!
+- **Sound effects** - Terminal bell/beep on events (`internal/ui/sound.go`)
+- **Prompt autocomplete** - Frecency-based history with fuzzy matching (`internal/ui/autocomplete.go`)
+- **Plugin Runtime** - Complete plugin loader with hot reload (`internal/plugin/runtime.go`)
+- **Timeline/fork dialogs** - Session timeline visualization (`internal/ui/timeline.go`)
+- **Error boundary** - Error recovery component (`internal/ui/error.go`)
+- **Diff wrap toggle** - Diff viewer with wrap toggle (`internal/ui/diff.go`)
+- **Animation toggle** - Enable/disable animations (`internal/ui/animation.go`)
 
 ---
 
@@ -113,3 +122,10 @@ go test ./...
 **Commit:** HEAD on `freecode/phase1.1-project-setup`
 **Branch:** `freecode/phase1.1-project-setup`
 **Last Updated:** 2026-05-07
+
+## Build Status: ✅ ALL PASSING
+
+```bash
+go build ./cmd/freecode  # Builds successfully
+go test ./...              # All tests pass
+```
