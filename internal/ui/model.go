@@ -40,6 +40,12 @@ type Model struct {
 	helpDialog        *HelpDialog
 	permissionDialog  *PermissionDialog
 	questionDialog    *QuestionDialog
+	selectDialog      *SelectDialog
+	statusDialog      *StatusDialog
+	exportDialog      *ExportDialog
+	mcpDialog         *MCPDialog
+	consolePanel      *ConsolePanel
+	autocompleteDialog *AutocompleteDialog
 	quitting          bool
 	focus             focusArea
 	yolo              bool
@@ -91,8 +97,14 @@ func NewModel(args args.Args) *Model {
 		sidebar:           NewSidebar(),
 		toastManager:      NewToastManager(),
 		helpDialog:        NewHelpDialog(),
-		permissionDialog:  NewPermissionDialog(),
-		questionDialog:    NewQuestionDialog(),
+		permissionDialog:   NewPermissionDialog(),
+		questionDialog:     NewQuestionDialog(),
+		selectDialog:       NewSelectDialog(),
+		statusDialog:       NewStatusDialog(),
+		exportDialog:       NewExportDialog(),
+		mcpDialog:          NewMCPDialog(),
+		consolePanel:       NewConsolePanel(),
+		autocompleteDialog: NewAutocompleteDialog(),
 		quitting:          false,
 		focus:             focusInput,
 		yolo:              false,
@@ -330,6 +342,74 @@ func (m *Model) registerCommands() {
 			m.helpDialog.Open()
 		},
 	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Show Status",
+		Description: "Show current model/agent/provider status",
+		Keybind:     "",
+		Category:    "System",
+		Handler: func() {
+			m.statusDialog.SetInfo(m.cliArgs.Model, m.cliArgs.Agent, "anthropic")
+			m.statusDialog.Open()
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Export Session",
+		Description: "Export session transcript",
+		Keybind:     "",
+		Category:    "Session",
+		Handler: func() {
+			title := "Session"
+			if m.currentSession != nil {
+				title = m.currentSession.Title
+			}
+			var msgs []string
+			if m.currentSession != nil {
+				for _, msg := range m.currentSession.Messages {
+					msgs = append(msgs, msg.Content)
+				}
+			}
+			m.exportDialog.SetSession(title, msgs)
+			m.exportDialog.Open()
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "MCP Servers",
+		Description: "Manage MCP server connections",
+		Keybind:     "",
+		Category:    "System",
+		Handler: func() {
+			m.mcpDialog.Open()
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Toggle Console",
+		Description: "Show or hide debug console",
+		Keybind:     "",
+		Category:    "System",
+		Handler: func() {
+			m.consolePanel.Toggle()
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
+		Name:        "Select Option",
+		Description: "Open selection dialog",
+		Keybind:     "",
+		Category:    "System",
+		Handler: func() {
+			m.selectDialog.SetOptions([]SelectOption{
+				{Title: "Option 1", Value: "opt1", Description: "First option"},
+				{Title: "Option 2", Value: "opt2", Description: "Second option"},
+			})
+			m.selectDialog.SetOnSelect(func(val string) {
+				m.toastManager.ShowInfo("Selected: " + val)
+			})
+		},
+	})
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -406,6 +486,13 @@ func (m *Model) updateLayout() {
 	m.sidebar.SetHeight(m.height - 3)
 	m.permissionDialog.SetWidth(m.width / 2)
 	m.questionDialog.SetWidth(m.width / 2)
+	m.selectDialog.SetWidth(m.width / 2)
+	m.statusDialog.SetWidth(m.width / 2)
+	m.exportDialog.SetWidth(m.width / 2)
+	m.mcpDialog.SetWidth(m.width / 2)
+	m.consolePanel.SetWidth(m.width - 4)
+	m.consolePanel.SetHeight(m.height - 4)
+	m.autocompleteDialog.SetWidth(m.width / 2)
 }
 
 func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
@@ -434,6 +521,48 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 	if m.questionDialog.IsVisible() {
 		return m.handleQuestionKey(msg)
+	}
+
+	if m.selectDialog.IsVisible() {
+		handled := m.selectDialog.HandleKey(msg.String())
+		if handled {
+			return m, nil
+		}
+	}
+
+	if m.statusDialog.IsOpen() {
+		handled := m.statusDialog.HandleKey(msg.String())
+		if handled {
+			return m, nil
+		}
+	}
+
+	if m.exportDialog.IsOpen() {
+		handled := m.exportDialog.HandleKey(msg.String())
+		if handled {
+			return m, nil
+		}
+	}
+
+	if m.mcpDialog.IsOpen() {
+		handled := m.mcpDialog.HandleKey(msg.String())
+		if handled {
+			return m, nil
+		}
+	}
+
+	if m.consolePanel.IsOpen() {
+		handled := m.consolePanel.HandleKey(msg.String())
+		if handled {
+			return m, nil
+		}
+	}
+
+	if m.autocompleteDialog.IsVisible() {
+		handled := m.autocompleteDialog.HandleKey(msg.String())
+		if handled {
+			return m, nil
+		}
 	}
 
 	switch msg.String() {
@@ -666,13 +795,19 @@ func (m *Model) renderSession() string {
 	help := m.helpDialog.Render()
 	permission := m.permissionDialog.Render()
 	question := m.questionDialog.Render()
+	selectView := m.selectDialog.Render()
+	statusView := m.statusDialog.Render()
+	exportView := m.exportDialog.Render()
+	mcpView := m.mcpDialog.Render()
+	consoleView := m.consolePanel.Render()
+	autocompleteView := m.autocompleteDialog.Render()
 
 	paletteView := ""
 	if m.commandPalette.IsOpen() {
 		paletteView = "\n" + m.commandPalette.Render()
 	}
 
-	return tabBar + "\n" + content + "\n" + input + "\n" + status + toast + help + permission + question + paletteView
+	return tabBar + "\n" + content + "\n" + input + "\n" + status + toast + help + permission + question + selectView + statusView + exportView + mcpView + consoleView + autocompleteView + paletteView
 }
 
 func (m *Model) renderSessionContent() string {
