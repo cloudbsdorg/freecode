@@ -187,7 +187,7 @@ func joinCmd(cmd []string) string {
 
 func shellEscapingNeeded(s string) bool {
 	for _, c := range s {
-		if c == '\'' || c == '"' || c == '$' || c == '`' || c == '\\' {
+		if c == ' ' || c == '\'' || c == '"' || c == '$' || c == '`' || c == '\\' {
 			return true
 		}
 	}
@@ -236,8 +236,12 @@ func Spawn(cmd []string, opts Options) (*Child, error) {
 }
 
 func Run(cmd []string, opts Options) (Result, error) {
-	opts.Stdout = StdioPipe
-	opts.Stderr = StdioPipe
+	if opts.Stdout == "" {
+		opts.Stdout = StdioPipe
+	}
+	if opts.Stderr == "" {
+		opts.Stderr = StdioPipe
+	}
 
 	command, err := buildCmd(cmd, opts)
 	if err != nil {
@@ -245,10 +249,25 @@ func Run(cmd []string, opts Options) (Result, error) {
 	}
 
 	var stdoutBuf, stderrBuf bytes.Buffer
-	command.Stdout = &stdoutBuf
-	command.Stderr = &stderrBuf
+	if opts.Stdout != StdioIgnore {
+		command.Stdout = &stdoutBuf
+	}
+	if opts.Stderr != StdioIgnore {
+		command.Stderr = &stderrBuf
+	}
 
-	err = command.Run()
+	runFunc := func() error {
+		return command.Run()
+	}
+
+	if opts.Timeout > 0 {
+		_, err = WithTimeout(func() (int, error) {
+			runErr := runFunc()
+			return 0, runErr
+		}, int(opts.Timeout.Milliseconds()))
+	} else {
+		err = runFunc()
+	}
 
 	code := 0
 	if command.ProcessState != nil {

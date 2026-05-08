@@ -170,7 +170,7 @@ func extractCustomData(err error, data map[string]interface{}) {
 
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
-		if field.PkgPath != "" && !field.Anonymous {
+		if field.PkgPath != "" {
 			continue
 		}
 

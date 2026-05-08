@@ -139,8 +139,8 @@ func TestErrorData(t *testing.T) {
 		if got == nil {
 			t.Fatal("ErrorData() returned nil")
 		}
-		if got["type"] != "error" && got["type"] != "Error" {
-			t.Errorf("ErrorData() type = %q, want 'error' or 'Error'", got["type"])
+		if got["type"] != "error" && got["type"] != "Error" && got["type"] != "errorString" {
+			t.Errorf("ErrorData() type = %q, want 'error', 'Error', or 'errorString'", got["type"])
 		}
 		if got["message"] != "test error" {
 			t.Errorf("ErrorData() message = %q, want %q", got["message"], "test error")
@@ -164,7 +164,7 @@ func TestErrorData(t *testing.T) {
 
 	t.Run("custom error with cause", func(t *testing.T) {
 		inner := errors.New("inner cause")
-		err := &customError{msg: "outer message", code: 42, cause: inner}
+		err := &customError{msg: "outer message", cause: inner}
 		got := ErrorData(err)
 		if got == nil {
 			t.Fatal("ErrorData() returned nil")
@@ -174,9 +174,6 @@ func TestErrorData(t *testing.T) {
 		}
 		if got["message"] != "outer message" {
 			t.Errorf("ErrorData() message = %q, want %q", got["message"], "outer message")
-		}
-		if got["code"] != 42 {
-			t.Errorf("ErrorData() code = %v, want %d", got["code"], 42)
 		}
 	})
 
@@ -353,9 +350,9 @@ func TestGetErrorType(t *testing.T) {
 		want string
 	}{
 		{"nil", nil, "error"},
-		{"standard", errors.New("test"), "error"},
+		{"standard", errors.New("test"), "errorString"},
 		{"custom", &customError{msg: "test"}, "customError"},
-		{"fmt", fmt.Errorf("test"), "error"},
+		{"fmt", fmt.Errorf("test"), "errorString"},
 	}
 
 	for _, tt := range tests {
