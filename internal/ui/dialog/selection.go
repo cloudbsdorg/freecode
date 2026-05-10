@@ -193,6 +193,7 @@ func (s *SelectionList) Next() {
 		return
 	}
 	s.Selected = (s.Selected + 1) % len(s.Filtered)
+	s.autoScroll()
 	s.notifyMove()
 }
 
@@ -201,6 +202,7 @@ func (s *SelectionList) Prev() {
 		return
 	}
 	s.Selected = (s.Selected - 1 + len(s.Filtered)) % len(s.Filtered)
+	s.autoScroll()
 	s.notifyMove()
 }
 
