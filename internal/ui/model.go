@@ -1022,12 +1022,11 @@ func (m *Model) renderSession() string {
 	autocompleteView := m.autocompleteDialog.Render()
 	fleetView := m.fleetPanel.Render()
 
-	paletteView := ""
 	if m.commandPalette.IsOpen() {
-		paletteView = "\n" + m.commandPalette.Render()
+		return m.commandPalette.RenderCentered(m.width, m.height)
 	}
 
-	return tabBar + "\n" + content + "\n" + input + "\n" + status + toast + help + permission + question + selectView + statusView + exportView + mcpView + toolView + consoleView + autocompleteView + fleetView + paletteView
+	return tabBar + "\n" + content + "\n" + input + "\n" + status + toast + help + permission + question + selectView + statusView + exportView + mcpView + toolView + consoleView + autocompleteView + fleetView
 }
 
 func (m *Model) renderSessionContent() string {
