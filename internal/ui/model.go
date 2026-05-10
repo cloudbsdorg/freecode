@@ -571,6 +571,45 @@ func (m *Model) handleSetupKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m, nil
 	}
 
+	step := m.setupDialog.GetStep()
+
+	if step == SetupStepProvider {
+		switch msg.String() {
+		case "up", "k":
+			m.setupDialog.providerDialog.Prev()
+		case "down", "j":
+			m.setupDialog.providerDialog.Next()
+		case "enter":
+			item := m.setupDialog.providerDialog.GetSelected()
+			if item != nil {
+				m.setupDialog.providerID = item.Value
+				m.setupDialog.Next()
+				m.setupDialog.SetModels(m.getModelsForProvider(m.setupDialog.GetSelectedProviderID()))
+			}
+		case "escape":
+			m.setupDialog.Prev()
+		}
+		return m, nil
+	}
+
+	if step == SetupStepModel {
+		switch msg.String() {
+		case "up", "k":
+			m.setupDialog.modelDialog.Prev()
+		case "down", "j":
+			m.setupDialog.modelDialog.Next()
+		case "enter":
+			item := m.setupDialog.modelDialog.GetSelected()
+			if item != nil {
+				m.setupDialog.modelID = item.Value
+				m.setupDialog.Next()
+			}
+		case "escape":
+			m.setupDialog.Prev()
+		}
+		return m, nil
+	}
+
 	switch msg.Type {
 	case tea.KeyUp, tea.KeyShiftTab:
 		m.setupDialog.MoveUp()

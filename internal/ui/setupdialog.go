@@ -30,51 +30,57 @@ type SetupDialog struct {
 	width          int
 	height         int
 	isOpen         bool
-	providerList   *dialog.SelectionList
-	modelList     *dialog.SelectionList
-	apiKeyInput   *dialog.TextInput
-	providerID    string
-	modelID       string
-	loading       bool
+	providerDialog *SelectDialog
+	modelDialog    *SelectDialog
+	apiKeyInput    *dialog.TextInput
+	providerID     string
+	modelID        string
+	loading        bool
 	loadingMessage string
-	errorMessage  string
-	colors        dialog.Colors
+	errorMessage   string
+	colors         dialog.Colors
 }
 
 func NewSetupDialog() *SetupDialog {
 	s := &SetupDialog{
-		step:     SetupStepWelcome,
-		width:    70,
-		height:   20,
-		isOpen:   true,
-		loading:  false,
-		providerID: "",
-		modelID:   "",
+		step:        SetupStepWelcome,
+		width:       60,
+		height:      15,
+		isOpen:      true,
+		loading:     false,
+		providerID:  "",
+		modelID:     "",
 		errorMessage: "",
-		colors: dialog.Dark,
+		colors:      dialog.Dark,
 	}
 
-	s.providerList = dialog.NewSelectionList(
+	s.providerDialog = &SelectDialog{
+		width:  60,
+		isOpen: false,
+		colors: dialog.Dark,
+	}
+	s.providerDialog.list = dialog.NewSelectionList(
 		func(d *dialog.SelectionList) {
 			d.Title = "Select Provider"
 			d.Width = 60
-			d.Colors = s.colors
+			d.Height = 12
+			d.Colors = dialog.Dark
 			d.SkipFilter = true
-			d.OnSelect = func(item dialog.Item) {
-				s.providerID = item.ID
-			}
 		},
 	)
 
-	s.modelList = dialog.NewSelectionList(
+	s.modelDialog = &SelectDialog{
+		width:  60,
+		isOpen: false,
+		colors: dialog.Dark,
+	}
+	s.modelDialog.list = dialog.NewSelectionList(
 		func(d *dialog.SelectionList) {
 			d.Title = "Select Model"
 			d.Width = 60
-			d.Colors = s.colors
+			d.Height = 12
+			d.Colors = dialog.Dark
 			d.SkipFilter = true
-			d.OnSelect = func(item dialog.Item) {
-				s.modelID = item.ID
-			}
 		},
 	)
 
@@ -83,7 +89,7 @@ func NewSetupDialog() *SetupDialog {
 			t.Colors = s.colors
 			t.Hidden = true
 			t.MaxLen = 100
-			t.Width = 60
+			t.Width = 50
 		},
 	)
 
@@ -95,28 +101,25 @@ func (s *SetupDialog) SetWidth(w int) {
 }
 
 func (s *SetupDialog) SetProviders(providers []ProviderInfo) {
-	items := make([]dialog.Item, len(providers))
+	opts := make([]SelectOption, len(providers))
 	for i, p := range providers {
-		items[i] = dialog.Item{
-			ID:    p.ID,
+		opts[i] = SelectOption{
 			Title: p.Name,
-			Footer: fmt.Sprintf("%d models", p.Count),
 			Value: p.ID,
 		}
 	}
-	s.providerList.SetItems(items)
+	s.providerDialog.SetOptions(opts)
 }
 
 func (s *SetupDialog) SetModels(models []string) {
-	items := make([]dialog.Item, len(models))
+	opts := make([]SelectOption, len(models))
 	for i, m := range models {
-		items[i] = dialog.Item{
-			ID:    m,
+		opts[i] = SelectOption{
 			Title: m,
 			Value: m,
 		}
 	}
-	s.modelList.SetItems(items)
+	s.modelDialog.SetOptions(opts)
 }
 
 func (s *SetupDialog) IsOpen() bool {
@@ -136,15 +139,15 @@ func (s *SetupDialog) Next() {
 	case SetupStepWelcome:
 		s.step = SetupStepProvider
 	case SetupStepProvider:
-		item := s.providerList.GetSelected()
+		item := s.providerDialog.GetSelected()
 		if item != nil {
-			s.providerID = item.ID
+			s.providerID = item.Value
 			s.step = SetupStepModel
 		}
 	case SetupStepModel:
-		item := s.modelList.GetSelected()
+		item := s.modelDialog.GetSelected()
 		if item != nil {
-			s.modelID = item.ID
+			s.modelID = item.Value
 			s.step = SetupStepAPIKey
 		}
 	case SetupStepAPIKey:
@@ -168,13 +171,13 @@ func (s *SetupDialog) Prev() {
 }
 
 func (s *SetupDialog) MoveUp() {
-	s.providerList.MoveUp()
-	s.modelList.MoveUp()
+	s.providerDialog.Prev()
+	s.modelDialog.Prev()
 }
 
 func (s *SetupDialog) MoveDown() {
-	s.providerList.MoveDown()
-	s.modelList.MoveDown()
+	s.providerDialog.Next()
+	s.modelDialog.Next()
 }
 
 func (s *SetupDialog) GetSelection() (providerID, modelID, apiKey string) {
@@ -182,11 +185,11 @@ func (s *SetupDialog) GetSelection() (providerID, modelID, apiKey string) {
 }
 
 func (s *SetupDialog) GetSelectedProviderID() string {
-	item := s.providerList.GetSelected()
+	item := s.providerDialog.GetSelected()
 	if item == nil {
 		return ""
 	}
-	return item.ID
+	return item.Value
 }
 
 func (s *SetupDialog) SetLoading(loading bool, message string) {
@@ -272,45 +275,11 @@ func (s *SetupDialog) renderWelcome() string {
 }
 
 func (s *SetupDialog) renderProviderSelection() string {
-	lines := []string{
-		dialog.Header("Select Provider", s.colors),
-		"",
-		dialog.Muted("↑/↓ navigate  enter select  esc back", s.colors),
-		"",
-	}
-
-	providerLines := s.providerList.RenderList()
-	lines = append(lines, providerLines...)
-
-	content := strings.Join(lines, "\n")
-	return lipgloss.NewStyle().
-		Width(s.width).
-		Background(lipgloss.Color(s.colors.Background)).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(s.colors.Border)).
-		Padding(1).
-		Render(content)
+	return s.providerDialog.Render()
 }
 
 func (s *SetupDialog) renderModelSelection() string {
-	lines := []string{
-		dialog.Header(fmt.Sprintf("Select Model for %s", s.providerID), s.colors),
-		"",
-		dialog.Muted("↑/↓ navigate  enter select  esc back", s.colors),
-		"",
-	}
-
-	modelLines := s.modelList.RenderList()
-	lines = append(lines, modelLines...)
-
-	content := strings.Join(lines, "\n")
-	return lipgloss.NewStyle().
-		Width(s.width).
-		Background(lipgloss.Color(s.colors.Background)).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(s.colors.Border)).
-		Padding(1).
-		Render(content)
+	return s.modelDialog.Render()
 }
 
 func (s *SetupDialog) renderAPIKeyInput() string {
