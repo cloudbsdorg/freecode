@@ -931,7 +931,7 @@ func (m *Model) View() string {
 
 	switch m.route {
 	case RouteHome:
-		return m.renderHomeTemplate()
+		return m.renderHome()
 	case RouteSession:
 		return m.renderSession()
 	case RouteSetup:
@@ -939,49 +939,6 @@ func (m *Model) View() string {
 	default:
 		return m.renderHome()
 	}
-}
-
-func (m *Model) renderHomeTemplate() string {
-	bubbleRenderer := renderer.NewBubbleRenderer(m.width, m.height)
-
-	bannerLines := strings.Split(m.banner, "\n")
-	bannerHeight := len(bannerLines)
-	startY := (m.height - bannerHeight - 5) / 2
-	if startY < 0 {
-		startY = 0
-	}
-
-	inputWidth := m.width / 2
-	if inputWidth < 40 {
-		inputWidth = 40
-	}
-	inputPadding := (m.width - inputWidth) / 2
-
-	bannerContent := strings.Join(bannerLines, "\n")
-
-	src := fmt.Sprintf(`<vbox>
-  <spacer height="%d" />
-  <text value="%s" />
-  <spacer height="1" />
-  <hbox>
-    <spacer width="%d" />
-    <input placeholder="Ask anything..." width="%d" />
-  </hbox>
-  <spacer flex="1" />
-  <text value="Ctrl+P: Command Palette | Ctrl+B: Toggle Sidebar | Ctrl+H: Home | Ctrl+Q: Quit" color="#606060" />
-</vbox>`, startY, strings.ReplaceAll(bannerContent, "\"", "`"), inputPadding, inputWidth)
-
-	output, err := m.templateEngine.RenderAt(src, m.width, m.height, bubbleRenderer)
-	if err != nil {
-		return m.renderHome()
-	}
-
-	paletteView := ""
-	if m.commandPalette.IsOpen() {
-		paletteView = m.commandPalette.RenderCentered(m.width, m.height)
-	}
-
-	return output + paletteView + m.statusBar.Render()
 }
 
 func (m *Model) renderToast() string {
