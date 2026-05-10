@@ -82,6 +82,7 @@ type SelectionList struct {
 	Items          []Item
 	Filtered       []Item
 	Selected       int
+	ScrollOffset   int
 	Filter         string
 	Colors         Colors
 	Title          string
@@ -145,6 +146,8 @@ func NewSelectionList(opts ...func(*SelectionList)) *SelectionList {
 
 func (s *SelectionList) SetItems(items []Item) {
 	s.Items = items
+	s.Selected = 0
+	s.ScrollOffset = 0
 	s.ApplyFilter()
 }
 
@@ -204,6 +207,7 @@ func (s *SelectionList) Prev() {
 func (s *SelectionList) MoveUp() {
 	if s.Selected > 0 {
 		s.Selected--
+		s.autoScroll()
 		s.notifyMove()
 	}
 }
@@ -211,7 +215,24 @@ func (s *SelectionList) MoveUp() {
 func (s *SelectionList) MoveDown() {
 	if s.Selected < len(s.Filtered)-1 {
 		s.Selected++
+		s.autoScroll()
 		s.notifyMove()
+	}
+}
+
+func (s *SelectionList) autoScroll() {
+	if s.Height <= 0 {
+		return
+	}
+	visibleHeight := s.Height - 4
+	if visibleHeight < 1 {
+		visibleHeight = 10
+	}
+	if s.Selected < s.ScrollOffset {
+		s.ScrollOffset = s.Selected
+	}
+	if s.Selected >= s.ScrollOffset+visibleHeight {
+		s.ScrollOffset = s.Selected - visibleHeight + 1
 	}
 }
 
@@ -275,9 +296,36 @@ func (s *SelectionList) RenderList() []string {
 	if len(s.Filtered) == 0 {
 		lines = append(lines, Muted("  No matches", s.Colors))
 	} else {
-		lines = append(lines, s.renderItems()...)
+		lines = append(lines, s.renderVisibleItems()...)
 	}
 
+	return lines
+}
+
+func (s *SelectionList) renderVisibleItems() []string {
+	if s.Height <= 0 || s.Height >= len(s.Filtered)+4 {
+		return s.renderItems()
+	}
+
+	visibleHeight := s.Height - 4
+	start := s.ScrollOffset
+	end := start + visibleHeight
+	if end > len(s.Filtered) {
+		end = len(s.Filtered)
+	}
+	if start >= len(s.Filtered) {
+		start = 0
+		end = visibleHeight
+		if end > len(s.Filtered) {
+			end = len(s.Filtered)
+		}
+	}
+
+	var lines []string
+	for i := start; i < end; i++ {
+		item := s.Filtered[i]
+		lines = append(lines, s.ItemRenderer(item, s.IsSelected(item), s.IsItemCurrent(item), s.Colors))
+	}
 	return lines
 }
 

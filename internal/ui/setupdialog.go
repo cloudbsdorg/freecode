@@ -224,114 +224,141 @@ func (s *SetupDialog) Render() string {
 }
 
 func (s *SetupDialog) renderContent() string {
-	var lines []string
-
 	switch s.step {
 	case SetupStepWelcome:
-		lines = s.renderWelcome()
+		return s.renderWelcome()
 	case SetupStepProvider:
-		lines = s.renderProviderSelection()
+		return s.renderProviderSelection()
 	case SetupStepModel:
-		lines = s.renderModelSelection()
+		return s.renderModelSelection()
 	case SetupStepAPIKey:
-		lines = s.renderAPIKeyInput()
+		return s.renderAPIKeyInput()
 	case SetupStepDone:
-		lines = s.renderDone()
+		return s.renderDone()
 	}
-
-	return strings.Join(lines, "\n")
+	return ""
 }
 
-func (s *SetupDialog) renderWelcome() []string {
+func (s *SetupDialog) renderWelcome() string {
 	lines := []string{
+		dialog.Header("Welcome to Freecode Setup", s.colors),
 		"",
-		dialog.Header("  Welcome to Freecode Setup", s.colors),
+		"This wizard will help you configure Freecode.",
 		"",
-		"  This wizard will help you configure Freecode.",
+		"You'll need:",
+		"  • An API key from your AI provider",
+		"  • A model selection",
 		"",
-		"  You'll need:",
-		"    • An API key from your AI provider",
-		"    • A model selection",
-		"",
-		"  Press ENTER to continue or ESC to exit.",
+		"Press ENTER to continue or ESC to exit.",
 		"",
 	}
 
 	if s.loading {
-		lines = append(lines, dialog.Muted(fmt.Sprintf("  %s...", s.loadingMessage), s.colors))
+		lines = append(lines, dialog.Muted(fmt.Sprintf("%s...", s.loadingMessage), s.colors))
 	}
 
 	if s.errorMessage != "" {
-		lines = append(lines, "", dialog.ErrorText(fmt.Sprintf("  Error: %s", s.errorMessage), s.colors))
+		lines = append(lines, "", dialog.ErrorText(fmt.Sprintf("Error: %s", s.errorMessage), s.colors))
 	}
 
-	return lines
+	content := strings.Join(lines, "\n")
+	return lipgloss.NewStyle().
+		Width(s.width).
+		Background(lipgloss.Color(s.colors.Background)).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Padding(1).
+		Render(content)
 }
 
-func (s *SetupDialog) renderProviderSelection() []string {
+func (s *SetupDialog) renderProviderSelection() string {
 	lines := []string{
+		dialog.Header("Select Provider", s.colors),
 		"",
-		dialog.Header("  Select Provider", s.colors),
-		"",
-		dialog.Muted("  Use ↑/↓ to navigate, ENTER to select, ESC to go back", s.colors),
+		dialog.Muted("↑/↓ navigate  enter select  esc back", s.colors),
 		"",
 	}
 
 	providerLines := s.providerList.RenderList()
 	lines = append(lines, providerLines...)
 
-	return lines
+	content := strings.Join(lines, "\n")
+	return lipgloss.NewStyle().
+		Width(s.width).
+		Background(lipgloss.Color(s.colors.Background)).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Padding(1).
+		Render(content)
 }
 
-func (s *SetupDialog) renderModelSelection() []string {
+func (s *SetupDialog) renderModelSelection() string {
 	lines := []string{
+		dialog.Header(fmt.Sprintf("Select Model for %s", s.providerID), s.colors),
 		"",
-		dialog.Header(fmt.Sprintf("  Select Model for %s", s.providerID), s.colors),
-		"",
-		dialog.Muted("  Use ↑/↓ to navigate, ENTER to select, ESC to go back", s.colors),
+		dialog.Muted("↑/↓ navigate  enter select  esc back", s.colors),
 		"",
 	}
 
 	modelLines := s.modelList.RenderList()
 	lines = append(lines, modelLines...)
 
-	return lines
+	content := strings.Join(lines, "\n")
+	return lipgloss.NewStyle().
+		Width(s.width).
+		Background(lipgloss.Color(s.colors.Background)).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Padding(1).
+		Render(content)
 }
 
-func (s *SetupDialog) renderAPIKeyInput() []string {
+func (s *SetupDialog) renderAPIKeyInput() string {
 	lines := []string{
+		dialog.Header("Enter API Key", s.colors),
 		"",
-		dialog.Header("  Enter API Key", s.colors),
+		fmt.Sprintf("Provider: %s  |  Model: %s", s.providerID, s.modelID),
 		"",
-		fmt.Sprintf("  Provider: %s  |  Model: %s", s.providerID, s.modelID),
+		"Type your API key:",
 		"",
-		"  Type your API key:",
+		s.apiKeyInput.RenderWithPrefix(""),
 		"",
-		"  " + s.apiKeyInput.RenderWithPrefix(""),
-		"",
-		dialog.Muted("  Press ENTER when done, ESC to go back", s.colors),
-		dialog.Muted("  Use Backspace to delete", s.colors),
+		dialog.Muted("Press ENTER when done, ESC to go back", s.colors),
+		dialog.Muted("Use Backspace to delete", s.colors),
 	}
 
 	if s.errorMessage != "" {
-		lines = append(lines, "", dialog.ErrorText(fmt.Sprintf("  Error: %s", s.errorMessage), s.colors))
+		lines = append(lines, "", dialog.ErrorText(fmt.Sprintf("Error: %s", s.errorMessage), s.colors))
 	}
 
-	return lines
+	content := strings.Join(lines, "\n")
+	return lipgloss.NewStyle().
+		Width(s.width).
+		Background(lipgloss.Color(s.colors.Background)).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Padding(1).
+		Render(content)
 }
 
-func (s *SetupDialog) renderDone() []string {
+func (s *SetupDialog) renderDone() string {
 	lines := []string{
+		dialog.Header("Setup Complete!", s.colors),
 		"",
-		dialog.Header("  Setup Complete!", s.colors),
+		fmt.Sprintf("Provider: %s", s.providerID),
+		fmt.Sprintf("Model:    %s", s.modelID),
 		"",
-		fmt.Sprintf("  Provider: %s", s.providerID),
-		fmt.Sprintf("  Model:    %s", s.modelID),
+		"Configuration saved successfully.",
 		"",
-		"  Configuration saved successfully.",
-		"",
-		"  Press ENTER to start using Freecode.",
+		"Press ENTER to start using Freecode.",
 	}
 
-	return lines
+	content := strings.Join(lines, "\n")
+	return lipgloss.NewStyle().
+		Width(s.width).
+		Background(lipgloss.Color(s.colors.Background)).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Padding(1).
+		Render(content)
 }
