@@ -23,6 +23,7 @@ type ComponentNode struct {
 	Content  interface{}
 	Children []*ComponentNode
 	Attrs    map[string]string
+	Visible  bool
 }
 
 type ThemeConfig struct {
@@ -57,7 +58,24 @@ func (e *Engine[R]) ParseAndRender(src string, width, height int, r R) (string, 
 		return "", err
 	}
 
+	e.resolveVisibility(nodes)
+
 	return e.renderNodes(nodes, r), nil
+}
+
+func (e *Engine[R]) resolveVisibility(nodes []*ComponentNode) {
+	for _, n := range nodes {
+		n.Visible = true
+		e.resolveVisibility(n.Children)
+	}
+}
+
+func (e *Engine[R]) IsComponentVisible(id string) bool {
+	node := e.components[id]
+	if node == nil {
+		return true
+	}
+	return node.Visible
 }
 
 func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, error) {
