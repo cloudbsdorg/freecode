@@ -21,6 +21,7 @@ var (
 	tuiModel   string
 	tuiPrompt  string
 	tuiFork    bool
+	tuiRenderer string
 )
 
 var rootCmd = &cobra.Command{
@@ -40,6 +41,7 @@ Built with Go for FreeBSD, Linux, macOS, and IllumOS.`,
 			Prompt:    tuiPrompt,
 			Fork:      tuiFork,
 			Setup:     setupRun,
+			Renderer:  tuiRenderer,
 		}
 		p := tea.NewProgram(ui.NewModel(tuiArgs), tea.WithAltScreen())
 		if _, err := p.Run(); err != nil {
@@ -83,6 +85,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&tuiModel, "model", "", "model to use (e.g., provider/model)")
 	rootCmd.PersistentFlags().StringVar(&tuiPrompt, "prompt", "", "prompt to execute (non-interactive)")
 	rootCmd.PersistentFlags().BoolVar(&tuiFork, "fork", false, "fork the session before executing")
+	rootCmd.PersistentFlags().StringVar(&tuiRenderer, "renderer", "", "renderer to use: bubble, lcd, auto (default auto)")
 	rootCmd.AddCommand(runCmd)
 	rootCmd.AddCommand(agentCmd)
 	rootCmd.AddCommand(sessionCmd)

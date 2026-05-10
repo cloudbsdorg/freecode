@@ -8,4 +8,5 @@ type Args struct {
 	Prompt    string
 	Fork      bool
 	Setup     bool
+	Renderer  string
 }
