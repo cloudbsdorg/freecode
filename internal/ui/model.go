@@ -141,7 +141,8 @@ func NewModel(args args.Args) *Model {
 
 	paths := config.PathsGet()
 	configPath := paths.ConfigFile("config.yaml")
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+	_, err := os.Stat(configPath)
+	if args.Setup || os.IsNotExist(err) {
 		m.route = RouteSetup
 	}
 

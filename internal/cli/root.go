@@ -32,9 +32,6 @@ Built with Go for FreeBSD, Linux, macOS, and IllumOS.`,
 	SilenceErrors: true,
 	SilenceUsage:  true,
 	RunE: func(cmd *cobra.Command, cmdArgs []string) error {
-		if setupRun {
-			return nil
-		}
 		tuiArgs := args.Args{
 			Continue:  continue_,
 			SessionID: tuiSession,
@@ -42,6 +39,7 @@ Built with Go for FreeBSD, Linux, macOS, and IllumOS.`,
 			Model:     tuiModel,
 			Prompt:    tuiPrompt,
 			Fork:      tuiFork,
+			Setup:     setupRun,
 		}
 		p := tea.NewProgram(ui.NewModel(tuiArgs), tea.WithAltScreen())
 		if _, err := p.Run(); err != nil {
@@ -52,21 +50,24 @@ Built with Go for FreeBSD, Linux, macOS, and IllumOS.`,
 }
 
 func Execute() error {
-	// Parse flags BEFORE Bootstrap so --setup is recognized
 	if err := rootCmd.ParseFlags(os.Args[1:]); err != nil {
-		// Ignore flag parse errors - let cobra handle them in Execute()
 	}
 
-	opts := config.BootstrapOptions{
-		Force: setupRun,
-	}
-	result, err := config.Bootstrap(opts)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Bootstrap error: %v\n", err)
-	}
+	if setupRun {
+		paths := config.PathsGet()
+		if err := paths.Ensure(); err != nil {
+			return fmt.Errorf("failed to create directories: %w", err)
+		}
+	} else {
+		opts := config.BootstrapOptions{}
+		result, err := config.Bootstrap(opts)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Bootstrap error: %v\n", err)
+		}
 
-	if result != nil && result.WizardRan {
-		fmt.Fprintf(os.Stderr, "Provider: %s, Model: %s\n", result.Provider, result.Model)
+		if result != nil && result.WizardRan {
+			fmt.Fprintf(os.Stderr, "Provider: %s, Model: %s\n", result.Provider, result.Model)
+		}
 	}
 
 	return rootCmd.Execute()

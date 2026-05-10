@@ -7,4 +7,5 @@ type Args struct {
 	Model     string
 	Prompt    string
 	Fork      bool
+	Setup     bool
 }
