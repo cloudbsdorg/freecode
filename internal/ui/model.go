@@ -585,6 +585,8 @@ func (m *Model) handleSetupKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		if m.setupDialog.GetStep() == SetupStepDone {
 			providerID, modelID, apiKey := m.setupDialog.GetSelection()
 			m.saveSetupConfig(providerID, modelID, apiKey)
+			m.statusBar.SetProvider(providerID)
+			m.statusBar.SetModel(modelID)
 			m.route = RouteHome
 		}
 	case tea.KeyEsc:

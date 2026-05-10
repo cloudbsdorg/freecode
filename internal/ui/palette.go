@@ -223,12 +223,19 @@ func (c *CommandPalette) Render() string {
 
 	content := strings.Join(lines, "\n")
 
+	paletteWidth := 60
+	if c.width > 0 && c.width < 60 {
+		paletteWidth = c.width - 4
+	}
+	if paletteWidth < 40 {
+		paletteWidth = 40
+	}
+
 	return lipgloss.NewStyle().
-		Width(c.width).
+		Width(paletteWidth).
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("#3B3B3B")).
 		Background(lipgloss.Color("#1E1E1E")).
-		MarginTop((c.height - len(lines) - 2) / 2).
 		Padding(1).
 		Render(content)
 }
@@ -239,11 +246,21 @@ func (c *CommandPalette) RenderCentered(termWidth, termHeight int) string {
 	}
 
 	oldWidth := c.width
-	oldHeight := c.height
 	c.width = termWidth
 	c.height = termHeight
 	content := c.Render()
 	c.width = oldWidth
-	c.height = oldHeight
-	return content
+
+	paletteHeight := len(strings.Split(content, "\n")) + 2
+	topMargin := (termHeight - paletteHeight) / 2
+	if topMargin < 0 {
+		topMargin = 0
+	}
+
+	return lipgloss.Place(termWidth, termHeight,
+		lipgloss.Center, lipgloss.Center,
+		content,
+		lipgloss.WithWhitespaceForeground(lipgloss.Color("#1E1E1E")),
+		lipgloss.WithWhitespaceBackground(lipgloss.Color("#1E1E1E")),
+	)
 }
