@@ -448,8 +448,7 @@ func (e *Engine[R]) renderNode(n *ComponentNode, r R) string {
 
 	case TypeText:
 		text := fmt.Sprintf("%v", n.Content)
-		color := e.getColor(n.Attrs, "color", "")
-		return r.RenderText(text, n.X, n.Y, color)
+		return e.renderMultiLineText(text, n.X, n.Y, e.getColor(n.Attrs, "color", ""), r)
 
 	case TypeList:
 		items, ok := n.Content.([]string)
@@ -457,7 +456,7 @@ func (e *Engine[R]) renderNode(n *ComponentNode, r R) string {
 			return ""
 		}
 		content := strings.Join(items, "\n")
-		return r.RenderText(content, n.X, n.Y, e.getColor(n.Attrs, "color", ""))
+		return e.renderMultiLineText(content, n.X, n.Y, e.getColor(n.Attrs, "color", ""), r)
 
 	case TypeButton:
 		label := fmt.Sprintf("%v", n.Content)
@@ -483,7 +482,10 @@ func (e *Engine[R]) renderNode(n *ComponentNode, r R) string {
 		return ""
 
 	case TypeDivider:
-		char := fmt.Sprintf("%v", n.Content)
+		char := "-"
+		if c, ok := n.Attrs["char"]; ok {
+			char = c
+		}
 		line := strings.Repeat(char, n.Width)
 		return r.RenderText(line, n.X, n.Y, e.getColor(n.Attrs, "color", ""))
 
@@ -503,6 +505,15 @@ func (e *Engine[R]) renderNode(n *ComponentNode, r R) string {
 	default:
 		return e.renderNodes(n.Children, r)
 	}
+}
+
+func (e *Engine[R]) renderMultiLineText(text string, x int, y int, color string, r R) string {
+	lines := strings.Split(text, "\n")
+	var result string
+	for i, line := range lines {
+		result += r.RenderText(line, x, y+i, color)
+	}
+	return result
 }
 
 func (e *Engine[R]) getInt(attrs map[string]string, key string, def int) int {

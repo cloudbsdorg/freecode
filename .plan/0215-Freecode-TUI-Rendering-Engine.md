@@ -32,6 +32,21 @@ templates/
     └── commandpalette/
 ```
 
+## Lipgloss Compatibility
+
+The template engine is designed to work with lipgloss-style positioning. Multi-line text (like banners) is properly rendered by splitting into individual lines at successive y positions:
+
+```go
+func (e *Engine[R]) renderMultiLineText(text string, x int, y int, color string, r R) string {
+    lines := strings.Split(text, "\n")
+    var result string
+    for i, line := range lines {
+        result += r.RenderText(line, x, y+i, color)
+    }
+    return result
+}
+```
+
 ## Core Interfaces
 
 ### Renderer Interface

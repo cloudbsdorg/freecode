@@ -390,6 +390,61 @@ func TestEngineRenderWindow(t *testing.T) {
 	}
 }
 
+func TestEngineRenderMultiLineText(t *testing.T) {
+	engine := NewEngine[mockRenderer]()
+
+	src := `<vbox>
+		<text value="Line 1\nLine 2\nLine 3" />
+	</vbox>`
+
+	result, err := engine.ParseAndRender(src, 80, 24, mockRenderer{})
+	if err != nil {
+		t.Fatalf("ParseAndRender error = %v", err)
+	}
+
+	if result == "" {
+		t.Error("result is empty, expected rendered content")
+	}
+
+	if !strings.Contains(result, "Line 1") {
+		t.Error("result should contain 'Line 1'")
+	}
+	if !strings.Contains(result, "Line 2") {
+		t.Error("result should contain 'Line 2'")
+	}
+	if !strings.Contains(result, "Line 3") {
+		t.Error("result should contain 'Line 3'")
+	}
+}
+
+func TestEngineRenderBanner(t *testing.T) {
+	engine := NewEngine[mockRenderer]()
+
+	banner := ` _____     _
+| ____|___| |__   ___  _ __
+|  _| / _ \ '_ \ / _ \| '__|
+| |__|  __/ |_) | (_) | |
+|_____\___|_.__/ \___/|_|
+`
+
+	src := `<vbox>
+		<text value="` + banner + `" />
+	</vbox>`
+
+	result, err := engine.ParseAndRender(src, 80, 24, mockRenderer{})
+	if err != nil {
+		t.Fatalf("ParseAndRender error = %v", err)
+	}
+
+	if result == "" {
+		t.Error("result is empty, expected rendered content")
+	}
+
+	if !strings.Contains(result, " _____") {
+		t.Error("result should contain banner characters")
+	}
+}
+
 func TestEngineRenderVBox(t *testing.T) {
 	engine := NewEngine[mockRenderer]()
 
