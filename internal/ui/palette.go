@@ -221,17 +221,29 @@ func (c *CommandPalette) Render() string {
 		lines = append(lines, lipgloss.NewStyle().Foreground(lipgloss.Color("#808080")).Render("  No commands found"))
 	}
 
-	result := strings.Join(lines, "\n")
+	content := strings.Join(lines, "\n")
 
-	if len(result) > c.width {
-		lines := strings.Split(result, "\n")
-		for i, line := range lines {
-			if len(line) > c.width {
-				lines[i] = line[:c.width-3] + "..."
-			}
-		}
-		result = strings.Join(lines, "\n")
+	return lipgloss.NewStyle().
+		Width(c.width).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("#3B3B3B")).
+		Background(lipgloss.Color("#1E1E1E")).
+		MarginTop((c.height - len(lines) - 2) / 2).
+		Padding(1).
+		Render(content)
+}
+
+func (c *CommandPalette) RenderCentered(termWidth, termHeight int) string {
+	if !c.isOpen {
+		return ""
 	}
 
-	return PaletteContainerStyle.Render(result)
+	oldWidth := c.width
+	oldHeight := c.height
+	c.width = termWidth
+	c.height = termHeight
+	content := c.Render()
+	c.width = oldWidth
+	c.height = oldHeight
+	return content
 }

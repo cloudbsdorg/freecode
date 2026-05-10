@@ -959,7 +959,7 @@ func (m *Model) renderHome() string {
 
 	paletteView := ""
 	if m.commandPalette.IsOpen() {
-		paletteView = "\n" + m.commandPalette.Render()
+		paletteView = m.commandPalette.RenderCentered(m.width, m.height)
 	}
 
 	return s.String() + paletteView
