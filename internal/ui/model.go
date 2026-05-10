@@ -489,7 +489,11 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.updateLayout()
 
 	case initTick:
-		m.handleInit()
+		cmd := m.handleInit()
+		return m, cmd
+
+	case setupProvidersMsg:
+		m.handleSetupProvidersResult(msg)
 
 	case fleetTickMsg:
 		if m.fleetPanel.IsOpen() {
@@ -1258,12 +1262,12 @@ type ShowQuestionMsg struct {
 	Request *QuestionRequest
 }
 
-func (m *Model) handleInit() {
+func (m *Model) handleInit() tea.Cmd {
 	m.loadSessions()
 
 	if m.route == RouteSetup {
-		m.populateSetupProviders()
-		return
+		m.setupDialog.SetLoading(true, "Fetching providers")
+		return m.fetchSetupProviders()
 	}
 
 	if m.cliArgs.Prompt != "" && !m.promptSubmitted {
@@ -1272,19 +1276,20 @@ func (m *Model) handleInit() {
 		m.route = RouteSession
 		m.setTerminalTitle("Freecode")
 		m.addUserMessage(m.cliArgs.Prompt)
-		return
+		return nil
 	}
 
 	if m.cliArgs.SessionID != "" {
 		m.route = RouteSession
 		m.loadSessionMessages(m.cliArgs.SessionID)
-		return
+		return nil
 	}
 
 	if m.cliArgs.Continue && len(m.sessions) > 0 {
 		m.route = RouteSession
 		m.loadSessionMessages(m.sessions[0].ID)
 	}
+	return nil
 }
 
 func (m *Model) populateSetupProviders() {
@@ -1296,6 +1301,42 @@ func (m *Model) populateSetupProviders() {
 		{ID: "anthropic", Name: "Anthropic"},
 	}
 	m.setupDialog.SetProviders(providers)
+}
+
+type setupProvidersMsg struct {
+	providers []ProviderInfo
+	err      error
+}
+
+func (m *Model) fetchSetupProviders() tea.Cmd {
+	return func() tea.Msg {
+		registry, err := config.FetchProvidersFromFeed()
+		if err != nil {
+			return setupProvidersMsg{err: err}
+		}
+
+		providers := make([]ProviderInfo, 0, len(registry))
+		for id, prov := range registry {
+			providers = append(providers, ProviderInfo{
+				ID:    id,
+				Name:  prov.Name,
+				Count: len(prov.Models),
+			})
+		}
+		return setupProvidersMsg{providers: providers}
+	}
+}
+
+func (m *Model) handleSetupProvidersResult(msg setupProvidersMsg) {
+	m.setupDialog.SetLoading(false, "")
+	if msg.err != nil {
+		m.setupDialog.SetError("Failed to fetch providers: " + msg.err.Error())
+		m.setupDialog.SetProviders([]ProviderInfo{
+			{ID: "minimax", Name: "Minimax (fallback)"},
+		})
+		return
+	}
+	m.setupDialog.SetProviders(msg.providers)
 }
 
 func (m *Model) setTerminalTitle(title string) {

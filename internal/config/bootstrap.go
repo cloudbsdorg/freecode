@@ -89,7 +89,7 @@ type wizardResult struct {
 	Model   string
 }
 
-func fetchProvidersFromFeed() (modelsDevRegistry, error) {
+func FetchProvidersFromFeed() (modelsDevRegistry, error) {
 	client := &http.Client{Timeout: 30 * time.Second}
 	resp, err := client.Get(modelsDevURL)
 	if err != nil {
@@ -126,7 +126,7 @@ func runWizard(paths *Paths, opts BootstrapOptions) (*wizardResult, error) {
 
 	fmt.Println("Fetching provider list from models.dev...")
 
-	registry, err := fetchProvidersFromFeed()
+	registry, err := FetchProvidersFromFeed()
 	if err != nil {
 		fmt.Printf("Warning: failed to fetch providers: %v\n", err)
 		fmt.Println("Cannot continue without provider list.")
