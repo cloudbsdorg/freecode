@@ -222,7 +222,9 @@ func (s *SetupDialog) Render() string {
 	return lipgloss.NewStyle().
 		Background(lipgloss.Color(s.colors.Background)).
 		Width(s.width).
-		Height(s.height).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Padding(1).
 		Render(content)
 }
 

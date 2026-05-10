@@ -576,6 +576,12 @@ func (m *Model) handleSetupKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m, nil
 	}
 
+	if msg.String() == "ctrl+c" || msg.String() == "q" {
+		m.setupDialog.Close()
+		m.quitting = true
+		return m, tea.Quit
+	}
+
 	step := m.setupDialog.GetStep()
 
 	if step == SetupStepProvider {
@@ -1012,8 +1018,7 @@ func (m *Model) renderHome() string {
 }
 
 func (m *Model) renderSetup() string {
-	dialog := m.setupDialog.Render()
-	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, dialog)
+	return m.setupDialog.Render()
 }
 
 func (m *Model) renderSession() string {
@@ -1323,6 +1328,9 @@ func (m *Model) fetchSetupProviders() tea.Cmd {
 				Count: len(prov.Models),
 			})
 		}
+		sort.Slice(providers, func(i, j int) bool {
+			return providers[i].Name < providers[j].Name
+		})
 		return setupProvidersMsg{providers: providers}
 	}
 }

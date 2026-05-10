@@ -142,7 +142,6 @@ func (s *SelectDialog) Render() string {
 	content := strings.Join(lines, "\n")
 	return lipgloss.NewStyle().
 		Width(s.width).
-		Height(s.list.Height).
 		Background(lipgloss.Color(s.colors.Background)).
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color(s.colors.Border)).
@@ -176,7 +175,6 @@ func (s *SelectDialog) RenderWithTitle(title string) string {
 	content := strings.Join(lines, "\n")
 	return lipgloss.NewStyle().
 		Width(s.width).
-		Height(s.list.Height).
 		Background(lipgloss.Color(s.colors.Background)).
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color(s.colors.Border)).
