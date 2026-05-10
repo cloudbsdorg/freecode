@@ -167,13 +167,30 @@ func (c *CommandPalette) Render() string {
 		maxItems = 10
 	}
 
-	displayItems := c.filtered
-	if len(displayItems) > maxItems {
-		displayItems = displayItems[:maxItems]
+	startIdx := 0
+	endIdx := maxItems
+	if endIdx > len(c.filtered) {
+		endIdx = len(c.filtered)
+	}
+	if startIdx > c.selectedIdx {
+		startIdx = c.selectedIdx
+		endIdx = startIdx + maxItems
+		if endIdx > len(c.filtered) {
+			endIdx = len(c.filtered)
+		}
+	}
+	if c.selectedIdx >= endIdx {
+		endIdx = c.selectedIdx + 1
+		startIdx = endIdx - maxItems
+		if startIdx < 0 {
+			startIdx = 0
+		}
 	}
 
+	displayItems := c.filtered[startIdx:endIdx]
+
 	seenCats := make(map[string]bool)
-	for _, cmd := range displayItems {
+	for i, cmd := range displayItems {
 		cat := cmd.Category
 		if cat == "" {
 			cat = "Other"
@@ -191,15 +208,7 @@ func (c *CommandPalette) Render() string {
 			itemStr += " (" + cmd.Keybind + ")"
 		}
 
-		realIdx := 0
-		for i, f := range c.filtered {
-			if f.Name == cmd.Name && f.Keybind == cmd.Keybind {
-				realIdx = i
-				break
-			}
-		}
-
-		if realIdx == c.selectedIdx {
+		if startIdx+i == c.selectedIdx {
 			lines = append(lines, PaletteSelectedStyle.Render(itemStr))
 		} else {
 			lines = append(lines, PaletteItemStyle.Render(itemStr))
