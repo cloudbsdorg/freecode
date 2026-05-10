@@ -5,13 +5,17 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/freecode/freecode/internal/ui/dialog"
 )
 
 type HelpDialog struct {
 	width     int
-	height   int
-	isOpen   bool
-	selected int
+	height    int
+	isOpen    bool
+	selected  int
+	itemCount int
+	colors    dialog.Colors
 }
 
 func NewHelpDialog() *HelpDialog {
@@ -20,6 +24,8 @@ func NewHelpDialog() *HelpDialog {
 		height:    20,
 		isOpen:    false,
 		selected:  0,
+		itemCount: 12,
+		colors:    dialog.Dark,
 	}
 }
 
@@ -55,22 +61,18 @@ func (h *HelpDialog) HandleKey(key string) bool {
 		return true
 	case "j", "down":
 		h.selected++
-		if h.selected >= h.itemCount() {
+		if h.selected >= h.itemCount {
 			h.selected = 0
 		}
 		return true
 	case "k", "up":
 		h.selected--
 		if h.selected < 0 {
-			h.selected = h.itemCount() - 1
+			h.selected = h.itemCount - 1
 		}
 		return true
 	}
 	return false
-}
-
-func (h *HelpDialog) itemCount() int {
-	return 12
 }
 
 func (h *HelpDialog) SetWidth(w int) {
@@ -85,17 +87,6 @@ func (h *HelpDialog) Render() string {
 	if !h.isOpen {
 		return ""
 	}
-
-	headerStyle := lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("#FFFFFF")).
-		Padding(0, 1)
-
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#1E1E1E")).
-		Border(lipgloss.HiddenBorder()).
-		Width(h.width).
-		Height(h.height)
 
 	helpItems := []struct {
 		key      string
@@ -117,28 +108,26 @@ func (h *HelpDialog) Render() string {
 	}
 
 	var lines []string
-	lines = append(lines, headerStyle.Render("Help"))
+	lines = append(lines, dialog.Header("Help", h.colors))
 	lines = append(lines, "")
-	lines = append(lines, lipgloss.NewStyle().Foreground(lipgloss.Color("#606060")).Render("Keyboard Shortcuts"))
+	lines = append(lines, dialog.Muted("Keyboard Shortcuts", h.colors))
 	lines = append(lines, "")
 
 	for i, item := range helpItems {
-		catStyle := lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#808080"))
-
-		line := fmt.Sprintf("  %-10s %-25s %s", item.key, item.action, catStyle.Render(item.category))
+		line := fmt.Sprintf("  %-10s %-25s %s", item.key, item.action, dialog.Muted(item.category, h.colors))
 		if i == h.selected {
-			line = lipgloss.NewStyle().
-				Background(lipgloss.Color("#007ACC")).
-				Foreground(lipgloss.Color("#FFFFFF")).
-				Render(line)
+			line = dialog.Selected(line, h.colors)
 		}
 		lines = append(lines, line)
 	}
 
 	lines = append(lines, "")
-	lines = append(lines, lipgloss.NewStyle().Foreground(lipgloss.Color("#606060")).Render("Press q, esc, or enter to close"))
+	lines = append(lines, dialog.Muted("Press q, esc, or enter to close", h.colors))
 
 	content := strings.Join(lines, "\n")
-	return dialogStyle.Render(content)
+	return lipgloss.NewStyle().
+		Background(lipgloss.Color(h.colors.Background)).
+		Width(h.width).
+		Height(h.height).
+		Render(content)
 }

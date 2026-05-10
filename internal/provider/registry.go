@@ -20,10 +20,11 @@ type Registry struct {
 }
 
 type ProviderInfo struct {
-	ID      string   `json:"id"`
-	Name    string   `json:"name"`
-	BaseURL string   `json:"baseURL"`
-	EnvVars []string `json:"envVars"`
+	ID            string   `json:"id"`
+	Name          string   `json:"name"`
+	BaseURL       string   `json:"baseURL"`
+	EnvVars       []string `json:"envVars"`
+	ConnectorType string   `json:"connectorType"`
 }
 
 type ModelInfo struct {

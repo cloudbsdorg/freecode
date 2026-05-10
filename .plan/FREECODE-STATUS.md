@@ -379,6 +379,8 @@ All Phase 2 and Phase 3 core modules are now implemented. Focus shifts to:
 
 | Date | Description |
 |------|-------------|
+| 2026-05-09 | **PROVIDER FACTORY FULLY DYNAMIC**: Factory now reads from registry. Connector type mapping handles `@ai-sdk/openai`, `@ai-sdk/openai-compatible` (87+ providers), `@ai-sdk/anthropic`, `@ai-sdk/azure`, `@ai-sdk/amazon-bedrock`, `@ai-sdk/google`, `@ai-sdk/google-vertex`, etc. Unknown providers default to OpenAI-compatible. New models from models.dev work without rebuilding. |
+| 2026-05-09 | **PROVIDER FACTORY REFACTORED**: Created `OpenAICompatibleProvider` for generic OpenAI-compatible APIs. Refactored `NewProvider()` to use `specialProviders` map for data-driven provider instantiation. All 30+ provider tests pass. |
 | 2026-05-07 | **PHASE 2 & 3 CORE COMPLETE**: All 16 Phase 2 modules implemented (patch, share, v2, worktree, acp, file, format, question, skill, command, etc.) |
 | 2026-05-07 | **6 DIALOGS WIRED**: SelectDialog, StatusDialog, ExportDialog, MCPDialog, ConsolePanel, AutocompleteDialog all wired into model.go |
 | 2026-05-07 | **P3 NICE TO HAVE COMPLETE**: Sound effects, prompt autocomplete, plugin runtime, timeline/fork dialogs, error boundary, diff wrap toggle, animation toggle all implemented |

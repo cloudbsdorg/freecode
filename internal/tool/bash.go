@@ -11,6 +11,10 @@ import (
 
 type BashTool struct{}
 
+func init() {
+	Register("bash", func() Tool { return &BashTool{} })
+}
+
 func NewBashTool() *BashTool {
 	return &BashTool{}
 }

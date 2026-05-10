@@ -7,6 +7,10 @@ import (
 
 type QuestionTool struct{}
 
+func init() {
+	Register("question", func() Tool { return &QuestionTool{} })
+}
+
 func NewQuestionTool() *QuestionTool {
 	return &QuestionTool{}
 }

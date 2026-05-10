@@ -10,6 +10,10 @@ import (
 
 type GlobTool struct{}
 
+func init() {
+	Register("glob", func() Tool { return &GlobTool{} })
+}
+
 func NewGlobTool() *GlobTool {
 	return &GlobTool{}
 }

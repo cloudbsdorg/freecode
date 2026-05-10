@@ -10,6 +10,10 @@ import (
 
 type ReadTool struct{}
 
+func init() {
+	Register("read", func() Tool { return &ReadTool{} })
+}
+
 func NewReadTool() *ReadTool {
 	return &ReadTool{}
 }

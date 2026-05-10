@@ -3,6 +3,8 @@ package agent
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/freecode/freecode/internal/config"
@@ -63,12 +65,57 @@ type ToolCall struct {
 }
 
 func NewEngine(cfg *config.Config) *Engine {
-	return &Engine{
+	eng := &Engine{
 		config:   cfg,
 		tools:    tool.NewRegistry(),
 		hooks:    hook.NewRegistry(),
 		sessions: session.NewManager(cfg),
 		agents:   make(map[string]Agent),
+	}
+
+	tool.SetEnabledFromConfig(cfg.Tools.ToolStates)
+
+	homeDir, _ := os.UserHomeDir()
+	externalToolsDir := filepath.Join(homeDir, ".config", "freecode", "tools")
+	tool.LoadExternalTools(externalToolsDir)
+	tool.CompileExternalTools(externalToolsDir, "")
+
+	eng.registerTools()
+
+	return eng
+}
+
+func (e *Engine) registerTools() {
+	for _, name := range tool.ListTools() {
+		factory, ok := tool.GetFactory(name)
+		if !ok {
+			continue
+		}
+
+		if !tool.IsEnabled(name) {
+			continue
+		}
+
+		if len(e.config.Tools.Allowed) > 0 {
+			allowed := false
+			for _, a := range e.config.Tools.Allowed {
+				if a == name {
+					allowed = true
+					break
+				}
+			}
+			if !allowed {
+				continue
+			}
+		}
+
+		for _, d := range e.config.Tools.Denied {
+			if d == name {
+				continue
+			}
+		}
+
+		e.RegisterTool(factory())
 	}
 }
 
@@ -107,6 +154,47 @@ func (e *Engine) GetTool(name string) (tool.Tool, bool) {
 
 func (e *Engine) ListTools() []tool.Tool {
 	return e.tools.List()
+}
+
+func (e *Engine) EnableTool(name string) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	factory, ok := tool.GetFactory(name)
+	if !ok {
+		return fmt.Errorf("tool not found: %s", name)
+	}
+
+	tool.SetEnabled(name, true)
+	e.tools.Enable(name)
+
+	if e.config.Tools.ToolStates == nil {
+		e.config.Tools.ToolStates = make(map[string]bool)
+	}
+	e.config.Tools.ToolStates[name] = true
+
+	e.RegisterTool(factory())
+
+	return nil
+}
+
+func (e *Engine) DisableTool(name string) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	tool.SetEnabled(name, false)
+	e.tools.Disable(name)
+
+	if e.config.Tools.ToolStates == nil {
+		e.config.Tools.ToolStates = make(map[string]bool)
+	}
+	e.config.Tools.ToolStates[name] = false
+
+	return nil
+}
+
+func (e *Engine) SaveToolStates() error {
+	return e.config.Save()
 }
 
 func (e *Engine) SessionManager() *session.Manager {

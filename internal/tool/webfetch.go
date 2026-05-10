@@ -10,6 +10,10 @@ import (
 
 type WebFetchTool struct{}
 
+func init() {
+	Register("webfetch", func() Tool { return &WebFetchTool{} })
+}
+
 func NewWebFetchTool() *WebFetchTool {
 	return &WebFetchTool{}
 }

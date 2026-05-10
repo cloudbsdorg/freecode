@@ -2,9 +2,11 @@ package cli
 
 import (
 	"fmt"
+	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/freecode/freecode/internal/args"
+	"github.com/freecode/freecode/internal/config"
 	"github.com/freecode/freecode/internal/ui"
 	"github.com/spf13/cobra"
 )
@@ -12,6 +14,7 @@ import (
 var (
 	cfgFile    string
 	yolo       bool
+	setupRun   bool
 	continue_  bool // 'continue' is reserved keyword
 	tuiSession string
 	tuiAgent   string
@@ -29,6 +32,9 @@ Built with Go for FreeBSD, Linux, macOS, and IllumOS.`,
 	SilenceErrors: true,
 	SilenceUsage:  true,
 	RunE: func(cmd *cobra.Command, cmdArgs []string) error {
+		if setupRun {
+			return nil
+		}
 		tuiArgs := args.Args{
 			Continue:  continue_,
 			SessionID: tuiSession,
@@ -46,12 +52,30 @@ Built with Go for FreeBSD, Linux, macOS, and IllumOS.`,
 }
 
 func Execute() error {
+	// Parse flags BEFORE Bootstrap so --setup is recognized
+	if err := rootCmd.ParseFlags(os.Args[1:]); err != nil {
+		// Ignore flag parse errors - let cobra handle them in Execute()
+	}
+
+	opts := config.BootstrapOptions{
+		Force: setupRun,
+	}
+	result, err := config.Bootstrap(opts)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Bootstrap error: %v\n", err)
+	}
+
+	if result != nil && result.WizardRan {
+		fmt.Fprintf(os.Stderr, "Provider: %s, Model: %s\n", result.Provider, result.Model)
+	}
+
 	return rootCmd.Execute()
 }
 
 func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ~/.config/freecode/config.yaml)")
 	rootCmd.PersistentFlags().BoolVar(&yolo, "yolo", false, "skip all confirmations")
+	rootCmd.PersistentFlags().BoolVar(&setupRun, "setup", false, "run initial setup wizard")
 	rootCmd.PersistentFlags().BoolVar(&continue_, "continue", false, "continue last session")
 	rootCmd.PersistentFlags().StringVar(&tuiSession, "session", "", "session ID to resume")
 	rootCmd.PersistentFlags().StringVar(&tuiAgent, "agent", "", "agent to use (e.g., sisyphus, oracle)")

@@ -13,6 +13,10 @@ type LSPTool struct {
 	manager *lsp.ServerManager
 }
 
+func init() {
+	Register("lsp", func() Tool { return NewLSPTool() })
+}
+
 func NewLSPTool() *LSPTool {
 	return &LSPTool{
 		manager: lsp.NewServerManager(""),

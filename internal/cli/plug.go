@@ -37,7 +37,6 @@ func init() {
 	plugCmd.Flags().StringVar(&plugInstall, "install", "", "Install a plugin from path")
 	plugCmd.Flags().StringVar(&plugRemove, "remove", "", "Remove a plugin by name")
 	plugCmd.Flags().StringVar(&plugReload, "reload", "", "Reload a plugin by name")
-	rootCmd.AddCommand(plugCmd)
 }
 
 func runPlug(cmd *cobra.Command, args []string) error {

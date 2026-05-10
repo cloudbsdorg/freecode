@@ -41,7 +41,6 @@ func init() {
 	webCmd.Flags().StringVar(&webHost, "hostname", "127.0.0.1", "Bind host (use 0.0.0.0 for network access)")
 	webCmd.Flags().BoolVar(&webNoBrowser, "no-browser", false, "Don't open browser automatically")
 	webCmd.Flags().BoolVar(&webDisableUI, "no-ui", false, "Disable web UI (API only)")
-	rootCmd.AddCommand(webCmd)
 }
 
 func runWeb(cmd *cobra.Command, args []string) error {

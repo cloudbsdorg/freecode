@@ -11,11 +11,11 @@ import (
 
 	"github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/common-nighthawk/go-figure"
 	"github.com/freecode/freecode/internal/agent"
 	"github.com/freecode/freecode/internal/args"
 	"github.com/freecode/freecode/internal/config"
 	"github.com/freecode/freecode/internal/session"
+	"github.com/freecode/freecode/internal/tool"
 	"github.com/google/uuid"
 )
 
@@ -24,6 +24,7 @@ type Route string
 const (
 	RouteHome    Route = "home"
 	RouteSession Route = "session"
+	RouteSetup   Route = "setup"
 )
 
 type Model struct {
@@ -46,9 +47,11 @@ type Model struct {
 	statusDialog      *StatusDialog
 	exportDialog      *ExportDialog
 	mcpDialog         *MCPDialog
+	toolDialog        *ToolDialog
 	consolePanel      *ConsolePanel
 	autocompleteDialog *AutocompleteDialog
 	fleetPanel        *FleetPanel
+	setupDialog       *SetupDialog
 	fleetTicking      bool
 	quitting          bool
 	focus             focusArea
@@ -63,11 +66,6 @@ type Model struct {
 	currentSession    *session.Session
 	theme             Theme
 	themeName         string
-}
-
-func getBanner() string {
-	f := figure.NewFigure("FREECODE", "cosmike", true)
-	return f.String()
 }
 
 type focusArea int
@@ -109,15 +107,17 @@ func NewModel(args args.Args) *Model {
 		statusDialog:       NewStatusDialog(),
 		exportDialog:       NewExportDialog(),
 		mcpDialog:          NewMCPDialog(),
+		toolDialog:         NewToolDialog(),
 		consolePanel:       NewConsolePanel(),
 		autocompleteDialog: NewAutocompleteDialog(),
 		fleetPanel:         NewFleetPanel(),
+		setupDialog:        NewSetupDialog(),
 		quitting:          false,
 		focus:             focusInput,
 		yolo:              false,
 		activeTabIdx:      0,
 		tabs:             make([]*TabState, 0),
-		banner:           getBanner(),
+		banner:           GetBanner(),
 		cliArgs:          args,
 		promptSubmitted:   false,
 		engine:           engine,
@@ -137,6 +137,12 @@ func NewModel(args args.Args) *Model {
 	}
 	if args.Continue || args.SessionID != "" {
 		m.route = RouteSession
+	}
+
+	paths := config.PathsGet()
+	configPath := paths.ConfigFile("config.yaml")
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		m.route = RouteSetup
 	}
 
 	m.registerCommands()
@@ -404,6 +410,25 @@ func (m *Model) registerCommands() {
 	})
 
 	m.commandPalette.Register(PaletteCommand{
+		Name:        "Tools Configuration",
+		Description: "Enable or disable built-in tools",
+		Keybind:     "",
+		Category:    "System",
+		Handler: func() {
+			m.toolDialog.SetToggleHandler(func(name string, enabled bool) {
+				if enabled {
+					m.engine.EnableTool(name)
+				} else {
+					m.engine.DisableTool(name)
+				}
+				m.engine.SaveToolStates()
+			})
+			m.toolDialog.SetTools(tool.ListToolsWithStatus())
+			m.toolDialog.Open()
+		},
+	})
+
+	m.commandPalette.Register(PaletteCommand{
 		Name:        "Toggle Console",
 		Description: "Show or hide debug console",
 		Keybind:     "",
@@ -532,11 +557,106 @@ func (m *Model) updateLayout() {
 	m.statusDialog.SetWidth(m.width / 2)
 	m.exportDialog.SetWidth(m.width / 2)
 	m.mcpDialog.SetWidth(m.width / 2)
+	m.toolDialog.SetWidth(m.width / 2)
 	m.consolePanel.SetWidth(m.width - 4)
 	m.consolePanel.SetHeight(m.height - 4)
 	m.autocompleteDialog.SetWidth(m.width / 2)
 	m.fleetPanel.SetWidth(m.width / 2)
 	m.fleetPanel.SetHeight(m.height / 2)
+	m.setupDialog.SetWidth(m.width / 2)
+}
+
+func (m *Model) handleSetupKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	if !m.setupDialog.IsOpen() {
+		return m, nil
+	}
+
+	switch msg.Type {
+	case tea.KeyUp, tea.KeyShiftTab:
+		m.setupDialog.MoveUp()
+	case tea.KeyDown, tea.KeyTab:
+		m.setupDialog.MoveDown()
+	case tea.KeyEnter:
+		prevStep := m.setupDialog.GetStep()
+		m.setupDialog.Next()
+		if m.setupDialog.GetStep() == SetupStepModel && prevStep == SetupStepProvider {
+			m.setupDialog.SetModels(m.getModelsForProvider(m.setupDialog.GetSelectedProviderID()))
+		}
+		if m.setupDialog.GetStep() == SetupStepDone {
+			providerID, modelID, apiKey := m.setupDialog.GetSelection()
+			m.saveSetupConfig(providerID, modelID, apiKey)
+			m.route = RouteHome
+		}
+	case tea.KeyEsc:
+		m.setupDialog.Prev()
+		if !m.setupDialog.IsOpen() {
+			m.quitting = true
+			return m, tea.Quit
+		}
+	case tea.KeyBackspace:
+		m.setupDialog.BackspaceAPIKey()
+	default:
+		if msg.Runes != nil {
+			for _, r := range msg.Runes {
+				m.setupDialog.AppendToAPIKey(r)
+			}
+		}
+	}
+
+	return m, nil
+}
+
+func (m *Model) getModelsForProvider(providerID string) []string {
+	defaultModels := map[string][]string{
+		"ollama":       {"llama3.2", "mistral", "codellama", "qwen2.5-coder"},
+		"lmstudio":     {"llama-3.2-3b-instruct", "mistral-7b-instruct", "codellama-7b"},
+		"minimax":      {"MiniMax-Text-01", "abab6.5s-chat"},
+		"openai":       {"gpt-4o", "gpt-4o-mini", "gpt-4-turbo"},
+		"anthropic":    {"claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022"},
+	}
+	if models, ok := defaultModels[providerID]; ok {
+		return models
+	}
+	return []string{"gpt-4o", "claude-sonnet-4-20250514"}
+}
+
+func (m *Model) saveSetupConfig(providerID, modelID, apiKey string) {
+	paths := config.PathsGet()
+
+	cfg := config.DefaultConfig()
+	cfg.Session.Dir = paths.SessionDir()
+
+	baseURL := m.inferBaseURL(providerID)
+
+	cfg.Models = map[string]config.ModelConfig{
+		"default": {
+			Provider: providerID,
+			Name:     modelID,
+		},
+	}
+
+	cfg.Providers = map[string]config.ProviderConfig{
+		providerID: {
+			APIKey:  apiKey,
+			BaseURL: baseURL,
+		},
+	}
+
+	config.SaveConfig(paths.ConfigFile("config.yaml"), cfg)
+}
+
+func (m *Model) inferBaseURL(providerID string) string {
+	guesses := map[string]string{
+		"ollama":       "http://localhost:11434",
+		"lmstudio":     "http://localhost:1234",
+		"ollama-cloud": "https://ollama.cloud",
+		"minimax":      "https://api.minimax.chat/v1",
+		"minimax-cn":    "https://api.minimax.chat/v1",
+	}
+	if url, ok := guesses[providerID]; ok {
+		return url
+	}
+	return ""
 }
 
 func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
@@ -595,6 +715,13 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		}
 	}
 
+	if m.toolDialog.IsOpen() {
+		handled := m.toolDialog.HandleKey(msg.String())
+		if handled {
+			return m, nil
+		}
+	}
+
 	if m.consolePanel.IsOpen() {
 		handled := m.consolePanel.HandleKey(msg.String())
 		if handled {
@@ -614,6 +741,10 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		if handled {
 			return m, nil
 		}
+	}
+
+	if m.route == RouteSetup {
+		return m.handleSetupKey(msg)
 	}
 
 	switch msg.String() {
@@ -747,6 +878,8 @@ func (m *Model) View() string {
 		return m.renderHome()
 	case RouteSession:
 		return m.renderSession()
+	case RouteSetup:
+		return m.renderSetup()
 	default:
 		return m.renderHome()
 	}
@@ -832,6 +965,29 @@ func (m *Model) renderHome() string {
 	return s.String() + paletteView
 }
 
+func (m *Model) renderSetup() string {
+	dialog := m.setupDialog.Render()
+	padding := (m.width - 70) / 2
+	if padding < 0 {
+		padding = 0
+	}
+	lines := strings.Split(dialog, "\n")
+	var s strings.Builder
+	startY := (m.height - 20) / 2
+	if startY < 0 {
+		startY = 0
+	}
+	for i := 0; i < startY; i++ {
+		s.WriteString("\n")
+	}
+	for _, line := range lines {
+		s.WriteString(strings.Repeat(" ", padding))
+		s.WriteString(line)
+		s.WriteString("\n")
+	}
+	return s.String()
+}
+
 func (m *Model) renderSession() string {
 	tabBar := m.tabBar.Render()
 
@@ -859,6 +1015,7 @@ func (m *Model) renderSession() string {
 	statusView := m.statusDialog.Render()
 	exportView := m.exportDialog.Render()
 	mcpView := m.mcpDialog.Render()
+	toolView := m.toolDialog.Render()
 	consoleView := m.consolePanel.Render()
 	autocompleteView := m.autocompleteDialog.Render()
 	fleetView := m.fleetPanel.Render()
@@ -868,7 +1025,7 @@ func (m *Model) renderSession() string {
 		paletteView = "\n" + m.commandPalette.Render()
 	}
 
-	return tabBar + "\n" + content + "\n" + input + "\n" + status + toast + help + permission + question + selectView + statusView + exportView + mcpView + consoleView + autocompleteView + fleetView + paletteView
+	return tabBar + "\n" + content + "\n" + input + "\n" + status + toast + help + permission + question + selectView + statusView + exportView + mcpView + toolView + consoleView + autocompleteView + fleetView + paletteView
 }
 
 func (m *Model) renderSessionContent() string {
@@ -1081,6 +1238,11 @@ type ShowQuestionMsg struct {
 func (m *Model) handleInit() {
 	m.loadSessions()
 
+	if m.route == RouteSetup {
+		m.populateSetupProviders()
+		return
+	}
+
 	if m.cliArgs.Prompt != "" && !m.promptSubmitted {
 		m.promptSubmitted = true
 		m.inputArea.SetValue(m.cliArgs.Prompt)
@@ -1100,6 +1262,17 @@ func (m *Model) handleInit() {
 		m.route = RouteSession
 		m.loadSessionMessages(m.sessions[0].ID)
 	}
+}
+
+func (m *Model) populateSetupProviders() {
+	providers := []ProviderInfo{
+		{ID: "ollama", Name: "Ollama (Local)"},
+		{ID: "lmstudio", Name: "LM Studio (Local)"},
+		{ID: "minimax", Name: "Minimax"},
+		{ID: "openai", Name: "OpenAI"},
+		{ID: "anthropic", Name: "Anthropic"},
+	}
+	m.setupDialog.SetProviders(providers)
 }
 
 func (m *Model) setTerminalTitle(title string) {

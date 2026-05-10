@@ -22,6 +22,10 @@ type TodoItem struct {
 	Metadata map[string]interface{} `json:"metadata"`
 }
 
+func init() {
+	Register("todo", func() Tool { return &TodoTool{todos: make(map[string]TodoItem)} })
+}
+
 func NewTodoTool() *TodoTool {
 	return &TodoTool{
 		todos: make(map[string]TodoItem),

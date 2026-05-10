@@ -172,35 +172,38 @@ func (c *CommandPalette) Render() string {
 		displayItems = displayItems[:maxItems]
 	}
 
-	categories := make(map[string][]PaletteCommand)
+	seenCats := make(map[string]bool)
 	for _, cmd := range displayItems {
 		cat := cmd.Category
 		if cat == "" {
 			cat = "Other"
 		}
-		categories[cat] = append(categories[cat], cmd)
-	}
-
-	idx := 0
-	for cat, cmds := range categories {
-		lines = append(lines, lipgloss.NewStyle().Foreground(lipgloss.Color("#606060")).Render(cat))
-		for _, cmd := range cmds {
-			itemStr := "  " + cmd.Name
-			if cmd.Description != "" {
-				itemStr += " - " + cmd.Description
-			}
-			if cmd.Keybind != "" {
-				itemStr += " (" + cmd.Keybind + ")"
-			}
-
-			if idx == c.selectedIdx {
-				lines = append(lines, PaletteSelectedStyle.Render(itemStr))
-			} else {
-				lines = append(lines, PaletteItemStyle.Render(itemStr))
-			}
-			idx++
+		if !seenCats[cat] {
+			lines = append(lines, lipgloss.NewStyle().Foreground(lipgloss.Color("#606060")).Render(cat))
+			seenCats[cat] = true
 		}
-		lines = append(lines, "")
+
+		itemStr := "  " + cmd.Name
+		if cmd.Description != "" {
+			itemStr += " - " + cmd.Description
+		}
+		if cmd.Keybind != "" {
+			itemStr += " (" + cmd.Keybind + ")"
+		}
+
+		realIdx := 0
+		for i, f := range c.filtered {
+			if f.Name == cmd.Name && f.Keybind == cmd.Keybind {
+				realIdx = i
+				break
+			}
+		}
+
+		if realIdx == c.selectedIdx {
+			lines = append(lines, PaletteSelectedStyle.Render(itemStr))
+		} else {
+			lines = append(lines, PaletteItemStyle.Render(itemStr))
+		}
 	}
 
 	if len(c.filtered) == 0 {

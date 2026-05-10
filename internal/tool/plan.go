@@ -7,6 +7,10 @@ import (
 
 type PlanTool struct{}
 
+func init() {
+	Register("plan", func() Tool { return &PlanTool{} })
+}
+
 func NewPlanTool() *PlanTool {
 	return &PlanTool{}
 }

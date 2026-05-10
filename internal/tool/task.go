@@ -3,9 +3,15 @@ package tool
 import (
 	"context"
 	"fmt"
+
+	"github.com/google/uuid"
 )
 
 type TaskTool struct{}
+
+func init() {
+	Register("task", func() Tool { return &TaskTool{} })
+}
 
 func NewTaskTool() *TaskTool {
 	return &TaskTool{}
@@ -33,10 +39,6 @@ func (t *TaskTool) Schema() ToolSchema {
 			"title": {
 				Type:        "string",
 				Description: "Task title",
-			},
-			"description": {
-				Type:        "string",
-				Description: "Task description",
 			},
 			"task_id": {
 				Type:        "string",
@@ -72,4 +74,8 @@ func (t *TaskTool) Execute(ctx context.Context, req Request) (*Response, error) 
 	default:
 		return nil, fmt.Errorf("unknown action: %s", action)
 	}
+}
+
+func generateID() string {
+	return uuid.New().String()[:8]
 }

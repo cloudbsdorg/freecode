@@ -1,9 +1,9 @@
 package ui
 
 import (
-	"strings"
-
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/freecode/freecode/internal/ui/dialog"
 )
 
 type SelectOption struct {
@@ -14,24 +14,38 @@ type SelectOption struct {
 }
 
 type SelectDialog struct {
-	options   []SelectOption
-	filtered  []SelectOption
-	selected  int
-	filter   string
-	width    int
-	isOpen   bool
-	onSelect func(string)
+	list      *dialog.SelectionList
+	width     int
+	isOpen    bool
+	onSelect  func(string)
+	colors    dialog.Colors
 }
 
 func NewSelectDialog() *SelectDialog {
-	return &SelectDialog{
-		options:  []SelectOption{},
-		filtered: []SelectOption{},
-		selected: 0,
-		filter:   "",
+	s := &SelectDialog{
 		width:    60,
 		isOpen:   false,
+		colors:   dialog.Dark,
 	}
+
+	s.list = dialog.NewSelectionList(
+		func(d *dialog.SelectionList) {
+			d.Title = "Select an option"
+			d.Width = 60
+			d.Colors = s.colors
+			d.OnSelect = func(item dialog.Item) {
+				if s.onSelect != nil {
+					if v, ok := item.Value.(string); ok {
+						s.onSelect(v)
+					} else {
+						s.onSelect(item.ID)
+					}
+				}
+			}
+		},
+	)
+
+	return s
 }
 
 func (s *SelectDialog) SetWidth(w int) {
@@ -39,10 +53,18 @@ func (s *SelectDialog) SetWidth(w int) {
 }
 
 func (s *SelectDialog) SetOptions(opts []SelectOption) {
-	s.options = opts
-	s.filtered = opts
-	s.selected = 0
-	s.filter = ""
+	items := make([]dialog.Item, len(opts))
+	for i, opt := range opts {
+		items[i] = dialog.Item{
+			ID:          opt.Value,
+			Title:       opt.Title,
+			Description: opt.Description,
+			Category:    opt.Category,
+			Value:       opt.Value,
+		}
+	}
+	s.list.SetItems(items)
+	s.list.Width = s.width
 	s.isOpen = true
 }
 
@@ -56,58 +78,32 @@ func (s *SelectDialog) IsVisible() bool {
 
 func (s *SelectDialog) Clear() {
 	s.isOpen = false
-	s.filter = ""
-	s.options = []SelectOption{}
-	s.filtered = []SelectOption{}
-	s.selected = 0
+	s.list.SetItems([]dialog.Item{})
 }
 
 func (s *SelectDialog) SetFilter(filter string) {
-	s.filter = filter
-	s.applyFilter()
-}
-
-func (s *SelectDialog) applyFilter() {
-	if s.filter == "" {
-		s.filtered = s.options
-		return
-	}
-	needle := strings.ToLower(s.filter)
-	var result []SelectOption
-	for _, opt := range s.options {
-		if strings.Contains(strings.ToLower(opt.Title), needle) {
-			result = append(result, opt)
-		} else if opt.Category != "" && strings.Contains(strings.ToLower(opt.Category), needle) {
-			result = append(result, opt)
-		} else if strings.Contains(strings.ToLower(opt.Description), needle) {
-			result = append(result, opt)
-		}
-	}
-	s.filtered = result
-	if s.selected >= len(s.filtered) {
-		s.selected = 0
-	}
+	s.list.SetFilter(filter)
 }
 
 func (s *SelectDialog) Next() {
-	if len(s.filtered) == 0 {
-		return
-	}
-	s.selected = (s.selected + 1) % len(s.filtered)
+	s.list.Next()
 }
 
 func (s *SelectDialog) Prev() {
-	if len(s.filtered) == 0 {
-		return
-	}
-	s.selected = (s.selected - 1 + len(s.filtered)) % len(s.filtered)
+	s.list.Prev()
 }
 
 func (s *SelectDialog) GetSelected() *SelectOption {
-	if s.selected < 0 || s.selected >= len(s.filtered) {
+	item := s.list.GetSelected()
+	if item == nil {
 		return nil
 	}
-	return &s.filtered[s.selected]
+	return &SelectOption{
+		Title:       item.Title,
+		Value:       item.ID,
+		Description: item.Description,
+		Category:    item.Category,
+	}
 }
 
 func (s *SelectDialog) HandleKey(msg string) bool {
@@ -120,17 +116,14 @@ func (s *SelectDialog) HandleKey(msg string) bool {
 		s.Clear()
 		return true
 	case "enter":
-		sel := s.GetSelected()
-		if sel != nil && s.onSelect != nil {
-			s.onSelect(sel.Value)
-		}
+		s.list.Confirm()
 		s.Clear()
 		return true
 	case "up", "k":
-		s.Prev()
+		s.list.Prev()
 		return true
 	case "down", "j":
-		s.Next()
+		s.list.Next()
 		return true
 	}
 	return false
@@ -141,126 +134,40 @@ func (s *SelectDialog) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#1E1E1E")).
-		Border(lipgloss.HiddenBorder()).
-		Width(s.width)
+	s.list.Width = s.width
+	content := s.list.Render()
 
-	return dialogStyle.Render(s.renderContent())
-}
-
-func (s *SelectDialog) renderContent() string {
-	var lines []string
-
-	lines = append(lines, s.renderHeader())
-	lines = append(lines, "")
-	lines = append(lines, s.renderFilter())
-	lines = append(lines, "")
-	lines = append(lines, s.renderOptions()...)
-	lines = append(lines, "")
-	lines = append(lines, s.renderHints())
-
-	return strings.Join(lines, "\n")
-}
-
-func (s *SelectDialog) renderHeader() string {
 	return lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#E0E0E0")).
-		Render("Select an option")
+		Background(lipgloss.Color(s.colors.Background)).
+		Width(s.width).
+		Render(content)
 }
 
-func (s *SelectDialog) renderFilter() string {
-	filterStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#3C3C3C")).
-		Foreground(lipgloss.Color("#E0E0E0")).
-		Padding(0, 1)
-	return filterStyle.Render("Filter: " + s.filter + "_")
-}
-
-func (s *SelectDialog) renderOptions() []string {
-	var lines []string
-
-	if len(s.filtered) == 0 {
-		lines = append(lines, lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#808080")).
-			Render("  No matches"))
-		return lines
+func (s *SelectDialog) RenderWithTitle(title string) string {
+	if !s.isOpen {
+		return ""
 	}
 
-	groups := make(map[string][]SelectOption)
-	hasGroups := false
+	s.list.Width = s.width
 
-	for _, opt := range s.filtered {
-		if opt.Category != "" {
-			hasGroups = true
-			groups[opt.Category] = append(groups[opt.Category], opt)
-		} else {
-			groups[""] = append(groups[""], opt)
+	oldRenderer := s.list.ItemRenderer
+	s.list.ItemRenderer = func(item dialog.Item, selected, current bool, colors dialog.Colors) string {
+		prefix := " "
+		if selected {
+			prefix = dialog.TextStyled("▶", colors.Primary)
 		}
-	}
-
-	if hasGroups {
-		for category, opts := range groups {
-			if category != "" {
-				catStyle := lipgloss.NewStyle().
-					Foreground(lipgloss.Color("#007ACC")).
-					Bold(true)
-				lines = append(lines, catStyle.Render(category))
-			}
-			for _, opt := range opts {
-				lines = append(lines, s.renderOption(opt))
-			}
-			if category != "" {
-				lines = append(lines, "")
-			}
+		titleStr := dialog.TextStyled(item.Title, colors.Text)
+		line := prefix + " " + titleStr
+		if item.Description != "" {
+			line += " " + dialog.Muted("— "+item.Description, colors)
 		}
-	} else {
-		for _, opt := range s.filtered {
-			lines = append(lines, s.renderOption(opt))
-		}
+		return line
 	}
+	defer func() { s.list.ItemRenderer = oldRenderer }()
 
-	return lines
-}
-
-func (s *SelectDialog) renderOption(opt SelectOption) string {
-	idx := -1
-	for i, f := range s.filtered {
-		if f.Value == opt.Value {
-			idx = i
-			break
-		}
-	}
-
-	selected := idx == s.selected
-
-	var prefix string
-	if selected {
-		prefix = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFCC00")).
-			Render("▶")
-	} else {
-		prefix = " "
-	}
-
-	var titleStyle lipgloss.Style
-	if selected {
-		titleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
-	} else {
-		titleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#D0D0D0"))
-	}
-
-	line := prefix + " " + titleStyle.Render(opt.Title)
-
-	if opt.Description != "" {
-		descStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
-		line += " " + descStyle.Render("— "+opt.Description)
-	}
-
-	return line
-}
-
-func (s *SelectDialog) renderHints() string {
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
-	return hintStyle.Render("↑↓ navigate  enter select  esc close")
+	content := s.list.Render()
+	return lipgloss.NewStyle().
+		Background(lipgloss.Color(s.colors.Background)).
+		Width(s.width).
+		Render(content)
 }

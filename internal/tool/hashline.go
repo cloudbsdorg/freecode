@@ -12,6 +12,10 @@ import (
 
 type HashlineTool struct{}
 
+func init() {
+	Register("hashline", func() Tool { return &HashlineTool{} })
+}
+
 func NewHashlineTool() *HashlineTool {
 	return &HashlineTool{}
 }

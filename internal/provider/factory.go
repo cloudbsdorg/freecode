@@ -3,484 +3,281 @@ package provider
 import (
 	"os"
 	"strings"
+	"sync"
 )
 
-func NewProvider(model string) Provider {
-	model = strings.ToLower(model)
+type connectorType int
 
-	if strings.HasPrefix(model, "anthropic/") || strings.HasPrefix(model, "claude") {
+const (
+	connectorOpenAI connectorType = iota
+	connectorOpenAICompatible
+	connectorAnthropic
+	connectorAzure
+	connectorBedrock
+	connectorOllama
+	connectorGoogle
+	connectorGoogleVertex
+	connectorUnknown
+)
+
+var connectorNames = map[connectorType]string{
+	connectorOpenAI:           "@ai-sdk/openai",
+	connectorOpenAICompatible: "@ai-sdk/openai-compatible",
+	connectorAnthropic:        "@ai-sdk/anthropic",
+	connectorAzure:            "@ai-sdk/azure",
+	connectorBedrock:          "@ai-sdk/amazon-bedrock",
+	connectorOllama:           "ollama",
+	connectorGoogle:           "@ai-sdk/google",
+	connectorGoogleVertex:     "@ai-sdk/google-vertex",
+}
+
+var (
+	connectorHandlers     map[string]connectorType
+	connectorHandlersOnce  sync.Once
+)
+
+func initConnectorHandlers() {
+	connectorHandlersOnce.Do(func() {
+		connectorHandlers = map[string]connectorType{
+			"@ai-sdk/openai":              connectorOpenAI,
+			"@ai-sdk/openai-compatible":    connectorOpenAICompatible,
+			"@ai-sdk/anthropic":            connectorAnthropic,
+			"@ai-sdk/azure":                connectorAzure,
+			"@ai-sdk/amazon-bedrock":       connectorBedrock,
+			"@ai-sdk/google":               connectorGoogle,
+			"@ai-sdk/google-vertex":         connectorGoogleVertex,
+			"@ai-sdk/cohere":               connectorOpenAICompatible,
+			"@ai-sdk/groq":                 connectorOpenAICompatible,
+			"@ai-sdk/mistral":              connectorOpenAICompatible,
+			"@ai-sdk/perplexity":           connectorOpenAICompatible,
+			"@ai-sdk/togetherai":           connectorOpenAICompatible,
+			"@ai-sdk/xai":                  connectorOpenAICompatible,
+			"@ai-sdk/deepinfra":            connectorOpenAICompatible,
+			"@ai-sdk/cerebras":             connectorOpenAICompatible,
+			"ollama":                       connectorOllama,
+			"@openrouter/ai-sdk-provider":  connectorOpenAICompatible,
+			"@jerome-benoit/sap-ai-provider-v2": connectorOpenAICompatible,
+		}
+	})
+}
+
+func getConnectorType(npm string) connectorType {
+	initConnectorHandlers()
+	if ct, ok := connectorHandlers[npm]; ok {
+		return ct
+	}
+	if strings.Contains(npm, "openai") || strings.Contains(npm, "compatible") {
+		return connectorOpenAICompatible
+	}
+	if npm == "" {
+		return connectorOpenAICompatible
+	}
+	return connectorOpenAICompatible
+}
+
+type providerCreator struct {
+	envVar string
+	create func(providerID, baseURL, apiKey string) Provider
+}
+
+var (
+	providerCreators     map[connectorType]*providerCreator
+	providerCreatorsOnce sync.Once
+)
+
+func initProviderCreators() {
+	providerCreatorsOnce.Do(func() {
+		providerCreators = map[connectorType]*providerCreator{
+			connectorOpenAI: {
+				envVar: "OPENAI_API_KEY",
+				create: func(id, baseURL, apiKey string) Provider {
+					if baseURL == "" {
+						baseURL = "https://api.openai.com/v1"
+					}
+					p := NewOpenAIProvider(apiKey)
+					p.BaseURL = baseURL
+					return p
+				},
+			},
+			connectorOpenAICompatible: {
+				envVar: "",
+				create: func(id, baseURL, apiKey string) Provider {
+					if baseURL == "" {
+						baseURL = "http://localhost:4000"
+					}
+					return NewOpenAICompatibleProvider(id, baseURL, apiKey)
+				},
+			},
+			connectorAnthropic: {
+				envVar: "ANTHROPIC_API_KEY",
+				create: func(id, baseURL, apiKey string) Provider {
+					if baseURL == "" {
+						baseURL = "https://api.anthropic.com"
+					}
+					p := NewAnthropicProvider(apiKey)
+					p.BaseURL = baseURL
+					return p
+				},
+			},
+			connectorAzure: {
+				envVar: "AZURE_API_KEY",
+				create: func(id, baseURL, apiKey string) Provider {
+					if baseURL == "" {
+						baseURL = os.Getenv("AZURE_BASE_URL")
+					}
+					return NewAzureProvider(apiKey, baseURL)
+				},
+			},
+			connectorBedrock: {
+				envVar: "AWS_ACCESS_KEY_ID",
+				create: func(id, baseURL, apiKey string) Provider {
+					return NewBedrockProvider(
+						os.Getenv("AWS_REGION"),
+						os.Getenv("AWS_PROFILE"),
+						baseURL,
+						apiKey,
+						os.Getenv("AWS_SECRET_ACCESS_KEY"),
+					)
+				},
+			},
+			connectorOllama: {
+				envVar: "",
+				create: func(id, baseURL, apiKey string) Provider {
+					if baseURL == "" {
+						baseURL = os.Getenv("OLLAMA_BASE_URL")
+					}
+					if baseURL == "" {
+						baseURL = "http://localhost:11434"
+					}
+					return NewOllamaProvider(baseURL, apiKey)
+				},
+			},
+			connectorGoogle: {
+				envVar: "GOOGLE_API_KEY",
+				create: func(id, baseURL, apiKey string) Provider {
+					return NewGoogleProvider(apiKey)
+				},
+			},
+			connectorGoogleVertex: {
+				envVar: "VERTEX_ACCESS_TOKEN",
+				create: func(id, baseURL, apiKey string) Provider {
+					return NewVertexProvider(
+						os.Getenv("VERTEX_PROJECT_ID"),
+						os.Getenv("VERTEX_LOCATION"),
+						apiKey,
+					)
+				},
+			},
+			connectorUnknown: {
+				envVar: "",
+				create: func(id, baseURL, apiKey string) Provider {
+					if baseURL == "" {
+						baseURL = "http://localhost:4000"
+					}
+					return NewLiteLLMProvider(baseURL, apiKey)
+				},
+			},
+		}
+	})
+}
+
+func NewProvider(model string) Provider {
+	modelLower := strings.ToLower(model)
+
+	if strings.HasPrefix(modelLower, "claude") {
 		return NewAnthropicProvider(os.Getenv("ANTHROPIC_API_KEY"))
 	}
-
-	if strings.HasPrefix(model, "minimax/") || strings.HasPrefix(model, "minimax") {
+	if strings.HasPrefix(modelLower, "gpt") || strings.HasPrefix(modelLower, "o1") || strings.HasPrefix(modelLower, "o3") {
+		return NewOpenAIProvider(os.Getenv("OPENAI_API_KEY"))
+	}
+	if strings.HasPrefix(modelLower, "minimax") {
 		return NewMinimaxProvider(os.Getenv("MINIMAX_API_KEY"))
 	}
 
-	if strings.HasPrefix(model, "openai/") || strings.HasPrefix(model, "gpt") || strings.HasPrefix(model, "o1") || strings.HasPrefix(model, "o3") {
-		return NewOpenAIProvider(os.Getenv("OPENAI_API_KEY"))
+	parts := strings.SplitN(model, "/", 2)
+	if len(parts) < 2 {
+		return NewLiteLLMProvider(os.Getenv("LITELLM_BASE_URL"), os.Getenv("LITELLM_API_KEY"))
+	}
+	providerID := strings.ToLower(parts[0])
+
+	providerAliases := map[string]string{
+		"aws": "bedrock",
 	}
 
-	if strings.HasPrefix(model, "ollama/") {
-		baseURL := os.Getenv("OLLAMA_BASE_URL")
-		if baseURL == "" {
-			baseURL = "http://localhost:11434"
+	if actualID, ok := providerAliases[providerID]; ok {
+		providerID = actualID
+	}
+
+	ct := connectorOpenAICompatible
+	envVar := ""
+	baseURL := ""
+
+	info, ok := GetProviderInfo(providerID)
+	if ok {
+		ct = getConnectorType(info.ConnectorType)
+		if len(info.EnvVars) > 0 {
+			envVar = info.EnvVars[0]
 		}
-		return NewOllamaProvider(baseURL, os.Getenv("OLLAMA_API_KEY"))
+		baseURL = info.BaseURL
 	}
 
-	if strings.HasPrefix(model, "groq/") {
-		return NewGroqProvider(os.Getenv("GROQ_API_KEY"))
+	if ct == connectorOpenAICompatible && envVar == "" {
+		envVar = strings.ToUpper(providerID) + "_API_KEY"
 	}
 
-	if strings.HasPrefix(model, "perplexity/") {
-		return NewPerplexityProvider(os.Getenv("PERPLEXITY_API_KEY"))
+	if baseURL == "" {
+		baseURL = os.Getenv(strings.ToUpper(providerID) + "_BASE_URL")
 	}
 
-	if strings.HasPrefix(model, "google/") || strings.HasPrefix(model, "gemini/") {
-		return NewGoogleProvider(os.Getenv("GOOGLE_API_KEY"))
+	initProviderCreators()
+	creator, ok := providerCreators[ct]
+	if !ok {
+		creator = providerCreators[connectorOpenAICompatible]
 	}
 
-	if strings.HasPrefix(model, "cohere/") {
-		return NewCohereProvider(os.Getenv("COHERE_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "mistral/") {
-		return NewMistralProvider(os.Getenv("MISTRAL_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "togetherai/") || strings.HasPrefix(model, "together/") {
-		return NewTogetherAIProvider(os.Getenv("TOGETHERAI_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "deepinfra/") {
-		return NewDeepInfraProvider(os.Getenv("DEEPINFRA_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "cerebras/") {
-		return NewCerebrasProvider(os.Getenv("CEREBRAS_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "xai/") {
-		return NewxAIProvider(os.Getenv("XAI_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "alibaba/") || strings.HasPrefix(model, "qwen/") {
-		return NewAlibabaProvider(os.Getenv("ALIBABA_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "huggingface/") {
-		return NewHuggingFaceProvider(os.Getenv("HUGGINGFACE_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "deepseek/") {
-		return NewDeepSeekProvider(os.Getenv("DEEPSEEK_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "fireworks/") {
-		return NewFireworksProvider(os.Getenv("FIREWORKS_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "moonshot/") {
-		return NewMoonshotProvider(os.Getenv("MOONSHOT_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "nebius/") {
-		return NewNebiusProvider(os.Getenv("NEBIUS_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "openrouter/") {
-		return NewOpenRouterProvider(os.Getenv("OPENROUTER_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "azure/") {
-		return NewAzureProvider(os.Getenv("AZURE_API_KEY"), os.Getenv("AZURE_BASE_URL"))
-	}
-
-	if strings.HasPrefix(model, "aws/") || strings.HasPrefix(model, "bedrock/") {
-		return NewBedrockProvider(
-			os.Getenv("AWS_REGION"),
-			os.Getenv("AWS_PROFILE"),
-			os.Getenv("AWS_ENDPOINT"),
-			os.Getenv("AWS_ACCESS_KEY_ID"),
-			os.Getenv("AWS_SECRET_ACCESS_KEY"),
-		)
-	}
-
-	if strings.HasPrefix(model, "gitlab/") {
-		return NewGitLabProvider(os.Getenv("GITLAB_TOKEN"))
-	}
-
-	if strings.HasPrefix(model, "copilot/") || strings.HasPrefix(model, "github_copilot/") {
-		return NewGitHubCopilotProvider(os.Getenv("GITHUB_COPILOT_TOKEN"))
-	}
-
-	if strings.HasPrefix(model, "vercel/") {
-		return NewVercelProvider(os.Getenv("VERCEL_TOKEN"))
-	}
-
-	if strings.HasPrefix(model, "vertex/") {
-		return NewVertexProvider(
-			os.Getenv("VERTEX_PROJECT_ID"),
-			os.Getenv("VERTEX_LOCATION"),
-			os.Getenv("VERTEX_ACCESS_TOKEN"),
-		)
-	}
-
-	if strings.HasPrefix(model, "venice/") {
-		return NewVeniceProvider(os.Getenv("VENICE_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "zai/") {
-		return NewZAIProvider(os.Getenv("ZAI_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "zenmux/") {
-		return NewZenMuxProvider(os.Getenv("ZENMUX_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "baseten/") {
-		return NewBasetenProvider(os.Getenv("BASETEN_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "cortecs/") {
-		return NewCortecsProvider(os.Getenv("CORTECS_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "firmware/") {
-		return NewFirmwareProvider(os.Getenv("FIRMWARE_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "ionet/") {
-		return NewIonetProvider(os.Getenv("IONET_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "nvidia/") {
-		return NewNVIDIAProvider(os.Getenv("NVIDIA_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "ollamacloud/") {
-		return NewOllamaCloudProvider(os.Getenv("OLLAMA_CLOUD_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "cloudflare/") {
-		return NewCloudflareGatewayProvider(
-			os.Getenv("CLOUDFLARE_ACCOUNT_ID"),
-			os.Getenv("CLOUDFLARE_GATEWAY_ID"),
-			os.Getenv("CLOUDFLARE_API_TOKEN"),
-		)
-	}
-
-	if strings.HasPrefix(model, "helicone/") {
-		return NewHeliconeProvider(os.Getenv("HELICONE_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "llamacpp/") {
-		return NewLlamaCppProvider(os.Getenv("LLAMACPP_BASE_URL"), os.Getenv("LLAMACPP_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "lmstudio/") {
-		return NewLMStudioProvider(os.Getenv("LMSTUDIO_BASE_URL"), os.Getenv("LMSTUDIO_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "atomic/") {
-		return NewAtomicChatProvider(os.Getenv("ATOMIC_CHAT_BASE_URL"), os.Getenv("ATOMIC_CHAT_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "302ai/") {
-		return NewProvider302AI(os.Getenv("302AI_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "sap/") {
-		return NewSAPAIProvider(os.Getenv("SAP_AI_CORE_SERVICE_KEY"))
-	}
-
-	if strings.HasPrefix(model, "stackit/") {
-		return NewStackitProvider(os.Getenv("STACKIT_TOKEN"))
-	}
-
-	if strings.HasPrefix(model, "ovhcloud/") {
-		return NewOVHcloudProvider(os.Getenv("OVHCLOUD_API_KEY"))
-	}
-
-	if strings.HasPrefix(model, "scaleway/") {
-		return NewScalewayProvider(os.Getenv("SCALEWAY_API_KEY"))
-	}
-
-	defaultBaseURL := os.Getenv("LITELLM_BASE_URL")
-	if defaultBaseURL == "" {
-		defaultBaseURL = "http://localhost:4000"
-	}
-	return NewLiteLLMProvider(defaultBaseURL, os.Getenv("LITELLM_API_KEY"))
+	apiKey := os.Getenv(envVar)
+	return creator.create(providerID, baseURL, apiKey)
 }
 
 func NewProviderWithConfig(providerType, apiKey, baseURL string) Provider {
-	switch strings.ToLower(providerType) {
-	case "openai":
-		if baseURL == "" {
-			baseURL = "https://api.openai.com/v1"
-		}
-		p := NewOpenAIProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "anthropic":
-		if baseURL == "" {
-			baseURL = "https://api.anthropic.com/v1"
-		}
-		p := NewAnthropicProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "minimax":
-		if baseURL == "" {
-			baseURL = "https://api.minimax.chat/v1"
-		}
-		p := NewMinimaxProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "ollama":
-		if baseURL == "" {
-			baseURL = "http://localhost:11434"
-		}
-		return NewOllamaProvider(baseURL, apiKey)
-	case "groq":
-		if baseURL == "" {
-			baseURL = "https://api.groq.com/openai/v1"
-		}
-		p := NewGroqProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "perplexity":
-		if baseURL == "" {
-			baseURL = "https://api.perplexity.ai"
-		}
-		p := NewPerplexityProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "google", "gemini":
-		p := NewGoogleProvider(apiKey)
-		return p
-	case "cohere":
-		if baseURL == "" {
-			baseURL = "https://api.cohere.ai/v1"
-		}
-		p := NewCohereProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "mistral":
-		if baseURL == "" {
-			baseURL = "https://api.mistral.ai/v1"
-		}
-		p := NewMistralProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "togetherai":
-		if baseURL == "" {
-			baseURL = "https://api.together.xyz/v1"
-		}
-		p := NewTogetherAIProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "deepinfra":
-		if baseURL == "" {
-			baseURL = "https://api.deepinfra.com/v1"
-		}
-		p := NewDeepInfraProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "cerebras":
-		if baseURL == "" {
-			baseURL = "https://api.cerebras.ai/v1"
-		}
-		p := NewCerebrasProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "xai":
-		if baseURL == "" {
-			baseURL = "https://api.x.ai/v1"
-		}
-		p := NewxAIProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "alibaba", "qwen":
-		if baseURL == "" {
-			baseURL = "https://dashscope.aliyuncs.com"
-		}
-		p := NewAlibabaProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "huggingface":
-		if baseURL == "" {
-			baseURL = "https://api.endpoints.huggingface.cloud/v1"
-		}
-		p := NewHuggingFaceProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "deepseek":
-		if baseURL == "" {
-			baseURL = "https://api.deepseek.com/v1"
-		}
-		p := NewDeepSeekProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "fireworks":
-		if baseURL == "" {
-			baseURL = "https://api.fireworks.ai/v1"
-		}
-		p := NewFireworksProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "moonshot":
-		if baseURL == "" {
-			baseURL = "https://api.moonshot.cn/v1"
-		}
-		p := NewMoonshotProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "nebius":
-		if baseURL == "" {
-			baseURL = "https://api.nebius.ai/v1"
-		}
-		p := NewNebiusProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "openrouter":
-		if baseURL == "" {
-			baseURL = "https://openrouter.ai/api/v1"
-		}
-		p := NewOpenRouterProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "azure":
-		return NewAzureProvider(apiKey, baseURL)
-	case "bedrock", "aws":
-		return NewBedrockProvider(os.Getenv("AWS_REGION"), os.Getenv("AWS_PROFILE"), baseURL, apiKey, os.Getenv("AWS_SECRET_ACCESS_KEY"))
-	case "vertex":
-		return NewVertexProvider(os.Getenv("VERTEX_PROJECT_ID"), os.Getenv("VERTEX_LOCATION"), apiKey)
-	case "gitlab":
-		return NewGitLabProvider(apiKey)
-	case "github_copilot":
-		return NewGitHubCopilotProvider(apiKey)
-	case "vercel":
-		return NewVercelProvider(apiKey)
-	case "venice":
-		if baseURL == "" {
-			baseURL = "https://api.venice.ai/api/v1"
-		}
-		p := NewVeniceProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "zai":
-		if baseURL == "" {
-			baseURL = "https://api.z-ai.ai/v1"
-		}
-		p := NewZAIProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "zenmux":
-		if baseURL == "" {
-			baseURL = "https://api.zenmux.ai/v1"
-		}
-		p := NewZenMuxProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "baseten":
-		if baseURL == "" {
-			baseURL = "https://app.baseten.co/v1"
-		}
-		p := NewBasetenProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "cortecs":
-		if baseURL == "" {
-			baseURL = "https://api.cortecs.ai/v1"
-		}
-		p := NewCortecsProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "firmware":
-		if baseURL == "" {
-			baseURL = "https://api.firmware.ai/v1"
-		}
-		p := NewFirmwareProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "ionet":
-		if baseURL == "" {
-			baseURL = "https://api.ionet.ai/v1"
-		}
-		p := NewIonetProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "nvidia":
-		if baseURL == "" {
-			baseURL = "https://ai.api.nvidia.com/v1"
-		}
-		p := NewNVIDIAProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "ollamacloud":
-		if baseURL == "" {
-			baseURL = "https://cloud.ollama.ai"
-		}
-		p := NewOllamaCloudProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "cloudflare_gateway":
-		return NewCloudflareGatewayProvider(os.Getenv("CLOUDFLARE_ACCOUNT_ID"), os.Getenv("CLOUDFLARE_GATEWAY_ID"), apiKey)
-	case "cloudflare_workers":
-		return NewCloudflareWorkersProvider(os.Getenv("CLOUDFLARE_ACCOUNT_ID"), apiKey)
-	case "helicone":
-		if baseURL == "" {
-			baseURL = "https://ai-gateway.helicone.ai"
-		}
-		p := NewHeliconeProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "llamacpp":
-		if baseURL == "" {
-			baseURL = "http://127.0.0.1:8080/v1"
-		}
-		return NewLlamaCppProvider(baseURL, apiKey)
-	case "lmstudio":
-		if baseURL == "" {
-			baseURL = "http://127.0.0.1:1234/v1"
-		}
-		return NewLMStudioProvider(baseURL, apiKey)
-	case "atomic_chat":
-		if baseURL == "" {
-			baseURL = "http://127.0.0.1:1337/v1"
-		}
-		return NewAtomicChatProvider(baseURL, apiKey)
-	case "302ai":
-		if baseURL == "" {
-			baseURL = "https://api.302.ai/v1"
-		}
-		p := NewProvider302AI(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "sap_ai_core":
-		return NewSAPAIProvider(apiKey)
-	case "stackit":
-		return NewStackitProvider(apiKey)
-	case "ovhcloud":
-		if baseURL == "" {
-			baseURL = "https://endpoints.ai.cloud.ovh.net/v1"
-		}
-		p := NewOVHcloudProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	case "scaleway":
-		if baseURL == "" {
-			baseURL = "https://api.scaleway.ai/v1"
-		}
-		p := NewScalewayProvider(apiKey)
-		p.BaseURL = baseURL
-		return p
-	default:
-		if baseURL == "" {
-			baseURL = "http://localhost:4000"
-		}
-		return NewLiteLLMProvider(baseURL, apiKey)
+	providerType = strings.ToLower(providerType)
+
+	info, ok := GetProviderInfo(providerType)
+	ct := connectorOpenAICompatible
+	if ok {
+		ct = getConnectorType(info.ConnectorType)
 	}
+
+	switch providerType {
+	case "openai":
+		ct = connectorOpenAI
+	case "anthropic":
+		ct = connectorAnthropic
+	case "azure":
+		ct = connectorAzure
+	case "bedrock", "aws":
+		ct = connectorBedrock
+	case "ollama":
+		ct = connectorOllama
+	case "google", "gemini":
+		ct = connectorGoogle
+	case "vertex":
+		ct = connectorGoogleVertex
+	case "litellm", "unknown":
+		ct = connectorUnknown
+	}
+
+	initProviderCreators()
+	creator, ok := providerCreators[ct]
+	if !ok {
+		creator = providerCreators[connectorUnknown]
+	}
+
+	if baseURL == "" && ok && info.BaseURL != "" {
+		baseURL = info.BaseURL
+	}
+
+	return creator.create(providerType, baseURL, apiKey)
 }
 
 func GetModelProvider(model string) string {
@@ -620,6 +417,11 @@ func GetModelProvider(model string) string {
 	}
 	if strings.HasPrefix(model, "scaleway/") {
 		return "scaleway"
+	}
+
+	parts := strings.SplitN(model, "/", 2)
+	if len(parts) >= 2 {
+		return parts[0]
 	}
 
 	return "unknown"

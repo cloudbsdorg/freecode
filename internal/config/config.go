@@ -404,13 +404,26 @@ type ProviderConfig struct {
 }
 
 type ToolsConfig struct {
-	Bash     BashToolsConfig `mapstructure:"bash"`
-	Allowed  []string        `mapstructure:"allowed"`
-	Denied   []string        `mapstructure:"denied"`
-	MaxDepth int             `mapstructure:"max_depth"`
-	Timeout  int             `mapstructure:"timeout"`
-	ASTGrep  ASTGrepConfig   `mapstructure:"ast_grep"`
-	LSP      LSPConfig       `mapstructure:"lsp"`
+	Bash      BashToolsConfig   `mapstructure:"bash"`
+	Allowed   []string          `mapstructure:"allowed"`
+	Denied    []string          `mapstructure:"denied"`
+	MaxDepth  int               `mapstructure:"max_depth"`
+	Timeout   int               `mapstructure:"timeout"`
+	ASTGrep   ASTGrepConfig     `mapstructure:"ast_grep"`
+	LSP       LSPConfig         `mapstructure:"lsp"`
+	GitHub    GitHubToolsConfig  `mapstructure:"github"`
+	GitLab    GitLabToolsConfig  `mapstructure:"gitlab"`
+	ToolStates map[string]bool  `mapstructure:"tool_states"`
+}
+
+type GitHubToolsConfig struct {
+	Enabled bool  `mapstructure:"enabled"`
+	Token   string `mapstructure:"token"`
+}
+
+type GitLabToolsConfig struct {
+	Enabled bool  `mapstructure:"enabled"`
+	Token   string `mapstructure:"token"`
 }
 
 type BashToolsConfig struct {
@@ -543,6 +556,12 @@ func DefaultConfig() *Config {
 			Bash: BashToolsConfig{
 				Shell:   "/bin/bash",
 				Timeout: 60,
+			},
+			GitHub: GitHubToolsConfig{
+				Enabled: true,
+			},
+			GitLab: GitLabToolsConfig{
+				Enabled: true,
 			},
 		},
 		Session: SessionConfig{

@@ -11,6 +11,11 @@ import (
 
 type EditTool struct{}
 
+func init() {
+	Register("edit", func() Tool { return &EditTool{} })
+	Register("grep", func() Tool { return &GrepTool{} })
+}
+
 func NewEditTool() *EditTool {
 	return &EditTool{}
 }

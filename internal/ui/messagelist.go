@@ -179,44 +179,66 @@ func (m *MessageList) renderMessage(msg Message) string {
 
 	if len(msg.Parts) > 0 {
 		for _, part := range msg.Parts {
-			switch part.Type {
-			case "text":
-				content := part.Content
-				if len(content) > m.width-15 {
-					content = content[:m.width-18] + "..."
-				}
-				result.WriteString(lipgloss.NewStyle().Render(content))
-			case "reasoning":
-				content := part.Content
-				if len(content) > m.width-20 {
-					content = content[:m.width-23] + "..."
-				}
-				reasoningStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080")).Italic(true)
-				result.WriteString(reasoningStyle.Render("[Thinking: " + content + "]"))
-			case "tool":
-				toolStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#CE9178"))
-				if part.Tool != "" {
-					result.WriteString(toolStyle.Render("[Tool: " + part.Tool + "]"))
-				} else {
-					result.WriteString(toolStyle.Render("[Tool]"))
-				}
-			default:
-				content := part.Content
-				if len(content) > m.width-15 {
-					content = content[:m.width-18] + "..."
-				}
-				result.WriteString(lipgloss.NewStyle().Render(content))
-			}
+			partContent := RenderPart(part, m.width-10)
+			result.WriteString(partContent)
 		}
 	} else {
-		content := msg.Content
-		if len(content) > m.width-10 {
-			content = content[:m.width-13] + "..."
-		}
+		content := wordWrap(msg.Content, m.width-10)
 		result.WriteString(lipgloss.NewStyle().Render(content))
 	}
 
 	result.WriteString(timestampStr)
 	result.WriteString("\n")
+	return result.String()
+}
+
+func wordWrap(text string, width int) string {
+	if width <= 0 {
+		width = 80
+	}
+
+	var result strings.Builder
+	lines := strings.Split(text, "\n")
+
+	for lineIdx, line := range lines {
+		if lineIdx > 0 {
+			result.WriteString("\n")
+		}
+
+		if len(line) <= width {
+			result.WriteString(line)
+			continue
+		}
+
+		words := strings.Fields(line)
+		if len(words) == 0 {
+			continue
+		}
+
+		currentLine := ""
+		for _, word := range words {
+			if len(currentLine)+len(word)+1 <= width {
+				if currentLine != "" {
+					currentLine += " "
+				}
+				currentLine += word
+			} else {
+				if currentLine != "" {
+					result.WriteString(currentLine)
+					result.WriteString("\n")
+				}
+				for len(word) > width {
+					result.WriteString(word[:width])
+					result.WriteString("\n")
+					word = word[width:]
+				}
+				currentLine = word
+			}
+		}
+		if currentLine != "" {
+			result.WriteString(currentLine)
+		}
+	}
+
 	return result.String()
 }

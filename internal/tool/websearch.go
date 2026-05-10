@@ -11,6 +11,10 @@ import (
 
 type WebSearchTool struct{}
 
+func init() {
+	Register("websearch", func() Tool { return &WebSearchTool{} })
+}
+
 func NewWebSearchTool() *WebSearchTool {
 	return &WebSearchTool{}
 }

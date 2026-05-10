@@ -9,6 +9,10 @@ import (
 
 type WriteTool struct{}
 
+func init() {
+	Register("write", func() Tool { return &WriteTool{} })
+}
+
 func NewWriteTool() *WriteTool {
 	return &WriteTool{}
 }
