@@ -969,25 +969,7 @@ func (m *Model) renderHome() string {
 
 func (m *Model) renderSetup() string {
 	dialog := m.setupDialog.Render()
-	padding := (m.width - 70) / 2
-	if padding < 0 {
-		padding = 0
-	}
-	lines := strings.Split(dialog, "\n")
-	var s strings.Builder
-	startY := (m.height - 20) / 2
-	if startY < 0 {
-		startY = 0
-	}
-	for i := 0; i < startY; i++ {
-		s.WriteString("\n")
-	}
-	for _, line := range lines {
-		s.WriteString(strings.Repeat(" ", padding))
-		s.WriteString(line)
-		s.WriteString("\n")
-	}
-	return s.String()
+	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, dialog)
 }
 
 func (m *Model) renderSession() string {
