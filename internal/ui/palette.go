@@ -107,11 +107,13 @@ func (c *CommandPalette) HandleKey(msg tea.KeyMsg) bool {
 	case tea.KeyUp:
 		if c.selectedIdx > 0 {
 			c.selectedIdx--
+			return true
 		}
 
 	case tea.KeyDown:
 		if c.selectedIdx < len(c.filtered)-1 {
 			c.selectedIdx++
+			return true
 		}
 
 	case tea.KeyEnter:
