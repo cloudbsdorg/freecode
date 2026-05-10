@@ -83,6 +83,7 @@ func NewSetupDialog() *SetupDialog {
 			t.Colors = s.colors
 			t.Hidden = true
 			t.MaxLen = 100
+			t.Width = 60
 		},
 	)
 

@@ -55,6 +55,7 @@ type TextInput struct {
 	Placeholder string
 	Colors      Colors
 	MaxLen      int
+	Width       int
 	Hidden      bool
 	Cursor      int
 	Focused     bool
@@ -69,6 +70,7 @@ func NewTextInput(opts ...TextInputOption) *TextInput {
 		Placeholder: "",
 		Colors:      DefaultColors,
 		MaxLen:      0,
+		Width:       50,
 		Hidden:      false,
 		Cursor:      0,
 		Focused:     true,
@@ -77,6 +79,12 @@ func NewTextInput(opts ...TextInputOption) *TextInput {
 		opt(t)
 	}
 	return t
+}
+
+func TextInputWithWidth(width int) TextInputOption {
+	return func(t *TextInput) {
+		t.Width = width
+	}
 }
 
 func (t *TextInput) SetValue(value string) {
@@ -187,15 +195,6 @@ func (t *TextInput) Render() string {
 func (t *TextInput) RenderWithPrefix(prefix string) string {
 	display := t.RenderDisplay()
 
-	if len(display) > 50 {
-		headLen := 23
-		tailLen := 24
-		if headLen+tailLen > len(display) {
-			headLen = len(display) - tailLen
-		}
-		display = display[:headLen] + "..." + display[len(display)-tailLen:]
-	}
-
 	prefixStr := ""
 	if prefix != "" {
 		prefixStr = lipgloss.NewStyle().
@@ -203,7 +202,25 @@ func (t *TextInput) RenderWithPrefix(prefix string) string {
 			Render(prefix + " ")
 	}
 
+	displayWidth := t.Width - len(prefixStr) - 2
+	if displayWidth < 10 {
+		displayWidth = 10
+	}
+
+	if len(display) > displayWidth {
+		headLen := displayWidth/2 - 2
+		tailLen := displayWidth - headLen - 3
+		if headLen < 0 {
+			headLen = 0
+		}
+		if tailLen < 0 {
+			tailLen = 0
+		}
+		display = display[:headLen] + "..." + display[len(display)-tailLen:]
+	}
+
 	inputStyle := lipgloss.NewStyle().
+		Width(t.Width - len(prefixStr) - 2).
 		Foreground(lipgloss.Color(t.Colors.Text)).
 		Background(lipgloss.Color(t.Colors.BackgroundAlt)).
 		Padding(0, 1)
@@ -214,11 +231,7 @@ func (t *TextInput) RenderWithPrefix(prefix string) string {
 
 	before := display[:t.Cursor]
 	after := display[t.Cursor:]
-	return prefixStr + lipgloss.NewStyle().
-		Foreground(lipgloss.Color(t.Colors.Text)).
-		Background(lipgloss.Color(t.Colors.BackgroundAlt)).
-		Padding(0, 1).
-		Render(before + "_" + after)
+	return prefixStr + inputStyle.Render(before + "_" + after)
 }
 
 func (t *TextInput) RenderLabeled(label string) string {
