@@ -14,8 +14,10 @@ import (
 	"github.com/freecode/freecode/internal/agent"
 	"github.com/freecode/freecode/internal/args"
 	"github.com/freecode/freecode/internal/config"
+	"github.com/freecode/freecode/internal/renderer"
 	"github.com/freecode/freecode/internal/session"
 	"github.com/freecode/freecode/internal/tool"
+	"github.com/freecode/freecode/internal/ui/template"
 	"github.com/google/uuid"
 )
 
@@ -66,6 +68,7 @@ type Model struct {
 	currentSession    *session.Session
 	theme             Theme
 	themeName         string
+	templateEngine   *template.ResponsiveEngine[*renderer.BubbleRenderer]
 }
 
 type focusArea int
@@ -123,6 +126,7 @@ func NewModel(args args.Args) *Model {
 		engine:           engine,
 		theme:            DarkTheme(),
 		themeName:        "dark",
+		templateEngine:   template.NewResponsiveEngine[*renderer.BubbleRenderer](),
 	}
 
 	m.tabBar.AddTab("main", "main")
@@ -927,7 +931,7 @@ func (m *Model) View() string {
 
 	switch m.route {
 	case RouteHome:
-		return m.renderHome()
+		return m.renderHomeTemplate()
 	case RouteSession:
 		return m.renderSession()
 	case RouteSetup:
@@ -935,6 +939,49 @@ func (m *Model) View() string {
 	default:
 		return m.renderHome()
 	}
+}
+
+func (m *Model) renderHomeTemplate() string {
+	bubbleRenderer := renderer.NewBubbleRenderer(m.width, m.height)
+
+	bannerLines := strings.Split(m.banner, "\n")
+	bannerHeight := len(bannerLines)
+	startY := (m.height - bannerHeight - 5) / 2
+	if startY < 0 {
+		startY = 0
+	}
+
+	inputWidth := m.width / 2
+	if inputWidth < 40 {
+		inputWidth = 40
+	}
+	inputPadding := (m.width - inputWidth) / 2
+
+	bannerContent := strings.Join(bannerLines, "\n")
+
+	src := fmt.Sprintf(`<vbox>
+  <spacer height="%d" />
+  <text value="%s" />
+  <spacer height="1" />
+  <hbox>
+    <spacer width="%d" />
+    <input placeholder="Ask anything..." width="%d" />
+  </hbox>
+  <spacer flex="1" />
+  <text value="Ctrl+P: Command Palette | Ctrl+B: Toggle Sidebar | Ctrl+H: Home | Ctrl+Q: Quit" color="#606060" />
+</vbox>`, startY, strings.ReplaceAll(bannerContent, "\"", "`"), inputPadding, inputWidth)
+
+	output, err := m.templateEngine.RenderAt(src, m.width, m.height, bubbleRenderer)
+	if err != nil {
+		return m.renderHome()
+	}
+
+	paletteView := ""
+	if m.commandPalette.IsOpen() {
+		paletteView = m.commandPalette.RenderCentered(m.width, m.height)
+	}
+
+	return output + paletteView + m.statusBar.Render()
 }
 
 func (m *Model) renderToast() string {
