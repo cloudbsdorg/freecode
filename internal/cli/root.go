@@ -15,7 +15,7 @@ var (
 	cfgFile    string
 	yolo       bool
 	setupRun   bool
-	continue_  bool // 'continue' is reserved keyword
+	continue_  bool // 'continue' is a reserved keyword
 	tuiSession string
 	tuiAgent   string
 	tuiModel   string
