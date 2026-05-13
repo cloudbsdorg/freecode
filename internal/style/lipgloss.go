@@ -16,13 +16,13 @@ func (l LipglossStyle) Render(text string) string {
 	return l.s.Render(text)
 }
 
-func (l LipglossStyle) Foreground(color string) Style {
-	l.s = l.s.Foreground(lipgloss.Color(color))
+func (l LipglossStyle) Foreground(color lipgloss.Color) Style {
+	l.s = l.s.Foreground(color)
 	return l
 }
 
-func (l LipglossStyle) Background(color string) Style {
-	l.s = l.s.Background(lipgloss.Color(color))
+func (l LipglossStyle) Background(color lipgloss.Color) Style {
+	l.s = l.s.Background(color)
 	return l
 }
 
@@ -33,6 +33,16 @@ func (l LipglossStyle) Bold(_ ...bool) Style {
 
 func (l LipglossStyle) Italic(_ ...bool) Style {
 	l.s = l.s.Italic(true)
+	return l
+}
+
+func (l LipglossStyle) Reverse(_ ...bool) Style {
+	l.s = l.s.Reverse(true)
+	return l
+}
+
+func (l LipglossStyle) Underline(_ ...bool) Style {
+	l.s = l.s.Underline(true)
 	return l
 }
 
@@ -84,19 +94,40 @@ func (l LipglossStyle) MarginLeft(v int) Style {
 	return l
 }
 
-func (l LipglossStyle) BorderStyle(b Border) Style {
-	switch b.(type) {
-	case NormalBorder:
-		l.s = l.s.BorderStyle(lipgloss.NormalBorder())
-	case RoundedBorder:
-		l.s = l.s.BorderStyle(lipgloss.RoundedBorder())
-	case HiddenBorder:
-		l.s = l.s.BorderStyle(lipgloss.HiddenBorder())
-	}
+func (l LipglossStyle) BorderStyle(b lipgloss.Border) Style {
+	l.s = l.s.BorderStyle(b)
 	return l
 }
 
-func (l LipglossStyle) BorderForeground(color string) Style {
-	l.s = l.s.BorderForeground(lipgloss.Color(color))
+func (l LipglossStyle) BorderForeground(color lipgloss.Color) Style {
+	l.s = l.s.BorderForeground(color)
 	return l
+}
+
+func Color(s string) lipgloss.Color {
+	return lipgloss.Color(s)
+}
+
+func NormalBorder() lipgloss.Border {
+	return lipgloss.NormalBorder()
+}
+
+func RoundedBorder() lipgloss.Border {
+	return lipgloss.RoundedBorder()
+}
+
+func HiddenBorder() lipgloss.Border {
+	return lipgloss.HiddenBorder()
+}
+
+func Normal() lipgloss.Border {
+	return lipgloss.NormalBorder()
+}
+
+func Rounded() lipgloss.Border {
+	return lipgloss.RoundedBorder()
+}
+
+func Hidden() lipgloss.Border {
+	return lipgloss.HiddenBorder()
 }

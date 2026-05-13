@@ -4,32 +4,32 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
-var MessageContainerStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#1E1E1E")).
-	Foreground(lipgloss.Color("#E0E0E0")).
+var MessageContainerStyle = style.NewStyle().
+	Background(style.Color("#1E1E1E")).
+	Foreground(style.Color("#E0E0E0")).
 	Padding(1, 2)
 
-var UserMessageStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#4EC9B0")).
+var UserMessageStyle = style.NewStyle().
+	Foreground(style.Color("#4EC9B0")).
 	Bold(true)
 
-var AssistantMessageStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#DCDCAA"))
+var AssistantMessageStyle = style.NewStyle().
+	Foreground(style.Color("#DCDCAA"))
 
-var SystemMessageStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#808080")).
+var SystemMessageStyle = style.NewStyle().
+	Foreground(style.Color("#808080")).
 	Italic(true)
 
-var ToolMessageStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#CE9178")).
-	Background(lipgloss.Color("#2D2D2D")).
+var ToolMessageStyle = style.NewStyle().
+	Foreground(style.Color("#CE9178")).
+	Background(style.Color("#2D2D2D")).
 	Padding(0, 1)
 
-var TimestampStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#606060"))
+var TimestampStyle = style.NewStyle().
+	Foreground(style.Color("#606060"))
 
 type Message struct {
 	ID        string
@@ -152,21 +152,21 @@ func (m *MessageList) Render() string {
 
 func (m *MessageList) renderMessage(msg Message) string {
 	roleLabel := ""
-	style := UserMessageStyle
+	labelStyle := UserMessageStyle
 
 	switch msg.Role {
 	case "user":
 		roleLabel = "You"
-		style = UserMessageStyle
+		labelStyle = UserMessageStyle
 	case "assistant":
 		roleLabel = "Assistant"
-		style = AssistantMessageStyle
+		labelStyle = AssistantMessageStyle
 	case "system":
 		roleLabel = "System"
-		style = SystemMessageStyle
+		labelStyle = SystemMessageStyle
 	case "tool":
 		roleLabel = "Tool"
-		style = ToolMessageStyle
+		labelStyle = ToolMessageStyle
 	}
 
 	var timestampStr string
@@ -175,7 +175,7 @@ func (m *MessageList) renderMessage(msg Message) string {
 	}
 
 	var result strings.Builder
-	result.WriteString(style.Render(roleLabel) + ": ")
+	result.WriteString(labelStyle.Render(roleLabel) + ": ")
 
 	if len(msg.Parts) > 0 {
 		for _, part := range msg.Parts {
@@ -184,7 +184,7 @@ func (m *MessageList) renderMessage(msg Message) string {
 		}
 	} else {
 		content := wordWrap(msg.Content, m.width-10)
-		result.WriteString(lipgloss.NewStyle().Render(content))
+		result.WriteString(style.NewStyle().Render(content))
 	}
 
 	result.WriteString(timestampStr)

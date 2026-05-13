@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 
 	"github.com/freecode/freecode/internal/ui/dialog"
 )
@@ -219,11 +219,11 @@ func (s *SetupDialog) Render() string {
 	}
 
 	content := s.renderContent()
-	return lipgloss.NewStyle().
-		Background(lipgloss.Color(s.colors.Background)).
+	return style.NewStyle().
+		Background(style.Color(s.colors.Background)).
 		Width(s.width).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(s.colors.Border)).
+		BorderStyle(style.RoundedBorder()).
+		BorderForeground(style.Color(s.colors.Border)).
 		Padding(1).
 		Render(content)
 }
@@ -267,11 +267,11 @@ func (s *SetupDialog) renderWelcome() string {
 	}
 
 	content := strings.Join(lines, "\n")
-	return lipgloss.NewStyle().
+	return style.NewStyle().
 		Width(s.width).
-		Background(lipgloss.Color(s.colors.Background)).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Background(style.Color(s.colors.Background)).
+		BorderStyle(style.RoundedBorder()).
+		BorderForeground(style.Color(s.colors.Border)).
 		Padding(1).
 		Render(content)
 }
@@ -303,11 +303,11 @@ func (s *SetupDialog) renderAPIKeyInput() string {
 	}
 
 	content := strings.Join(lines, "\n")
-	return lipgloss.NewStyle().
+	return style.NewStyle().
 		Width(s.width).
-		Background(lipgloss.Color(s.colors.Background)).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Background(style.Color(s.colors.Background)).
+		BorderStyle(style.RoundedBorder()).
+		BorderForeground(style.Color(s.colors.Border)).
 		Padding(1).
 		Render(content)
 }
@@ -325,11 +325,11 @@ func (s *SetupDialog) renderDone() string {
 	}
 
 	content := strings.Join(lines, "\n")
-	return lipgloss.NewStyle().
+	return style.NewStyle().
 		Width(s.width).
-		Background(lipgloss.Color(s.colors.Background)).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Background(style.Color(s.colors.Background)).
+		BorderStyle(style.RoundedBorder()).
+		BorderForeground(style.Color(s.colors.Border)).
 		Padding(1).
 		Render(content)
 }

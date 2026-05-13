@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type ToolResultComponent struct {
@@ -72,8 +72,8 @@ func (t *ToolResultComponent) Render() string {
 
 	if t.truncated {
 		result.WriteString("\n")
-		result.WriteString(lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#808080")).
+		result.WriteString(style.NewStyle().
+			Foreground(style.Color("#808080")).
 			Render("... (output truncated)"))
 	}
 

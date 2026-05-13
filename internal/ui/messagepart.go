@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 const (
@@ -15,49 +15,49 @@ const (
 )
 
 var (
-	TextStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#E0E0E0"))
+	TextStyle = style.NewStyle().
+		Foreground(style.Color("#E0E0E0"))
 
-	ReasoningStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#808080")).
+	ReasoningStyle = style.NewStyle().
+		Foreground(style.Color("#808080")).
 		Italic(true)
 
-	ThinkingPrefixStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#6A9955")).
+	ThinkingPrefixStyle = style.NewStyle().
+		Foreground(style.Color("#6A9955")).
 		Bold(true)
 
-	ThinkingContentStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#9CDCFE"))
+	ThinkingContentStyle = style.NewStyle().
+		Foreground(style.Color("#9CDCFE"))
 
-	ToolCallStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#DCDCAA"))
+	ToolCallStyle = style.NewStyle().
+		Foreground(style.Color("#DCDCAA"))
 
-	ToolRunningStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#4EC9B0"))
+	ToolRunningStyle = style.NewStyle().
+		Foreground(style.Color("#4EC9B0"))
 
-	ToolErrorStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#F14C4C"))
+	ToolErrorStyle = style.NewStyle().
+		Foreground(style.Color("#F14C4C"))
 
-	ToolSuccessStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#4EC9B0"))
+	ToolSuccessStyle = style.NewStyle().
+		Foreground(style.Color("#4EC9B0"))
 
-	ToolArgsStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#9CDCFE"))
+	ToolArgsStyle = style.NewStyle().
+		Foreground(style.Color("#9CDCFE"))
 
-	InlineCodeStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#CE9178"))
+	InlineCodeStyle = style.NewStyle().
+		Foreground(style.Color("#CE9178"))
 
-	ContextGroupStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#C586C0"))
+	ContextGroupStyle = style.NewStyle().
+		Foreground(style.Color("#C586C0"))
 
-	DiffAddStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#4EC9B0"))
+	DiffAddStyle = style.NewStyle().
+		Foreground(style.Color("#4EC9B0"))
 
-	DiffRemoveStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#F14C4C"))
+	DiffRemoveStyle = style.NewStyle().
+		Foreground(style.Color("#F14C4C"))
 
-	DiffHeaderStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#808080"))
+	DiffHeaderStyle = style.NewStyle().
+		Foreground(style.Color("#808080"))
 )
 
 func RenderPart(part MessagePart, width int) string {
@@ -176,8 +176,8 @@ func renderCodeBlock(code, lang string, width int) string {
 	lines := strings.Split(code, "\n")
 	var result strings.Builder
 
-	borderStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#3A3A3A"))
+	borderStyle := style.NewStyle().
+		Foreground(style.Color("#3A3A3A"))
 
 	result.WriteString(borderStyle.Render("┌─"))
 	result.WriteString(InlineCodeStyle.Render(lang))
@@ -241,7 +241,7 @@ func renderDiffBlock(code, lang string, width int) string {
 
 	var result strings.Builder
 
-	borderStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#3A3A3A"))
+	borderStyle := style.NewStyle().Foreground(style.Color("#3A3A3A"))
 
 	result.WriteString(borderStyle.Render("┌─"))
 	result.WriteString(InlineCodeStyle.Render(lang))

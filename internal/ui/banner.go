@@ -3,12 +3,12 @@ package ui
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 	"github.com/common-nighthawk/go-figure"
 )
 
-var BannerStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#22C55E")).
+var BannerStyle = style.NewStyle().
+	Foreground(style.Color("#22C55E")).
 	Bold(true)
 
 func GetBanner() string {

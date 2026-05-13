@@ -3,23 +3,23 @@ package ui
 import (
 	"fmt"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
-var TabBarStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#2D2D2D")).
-	Foreground(lipgloss.Color("#FFFFFF")).
+var TabBarStyle = style.NewStyle().
+	Background(style.Color("#2D2D2D")).
+	Foreground(style.Color("#FFFFFF")).
 	Padding(0, 1)
 
-var ActiveTabStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#007ACC")).
-	Foreground(lipgloss.Color("#FFFFFF")).
+var ActiveTabStyle = style.NewStyle().
+	Background(style.Color("#007ACC")).
+	Foreground(style.Color("#FFFFFF")).
 	Bold(true).
 	Padding(0, 1)
 
-var InactiveTabStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#3D3D3D")).
-	Foreground(lipgloss.Color("#808080")).
+var InactiveTabStyle = style.NewStyle().
+	Background(style.Color("#3D3D3D")).
+	Foreground(style.Color("#808080")).
 	Padding(0, 1)
 
 type TabBarComponent struct {
@@ -120,9 +120,9 @@ func (t *TabBarComponent) Render() string {
 
 	newTabStr := InactiveTabStyle.Render(newTabButton)
 
-	totalWidth := lipgloss.Width(tabStr) + lipgloss.Width(newTabStr)
+	totalWidth := len(tabStr) + len(newTabStr)
 	if totalWidth > t.width && t.width > 0 {
-		availPerTab := (t.width - lipgloss.Width(newTabStr)) / len(t.tabs)
+		availPerTab := (t.width - len(newTabStr)) / len(t.tabs)
 		if availPerTab < 6 {
 			availPerTab = 6
 		}

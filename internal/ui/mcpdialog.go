@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type MCPServer struct {
@@ -93,9 +93,9 @@ func (m *MCPDialog) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#1E1E1E")).
-		Border(lipgloss.HiddenBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#1E1E1E")).
+		BorderStyle(style.HiddenBorder()).
 		Width(m.width)
 
 	return dialogStyle.Render(m.renderContent())
@@ -114,8 +114,8 @@ func (m *MCPDialog) renderContent() string {
 }
 
 func (m *MCPDialog) renderHeader() string {
-	return lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#E0E0E0")).
+	return style.NewStyle().
+		Foreground(style.Color("#E0E0E0")).
 		Bold(true).
 		Render("MCP Servers")
 }
@@ -124,7 +124,7 @@ func (m *MCPDialog) renderServers() []string {
 	var lines []string
 
 	if len(m.servers) == 0 {
-		emptyStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+		emptyStyle := style.NewStyle().Foreground(style.Color("#808080"))
 		lines = append(lines, "  "+emptyStyle.Render("No MCP servers configured"))
 		lines = append(lines, "")
 		lines = append(lines, "  "+emptyStyle.Render("Configure servers in ~/.config/freecode/mcp.json"))
@@ -142,22 +142,22 @@ func (m *MCPDialog) renderServer(server MCPServer, idx int) string {
 	selected := idx == m.selected
 	prefix := "  "
 	if selected {
-		prefix = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFCC00")).
+		prefix = style.NewStyle().
+			Foreground(style.Color("#FFCC00")).
 			Render("▶")
 	}
 
-	var statusStyle lipgloss.Style
+	var statusStyle style.Style
 	status := "○"
 	if server.Enabled {
 		status = "●"
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#4EC9B0"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#4EC9B0"))
 	} else {
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#808080"))
 	}
 
-	nameStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
-	urlStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	nameStyle := style.NewStyle().Foreground(style.Color("#E0E0E0"))
+	urlStyle := style.NewStyle().Foreground(style.Color("#808080"))
 
 	line := prefix + " " + statusStyle.Render(status) + " " + nameStyle.Render(server.Name)
 	if server.URL != "" {
@@ -168,6 +168,6 @@ func (m *MCPDialog) renderServer(server MCPServer, idx int) string {
 }
 
 func (m *MCPDialog) renderHints() string {
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	hintStyle := style.NewStyle().Foreground(style.Color("#808080"))
 	return hintStyle.Render("↑↓ select  enter toggle  esc close")
 }

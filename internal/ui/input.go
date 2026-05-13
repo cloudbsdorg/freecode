@@ -2,7 +2,7 @@ package ui
 
 import (
 	"github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type InputHandler struct{}
@@ -116,26 +116,26 @@ func (h *InputHandler) Handle(msg tea.KeyMsg, state *InputState) {
 
 func (h *InputHandler) Render(state *InputState) string {
 	if !state.Focused && state.Value == "" {
-		return lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#808080")).
+		return style.NewStyle().
+			Foreground(style.Color("#808080")).
 			Render(state.Placeholder)
 	}
 
 	before := state.Value[:state.Cursor]
 	after := state.Value[state.Cursor:]
 
-	cursor := lipgloss.NewStyle().
+	cursor := style.NewStyle().
 		Reverse(true).
 		Render(" ")
 
 	if state.CursorMode == CursorModeUnderline {
-		cursor = lipgloss.NewStyle().
+		cursor = style.NewStyle().
 			Underline(true).
 			Render(" ")
 	} else if state.CursorMode == CursorModeBar {
-		cursor = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFFFFF")).
-			Background(lipgloss.Color("#007ACC")).
+		cursor = style.NewStyle().
+			Foreground(style.Color("#FFFFFF")).
+			Background(style.Color("#007ACC")).
 			Render(" ")
 	}
 

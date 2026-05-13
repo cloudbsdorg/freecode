@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 	"github.com/freecode/freecode/internal/session"
 	"github.com/freecode/freecode/internal/ui/dialog"
 )
@@ -116,12 +116,12 @@ func (s *SessionReviewDialog) Render() string {
 	}
 
 	content := strings.Join(lines, "\n")
-	return lipgloss.NewStyle().
+	return style.NewStyle().
 		Width(s.width).
 		Height(s.height).
-		Background(lipgloss.Color(s.colors.Background)).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Background(style.Color(s.colors.Background)).
+		BorderStyle(style.RoundedBorder()).
+		BorderForeground(style.Color(s.colors.Border)).
 		Padding(1).
 		Render(content)
 }

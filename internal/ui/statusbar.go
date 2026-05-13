@@ -3,24 +3,24 @@ package ui
 import (
 	"fmt"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
-var StatusBarStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#2D2D2D")).
-	Foreground(lipgloss.Color("#808080")).
+var StatusBarStyle = style.NewStyle().
+	Background(style.Color("#2D2D2D")).
+	Foreground(style.Color("#808080")).
 	Height(1).
 	Width(100).
 	Padding(0, 1)
 
-var StatusBarActiveStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#4EC9B0"))
+var StatusBarActiveStyle = style.NewStyle().
+	Foreground(style.Color("#4EC9B0"))
 
-var StatusBarWarningStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#FFCC00"))
+var StatusBarWarningStyle = style.NewStyle().
+	Foreground(style.Color("#FFCC00"))
 
-var StatusBarErrorStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#F44747"))
+var StatusBarErrorStyle = style.NewStyle().
+	Foreground(style.Color("#F44747"))
 
 type StatusBar struct {
 	width       int
@@ -106,7 +106,7 @@ func (s *StatusBar) Render() string {
 
 func (s *StatusBar) connectionIndicator() string {
 	status := s.connectionStatus
-	var style lipgloss.Style
+	var style style.Style
 	switch status {
 	case "connected":
 		style = StatusBarActiveStyle

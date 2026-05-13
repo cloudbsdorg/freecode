@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type PermissionRequest struct {
@@ -110,9 +110,9 @@ func (p *PermissionDialog) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#1E1E1E")).
-		Border(lipgloss.HiddenBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#1E1E1E")).
+		BorderStyle(style.HiddenBorder()).
 		Width(p.width)
 
 	stage := p.state.Stage
@@ -178,8 +178,8 @@ func (p *PermissionDialog) renderRejectStage() string {
 }
 
 func (p *PermissionDialog) renderHeader(title string) string {
-	warningStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FFCC00"))
-	textStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
+	warningStyle := style.NewStyle().Foreground(style.Color("#FFCC00"))
+	textStyle := style.NewStyle().Foreground(style.Color("#E0E0E0"))
 	return warningStyle.Render("△") + " " + textStyle.Render(title)
 }
 
@@ -278,9 +278,9 @@ func (p *PermissionDialog) renderInput(value string) string {
 	if value == "" {
 		value = ""
 	}
-	return lipgloss.NewStyle().
-		Background(lipgloss.Color("#3C3C3C")).
-		Foreground(lipgloss.Color("#E0E0E0")).
+	return style.NewStyle().
+		Background(style.Color("#3C3C3C")).
+		Foreground(style.Color("#E0E0E0")).
 		Padding(0, 1).
 		Render(value + "_")
 }
@@ -294,12 +294,12 @@ func (p *PermissionDialog) renderDiff(diff string) string {
 		isRemoved := strings.HasPrefix(line, "-")
 
 		if isAdded {
-			result = append(result, lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#4EC9B0")).
+			result = append(result, style.NewStyle().
+				Foreground(style.Color("#4EC9B0")).
 				Render("+ "+trimmed))
 		} else if isRemoved {
-			result = append(result, lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#F44747")).
+			result = append(result, style.NewStyle().
+				Foreground(style.Color("#F44747")).
 				Render("- "+trimmed))
 		} else {
 			result = append(result, "  "+line)
@@ -309,14 +309,14 @@ func (p *PermissionDialog) renderDiff(diff string) string {
 }
 
 func (p *PermissionDialog) renderMuted(text string) string {
-	return lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#808080")).
+	return style.NewStyle().
+		Foreground(style.Color("#808080")).
 		Render(text)
 }
 
 func (p *PermissionDialog) renderHint(text string) string {
-	return lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#808080")).
+	return style.NewStyle().
+		Foreground(style.Color("#808080")).
 		Render(text)
 }
 

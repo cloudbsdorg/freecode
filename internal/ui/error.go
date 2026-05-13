@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type ErrorHandler interface {
@@ -173,9 +173,9 @@ func (e *ErrorBoundary) Render() string {
 }
 
 func (e *ErrorBoundary) renderErrorDialog() string {
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#1E1E1E")).
-		Border(lipgloss.HiddenBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#1E1E1E")).
+		BorderStyle(style.HiddenBorder()).
 		Width(e.width).
 		Height(e.height)
 
@@ -197,8 +197,8 @@ func (e *ErrorBoundary) renderErrorContent() string {
 }
 
 func (e *ErrorBoundary) renderHeader() string {
-	headerStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#F44747")).
+	headerStyle := style.NewStyle().
+		Foreground(style.Color("#F44747")).
 		Bold(true)
 	return headerStyle.Render("⚠ Error")
 }
@@ -210,7 +210,7 @@ func (e *ErrorBoundary) renderErrorInfo() []string {
 		return lines
 	}
 
-	errorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
+	errorStyle := style.NewStyle().Foreground(style.Color("#E0E0E0"))
 	lines = append(lines, "  An error occurred:")
 	lines = append(lines, "")
 
@@ -246,8 +246,8 @@ func (e *ErrorBoundary) renderActions() []string {
 	var lines []string
 
 	if e.autoRecover && e.recovering {
-		recoveringStyle := lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#4EC9B0"))
+		recoveringStyle := style.NewStyle().
+			Foreground(style.Color("#4EC9B0"))
 		remaining := time.Until(e.autoRecoverAt)
 		if remaining > 0 {
 			lines = append(lines, recoveringStyle.Render(fmt.Sprintf("  Auto-recovering in %ds...", int(remaining.Seconds()))))
@@ -260,7 +260,7 @@ func (e *ErrorBoundary) renderActions() []string {
 }
 
 func (e *ErrorBoundary) renderHints() string {
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	hintStyle := style.NewStyle().Foreground(style.Color("#808080"))
 	return hintStyle.Render("  r: retry  d: dismiss  c: continue")
 }
 

@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type TimelineNode struct {
@@ -213,9 +213,9 @@ func (t *TimelineDialog) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#1E1E1E")).
-		Border(lipgloss.RoundedBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#1E1E1E")).
+		BorderStyle(style.RoundedBorder()).
 		Width(t.width).
 		Height(t.height)
 
@@ -237,16 +237,16 @@ func (t *TimelineDialog) renderContent() string {
 }
 
 func (t *TimelineDialog) renderHeader() string {
-	headerStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#FFFFFF")).
+	headerStyle := style.NewStyle().
+		Foreground(style.Color("#FFFFFF")).
 		Bold(true)
 	return headerStyle.Render("Session Timeline")
 }
 
 func (t *TimelineDialog) renderFilter() string {
-	filterStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#3C3C3C")).
-		Foreground(lipgloss.Color("#E0E0E0")).
+	filterStyle := style.NewStyle().
+		Background(style.Color("#3C3C3C")).
+		Foreground(style.Color("#E0E0E0")).
 		Padding(0, 1)
 	placeholder := "Filter by title, agent, or model..."
 	if t.filter != "" {
@@ -259,7 +259,7 @@ func (t *TimelineDialog) renderTimeline() []string {
 	var lines []string
 
 	if len(t.filtered) == 0 {
-		noSessionsStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+		noSessionsStyle := style.NewStyle().Foreground(style.Color("#808080"))
 		lines = append(lines, "  "+noSessionsStyle.Render("No sessions found"))
 		return lines
 	}
@@ -279,10 +279,10 @@ func (t *TimelineDialog) renderTimeline() []string {
 
 	totalVisible := t.scrollOffset + maxVisible
 	if totalVisible < len(t.filtered) {
-		moreStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#606060"))
+		moreStyle := style.NewStyle().Foreground(style.Color("#606060"))
 		lines = append(lines, "  "+moreStyle.Render(fmt.Sprintf("▼ %d more sessions", len(t.filtered)-totalVisible)))
 	} else if t.scrollOffset > 0 {
-		moreStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#606060"))
+		moreStyle := style.NewStyle().Foreground(style.Color("#606060"))
 		lines = append(lines, "  "+moreStyle.Render(fmt.Sprintf("▲ %d hidden", t.scrollOffset)))
 	}
 
@@ -299,18 +299,18 @@ func (t *TimelineDialog) renderNode(node *TimelineNode, selected bool) string {
 		branchChar = "│"
 	}
 
-	var contentStyle lipgloss.Style
+	var contentStyle style.Style
 	if selected {
-		contentStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color("#007ACC")).
-			Foreground(lipgloss.Color("#FFFFFF"))
+		contentStyle = style.NewStyle().
+			Background(style.Color("#007ACC")).
+			Foreground(style.Color("#FFFFFF"))
 	} else {
-		contentStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#E0E0E0"))
+		contentStyle = style.NewStyle().
+			Foreground(style.Color("#E0E0E0"))
 	}
 
 	ts := formatTimestamp(node.Timestamp)
-	tsStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#606060"))
+	tsStyle := style.NewStyle().Foreground(style.Color("#606060"))
 
 	title := node.Title
 	if len(title) > 40 {
@@ -318,15 +318,15 @@ func (t *TimelineDialog) renderNode(node *TimelineNode, selected bool) string {
 	}
 
 	msgCount := fmt.Sprintf("%d msgs", node.MessageCount)
-	msgStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	msgStyle := style.NewStyle().Foreground(style.Color("#808080"))
 
-	metaStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#606060"))
+	metaStyle := style.NewStyle().Foreground(style.Color("#606060"))
 	meta := fmt.Sprintf("%s · %s", node.Agent, node.Model)
 
 	forkIndicator := ""
 	if node.IsFork {
-		forkStyle := lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFCC00")).
+		forkStyle := style.NewStyle().
+			Foreground(style.Color("#FFCC00")).
 			Bold(true)
 		forkIndicator = " " + forkStyle.Render("FORK")
 	}
@@ -351,10 +351,10 @@ func (t *TimelineDialog) renderNode(node *TimelineNode, selected bool) string {
 }
 
 func (t *TimelineDialog) renderFooter() string {
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	hintStyle := style.NewStyle().Foreground(style.Color("#808080"))
 
 	if t.preview != nil {
-		previewStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#4EC9B0"))
+		previewStyle := style.NewStyle().Foreground(style.Color("#4EC9B0"))
 		return hintStyle.Render("↑↓ navigate  enter select  f fork  esc close  | Preview: ") +
 			previewStyle.Render(t.preview.Title)
 	}
@@ -486,9 +486,9 @@ func (f *ForkDialog) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#1E1E1E")).
-		Border(lipgloss.RoundedBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#1E1E1E")).
+		BorderStyle(style.RoundedBorder()).
 		Width(f.width).
 		Height(f.height)
 
@@ -512,11 +512,11 @@ func (f *ForkDialog) renderContent() string {
 }
 
 func (f *ForkDialog) renderHeader() string {
-	headerStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#FFFFFF")).
+	headerStyle := style.NewStyle().
+		Foreground(style.Color("#FFFFFF")).
 		Bold(true)
-	forkIcon := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#FFCC00")).
+	forkIcon := style.NewStyle().
+		Foreground(style.Color("#FFCC00")).
 		Render("⎇")
 	return headerStyle.Render(forkIcon + " Fork Session")
 }
@@ -526,8 +526,8 @@ func (f *ForkDialog) renderSessionInfo() string {
 		return ""
 	}
 
-	infoStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
-	contentStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
+	infoStyle := style.NewStyle().Foreground(style.Color("#808080"))
+	contentStyle := style.NewStyle().Foreground(style.Color("#E0E0E0"))
 
 	var b strings.Builder
 	b.WriteString("  ")
@@ -551,10 +551,10 @@ func (f *ForkDialog) renderSessionInfo() string {
 }
 
 func (f *ForkDialog) renderNameInput() string {
-	labelStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
-	inputBgStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#3C3C3C")).
-		Foreground(lipgloss.Color("#E0E0E0"))
+	labelStyle := style.NewStyle().Foreground(style.Color("#808080"))
+	inputBgStyle := style.NewStyle().
+		Background(style.Color("#3C3C3C")).
+		Foreground(style.Color("#E0E0E0"))
 
 	var b strings.Builder
 	b.WriteString("  ")
@@ -569,9 +569,9 @@ func (f *ForkDialog) renderNameInput() string {
 	if f.confirmFocused {
 		b.WriteString(inputBgStyle.Render(" "))
 	} else {
-		cursorBg := lipgloss.NewStyle().
-			Background(lipgloss.Color("#007ACC")).
-			Foreground(lipgloss.Color("#FFFFFF"))
+		cursorBg := style.NewStyle().
+			Background(style.Color("#007ACC")).
+			Foreground(style.Color("#FFFFFF"))
 		if f.cursorPos >= len(f.newSessionName) {
 			b.WriteString(cursorBg.Render(" "))
 		} else {
@@ -589,17 +589,17 @@ func (f *ForkDialog) renderNameInput() string {
 }
 
 func (f *ForkDialog) renderButtons() string {
-	cancelStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#E0E0E0"))
-	confirmStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#FFFFFF"))
+	cancelStyle := style.NewStyle().
+		Foreground(style.Color("#E0E0E0"))
+	confirmStyle := style.NewStyle().
+		Foreground(style.Color("#FFFFFF"))
 
 	if f.confirmFocused {
-		cancelStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#808080"))
-		confirmStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color("#007ACC")).
-			Foreground(lipgloss.Color("#FFFFFF")).
+		cancelStyle = style.NewStyle().
+			Foreground(style.Color("#808080"))
+		confirmStyle = style.NewStyle().
+			Background(style.Color("#007ACC")).
+			Foreground(style.Color("#FFFFFF")).
 			Bold(true)
 	}
 
@@ -610,6 +610,6 @@ func (f *ForkDialog) renderButtons() string {
 }
 
 func (f *ForkDialog) renderHints() string {
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#606060"))
+	hintStyle := style.NewStyle().Foreground(style.Color("#606060"))
 	return hintStyle.Render("←→ move cursor  backspace delete  tab toggle  enter confirm  esc cancel")
 }

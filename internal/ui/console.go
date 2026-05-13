@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type LogLevel string
@@ -114,9 +114,9 @@ func (c *ConsolePanel) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#0D0D0D")).
-		Border(lipgloss.HiddenBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#0D0D0D")).
+		BorderStyle(style.HiddenBorder()).
 		Width(c.width).
 		Height(c.height)
 
@@ -133,12 +133,12 @@ func (c *ConsolePanel) renderContent() string {
 }
 
 func (c *ConsolePanel) renderHeader() string {
-	headerStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#E0E0E0")).
-		Background(lipgloss.Color("#2D2D2D")).
+	headerStyle := style.NewStyle().
+		Foreground(style.Color("#E0E0E0")).
+		Background(style.Color("#2D2D2D")).
 		Padding(0, 1)
 
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	hintStyle := style.NewStyle().Foreground(style.Color("#808080"))
 	return headerStyle.Render("Console") + " " + hintStyle.Render("esc to close")
 }
 
@@ -146,7 +146,7 @@ func (c *ConsolePanel) renderLogs() []string {
 	var lines []string
 
 	if len(c.logs) == 0 {
-		emptyStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+		emptyStyle := style.NewStyle().Foreground(style.Color("#808080"))
 		lines = append(lines, emptyStyle.Render("  (no logs)"))
 		return lines
 	}
@@ -168,26 +168,26 @@ func (c *ConsolePanel) renderLogs() []string {
 
 func (c *ConsolePanel) renderEntry(entry LogEntry) string {
 	timeStr := entry.Timestamp.Format("15:04:05.000")
-	timeStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#606060"))
+	timeStyle := style.NewStyle().Foreground(style.Color("#606060"))
 
-	var levelStyle lipgloss.Style
+	var levelStyle style.Style
 	var levelStr string
 	switch entry.Level {
 	case LogLevelInfo:
-		levelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#4EC9B0"))
+		levelStyle = style.NewStyle().Foreground(style.Color("#4EC9B0"))
 		levelStr = "INFO"
 	case LogLevelWarn:
-		levelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#DCDCAA"))
+		levelStyle = style.NewStyle().Foreground(style.Color("#DCDCAA"))
 		levelStr = "WARN"
 	case LogLevelError:
-		levelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#F44747"))
+		levelStyle = style.NewStyle().Foreground(style.Color("#F44747"))
 		levelStr = "ERROR"
 	case LogLevelDebug:
-		levelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+		levelStyle = style.NewStyle().Foreground(style.Color("#808080"))
 		levelStr = "DEBUG"
 	}
 
-	msgStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
+	msgStyle := style.NewStyle().Foreground(style.Color("#E0E0E0"))
 
 	return timeStyle.Render(timeStr) + " " + levelStyle.Render(levelStr) + " " + msgStyle.Render(entry.Message)
 }

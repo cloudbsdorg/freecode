@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type ToolState struct {
@@ -80,18 +80,18 @@ func (t *ToolCallComponent) Render() string {
 func (t *ToolCallComponent) renderTool(tool ToolState, selected bool) string {
 	var result strings.Builder
 
-	borderStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#404040"))
+	borderStyle := style.NewStyle().
+		Foreground(style.Color("#404040"))
 
 	if selected {
-		borderStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#4EC9B0"))
+		borderStyle = style.NewStyle().
+			Foreground(style.Color("#4EC9B0"))
 	}
 
 	result.WriteString(borderStyle.Render("┌─"))
 
-	nameStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#DCDCAA"))
+	nameStyle := style.NewStyle().
+		Foreground(style.Color("#DCDCAA"))
 	if selected {
 		nameStyle = nameStyle.Bold(true)
 	}
@@ -192,15 +192,15 @@ func (c *CollapsibleView) Render() string {
 }
 
 func (c *CollapsibleView) renderCollapsed() string {
-	return lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#808080")).
+	return style.NewStyle().
+		Foreground(style.Color("#808080")).
 		Render("▶ " + c.header + " (click to expand)")
 }
 
 func (c *CollapsibleView) renderOpen() string {
 	var result strings.Builder
-	result.WriteString(lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#808080")).
+	result.WriteString(style.NewStyle().
+		Foreground(style.Color("#808080")).
 		Render("▼ " + c.header))
 	result.WriteString("\n")
 	result.WriteString(c.content)

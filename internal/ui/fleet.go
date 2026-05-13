@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 	"github.com/freecode/freecode/internal/controlplane"
 )
 
@@ -186,9 +186,9 @@ func (f *FleetPanel) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#0D1117")).
-		Border(lipgloss.HiddenBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#0D1117")).
+		BorderStyle(style.HiddenBorder()).
 		Width(f.width).
 		Height(f.height)
 
@@ -214,9 +214,9 @@ func (f *FleetPanel) renderContent() string {
 }
 
 func (f *FleetPanel) renderHeader() string {
-	headerStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#E0E0E0")).
-		Background(lipgloss.Color("#161B22")).
+	headerStyle := style.NewStyle().
+		Foreground(style.Color("#E0E0E0")).
+		Background(style.Color("#161B22")).
 		Padding(0, 1).
 		Bold(true)
 
@@ -224,25 +224,25 @@ func (f *FleetPanel) renderHeader() string {
 	tasksTab := "Tasks"
 
 	if f.view == "agents" {
-		agentsTab = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#58A6FF")).
-			Background(lipgloss.Color("#21262D")).
+		agentsTab = style.NewStyle().
+			Foreground(style.Color("#58A6FF")).
+			Background(style.Color("#21262D")).
 			Padding(0, 1).
 			Render("● Agents")
 		tasksTab = "  Tasks  "
 	} else {
-		tasksTab = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#58A6FF")).
-			Background(lipgloss.Color("#21262D")).
+		tasksTab = style.NewStyle().
+			Foreground(style.Color("#58A6FF")).
+			Background(style.Color("#21262D")).
 			Padding(0, 1).
 			Render("● Tasks")
 		agentsTab = "  Agents  "
 	}
 
-	refreshStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	refreshStyle := style.NewStyle().Foreground(style.Color("#808080"))
 	refreshStr := refreshStyle.Render(fmt.Sprintf("refreshed %s", f.refreshed.Format("15:04:05")))
 
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	hintStyle := style.NewStyle().Foreground(style.Color("#808080"))
 	hintStr := hintStyle.Render("esc close  r refresh  tab switch view")
 
 	return headerStyle.Render("Fleet") + agentsTab + tasksTab + "  " + refreshStr + "  " + hintStr
@@ -252,15 +252,15 @@ func (f *FleetPanel) renderAgents() []string {
 	var lines []string
 
 	if len(f.agents) == 0 {
-		emptyStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+		emptyStyle := style.NewStyle().Foreground(style.Color("#808080"))
 		lines = append(lines, emptyStyle.Render("  No agents connected"))
 		lines = append(lines, "")
 		lines = append(lines, emptyStyle.Render("  Start a fleet head to connect agents"))
 		return lines
 	}
 
-	headerStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#8B949E")).
+	headerStyle := style.NewStyle().
+		Foreground(style.Color("#8B949E")).
 		Bold(true)
 
 	lines = append(lines, headerStyle.Render("  ID                    NAME                STATUS    LOAD   LAST SEEN"))
@@ -277,43 +277,43 @@ func (f *FleetPanel) renderAgent(agent FleetAgent, idx int) string {
 	selected := idx == f.selected
 	prefix := "  "
 	if selected {
-		prefix = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFCC00")).
+		prefix = style.NewStyle().
+			Foreground(style.Color("#FFCC00")).
 			Render("▶")
 	}
 
-	idStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#8B949E"))
+	idStyle := style.NewStyle().Foreground(style.Color("#8B949E"))
 	idStr := idStyle.Render(truncate(agent.ID, 20))
 
-	nameStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
+	nameStyle := style.NewStyle().Foreground(style.Color("#E0E0E0"))
 	nameStr := nameStyle.Render(truncate(agent.Name, 16))
 
-	var statusStyle lipgloss.Style
+	var statusStyle style.Style
 	statusStr := agent.Status
 	switch agent.Status {
 	case "online":
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#4EC9B0"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#4EC9B0"))
 	case "offline":
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#F44747"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#F44747"))
 	case "busy":
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#DCDCAA"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#DCDCAA"))
 	default:
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#808080"))
 	}
 	statusStr = statusStyle.Render(statusStr)
 
 	loadStr := fmt.Sprintf("%.0f%%", agent.Load*100)
-	loadStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#8B949E"))
+	loadStyle := style.NewStyle().Foreground(style.Color("#8B949E"))
 	if agent.Load > 0.8 {
-		loadStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#F44747"))
+		loadStyle = style.NewStyle().Foreground(style.Color("#F44747"))
 	} else if agent.Load > 0.5 {
-		loadStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#DCDCAA"))
+		loadStyle = style.NewStyle().Foreground(style.Color("#DCDCAA"))
 	} else {
-		loadStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#4EC9B0"))
+		loadStyle = style.NewStyle().Foreground(style.Color("#4EC9B0"))
 	}
 	loadStr = loadStyle.Render(loadStr)
 
-	connectedStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#8B949E"))
+	connectedStyle := style.NewStyle().Foreground(style.Color("#8B949E"))
 	connectedStr := connectedStyle.Render(agent.Connected.Format("15:04:05"))
 
 	return prefix + " " + idStr + "  " + nameStr + "  " + statusStr + "  " + loadStr + "  " + connectedStr
@@ -323,7 +323,7 @@ func (f *FleetPanel) renderTasks() []string {
 	var lines []string
 
 	if len(f.tasks) == 0 {
-		emptyStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+		emptyStyle := style.NewStyle().Foreground(style.Color("#808080"))
 		lines = append(lines, emptyStyle.Render("  No tasks in queue"))
 		return lines
 	}
@@ -332,8 +332,8 @@ func (f *FleetPanel) renderTasks() []string {
 		return f.tasks[i].Created.After(f.tasks[j].Created)
 	})
 
-	headerStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#8B949E")).
+	headerStyle := style.NewStyle().
+		Foreground(style.Color("#8B949E")).
 		Bold(true)
 
 	lines = append(lines, headerStyle.Render("  ID                    TYPE          STATUS      AGENT               CREATED"))
@@ -350,44 +350,44 @@ func (f *FleetPanel) renderTask(task FleetTask, idx int) string {
 	selected := idx == f.selected
 	prefix := "  "
 	if selected {
-		prefix = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFCC00")).
+		prefix = style.NewStyle().
+			Foreground(style.Color("#FFCC00")).
 			Render("▶")
 	}
 
-	idStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#8B949E"))
+	idStyle := style.NewStyle().Foreground(style.Color("#8B949E"))
 	idStr := idStyle.Render(truncate(task.ID, 20))
 
-	typeStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
+	typeStyle := style.NewStyle().Foreground(style.Color("#E0E0E0"))
 	typeStr := typeStyle.Render(truncate(task.Type, 12))
 
-	var statusStyle lipgloss.Style
+	var statusStyle style.Style
 	statusStr := task.Status
 	switch task.Status {
 	case "pending":
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#DCDCAA"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#DCDCAA"))
 	case "assigned":
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#58A6FF"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#58A6FF"))
 	case "completed":
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#4EC9B0"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#4EC9B0"))
 	case "failed":
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#F44747"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#F44747"))
 	default:
-		statusStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+		statusStyle = style.NewStyle().Foreground(style.Color("#808080"))
 	}
 	statusStr = statusStyle.Render(statusStr)
 
-	agentStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#8B949E"))
+	agentStyle := style.NewStyle().Foreground(style.Color("#8B949E"))
 	agentStr := agentStyle.Render(truncate(task.AgentID, 18))
 
-	createdStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#8B949E"))
+	createdStyle := style.NewStyle().Foreground(style.Color("#8B949E"))
 	createdStr := createdStyle.Render(task.Created.Format("15:04:05"))
 
 	return prefix + " " + idStr + "  " + typeStr + "  " + statusStr + "  " + agentStr + "  " + createdStr
 }
 
 func (f *FleetPanel) renderHints() string {
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	hintStyle := style.NewStyle().Foreground(style.Color("#808080"))
 	if f.view == "agents" {
 		return hintStyle.Render("↑↓ select  enter details  r refresh  esc close")
 	}

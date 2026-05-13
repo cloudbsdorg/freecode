@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type QuestionOption struct {
@@ -272,9 +272,9 @@ func (q *QuestionDialog) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#1E1E1E")).
-		Border(lipgloss.HiddenBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#1E1E1E")).
+		BorderStyle(style.HiddenBorder()).
 		Width(q.state.Width)
 
 	return dialogStyle.Render(q.renderContent())
@@ -310,17 +310,17 @@ func (q *QuestionDialog) renderTabs() string {
 
 		var tabStr string
 		if active {
-			tabStr = lipgloss.NewStyle().
-				Background(lipgloss.Color("#007ACC")).
-				Foreground(lipgloss.Color("#FFFFFF")).
+			tabStr = style.NewStyle().
+				Background(style.Color("#007ACC")).
+				Foreground(style.Color("#FFFFFF")).
 				Render(" " + question.Header + " ")
 		} else if answered {
-			tabStr = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#E0E0E0")).
+			tabStr = style.NewStyle().
+				Foreground(style.Color("#E0E0E0")).
 				Render(" " + question.Header + " ")
 		} else {
-			tabStr = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("#808080")).
+			tabStr = style.NewStyle().
+				Foreground(style.Color("#808080")).
 				Render(" " + question.Header + " ")
 		}
 		tabs = append(tabs, tabStr)
@@ -329,13 +329,13 @@ func (q *QuestionDialog) renderTabs() string {
 	confirmActive := q.state.Tab == len(req.Questions)
 	var confirmTab string
 	if confirmActive {
-		confirmTab = lipgloss.NewStyle().
-			Background(lipgloss.Color("#007ACC")).
-			Foreground(lipgloss.Color("#FFFFFF")).
+		confirmTab = style.NewStyle().
+			Background(style.Color("#007ACC")).
+			Foreground(style.Color("#FFFFFF")).
 			Render(" Confirm ")
 	} else {
-		confirmTab = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#808080")).
+		confirmTab = style.NewStyle().
+			Foreground(style.Color("#808080")).
 			Render(" Confirm ")
 	}
 	tabs = append(tabs, confirmTab)
@@ -355,8 +355,8 @@ func (q *QuestionDialog) renderQuestionStage() []string {
 		multiText = " (select all that apply)"
 	}
 
-	lines = append(lines, lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#E0E0E0")).
+	lines = append(lines, style.NewStyle().
+		Foreground(style.Color("#E0E0E0")).
 		Render(question.Question+multiText))
 
 	lines = append(lines, "")
@@ -380,25 +380,25 @@ func (q *QuestionDialog) renderQuestionStage() []string {
 			}
 		}
 
-		numStr := lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#808080")).
+		numStr := style.NewStyle().
+			Foreground(style.Color("#808080")).
 			Render(string(rune('1' + i)) + ".")
 
-		var labelStyle lipgloss.Style
+		var labelStyle style.Style
 		if selected {
 			if picked {
-				labelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#4EC9B0"))
+				labelStyle = style.NewStyle().Foreground(style.Color("#4EC9B0"))
 			} else {
-				labelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#DCDCAA"))
+				labelStyle = style.NewStyle().Foreground(style.Color("#DCDCAA"))
 			}
 		} else {
-			labelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
+			labelStyle = style.NewStyle().Foreground(style.Color("#E0E0E0"))
 		}
 
 		lines = append(lines, "  "+numStr+" "+labelStyle.Render(label))
 
 		if opt.Description != "" {
-			descStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+			descStyle := style.NewStyle().Foreground(style.Color("#808080"))
 			lines = append(lines, "     "+descStyle.Render(opt.Description))
 		}
 	}
@@ -423,28 +423,28 @@ func (q *QuestionDialog) renderQuestionStage() []string {
 			}
 		}
 
-		numStr := lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#808080")).
+		numStr := style.NewStyle().
+			Foreground(style.Color("#808080")).
 			Render(string(rune('1' + i)) + ".")
 
-		var labelStyle lipgloss.Style
+		var labelStyle style.Style
 		if selected {
-			labelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#DCDCAA"))
+			labelStyle = style.NewStyle().Foreground(style.Color("#DCDCAA"))
 		} else {
-			labelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
+			labelStyle = style.NewStyle().Foreground(style.Color("#E0E0E0"))
 		}
 
 		lines = append(lines, "  "+numStr+" "+labelStyle.Render(label))
 
 		customInput := q.state.Custom[q.state.Tab]
 		if q.state.Editing && selected {
-			inputStyle := lipgloss.NewStyle().
-				Background(lipgloss.Color("#3C3C3C")).
-				Foreground(lipgloss.Color("#E0E0E0")).
+			inputStyle := style.NewStyle().
+				Background(style.Color("#3C3C3C")).
+				Foreground(style.Color("#E0E0E0")).
 				Padding(0, 1)
 			lines = append(lines, "     "+inputStyle.Render(customInput+"_"))
 		} else if customPicked && customInput != "" {
-			descStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+			descStyle := style.NewStyle().Foreground(style.Color("#808080"))
 			lines = append(lines, "     "+descStyle.Render(customInput))
 		}
 	}
@@ -455,8 +455,8 @@ func (q *QuestionDialog) renderQuestionStage() []string {
 func (q *QuestionDialog) renderConfirmStage() []string {
 	var lines []string
 
-	lines = append(lines, lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#E0E0E0")).
+	lines = append(lines, style.NewStyle().
+		Foreground(style.Color("#E0E0E0")).
 		Render("Review your answers"))
 
 	lines = append(lines, "")
@@ -469,11 +469,11 @@ func (q *QuestionDialog) renderConfirmStage() []string {
 			answer = "(not answered)"
 		}
 
-		headerStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
-		answerStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0"))
+		headerStyle := style.NewStyle().Foreground(style.Color("#808080"))
+		answerStyle := style.NewStyle().Foreground(style.Color("#E0E0E0"))
 
 		if len(q.state.Answers[i]) == 0 {
-			answerStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#F44747"))
+			answerStyle = style.NewStyle().Foreground(style.Color("#F44747"))
 		}
 
 		lines = append(lines, "  "+headerStyle.Render(question.Header+":")+" "+answerStyle.Render(answer))
@@ -505,7 +505,7 @@ func (q *QuestionDialog) renderHints() string {
 
 	hints = append(hints, "esc dismiss")
 
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	hintStyle := style.NewStyle().Foreground(style.Color("#808080"))
 	result := ""
 	for i, h := range hints {
 		if i > 0 {

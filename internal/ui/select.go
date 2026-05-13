@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 
 	"github.com/freecode/freecode/internal/ui/dialog"
 )
@@ -140,11 +140,11 @@ func (s *SelectDialog) Render() string {
 	lines := s.list.RenderList()
 
 	content := strings.Join(lines, "\n")
-	return lipgloss.NewStyle().
+	return style.NewStyle().
 		Width(s.width).
-		Background(lipgloss.Color(s.colors.Background)).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Background(style.Color(s.colors.Background)).
+		BorderStyle(style.RoundedBorder()).
+		BorderForeground(style.Color(s.colors.Border)).
 		Padding(1).
 		Render(content)
 }
@@ -173,11 +173,11 @@ func (s *SelectDialog) RenderWithTitle(title string) string {
 
 	lines := s.list.RenderList()
 	content := strings.Join(lines, "\n")
-	return lipgloss.NewStyle().
+	return style.NewStyle().
 		Width(s.width).
-		Background(lipgloss.Color(s.colors.Background)).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(s.colors.Border)).
+		Background(style.Color(s.colors.Background)).
+		BorderStyle(style.RoundedBorder()).
+		BorderForeground(style.Color(s.colors.Border)).
 		Padding(1).
 		Render(content)
 }

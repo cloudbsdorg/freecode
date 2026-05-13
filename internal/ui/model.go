@@ -10,12 +10,12 @@ import (
 	"time"
 
 	"github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/freecode/freecode/internal/agent"
 	"github.com/freecode/freecode/internal/args"
 	"github.com/freecode/freecode/internal/config"
 	"github.com/freecode/freecode/internal/renderer"
 	"github.com/freecode/freecode/internal/session"
+	"github.com/freecode/freecode/internal/style"
 	"github.com/freecode/freecode/internal/tool"
 	"github.com/freecode/freecode/internal/ui/template"
 	"github.com/google/uuid"
@@ -940,8 +940,8 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 func (m *Model) View() string {
 	if m.quitting {
-		return lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#4EC9B0")).
+		return style.NewStyle().
+			Foreground(style.Color("#4EC9B0")).
 			Render("Goodbye!\n")
 	}
 
@@ -1106,9 +1106,8 @@ func (m *Model) renderHome() string {
 		currentY++
 	}
 
-	hintStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#606060")).
-		Align(lipgloss.Center)
+	hintStyle := style.NewStyle().
+		Foreground(style.Color("#606060"))
 
 	hintText := "Ctrl+P: Command Palette  |  Ctrl+B: Toggle Sidebar  |  Ctrl+H: Home  |  Ctrl+Q: Quit"
 	hintPadding := (m.width - len(hintText)) / 2

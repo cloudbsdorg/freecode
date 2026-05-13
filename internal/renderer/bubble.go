@@ -24,7 +24,7 @@ func (b *BubbleRenderer) RenderBox(x, y, w, h int, bgColor string) string {
 	s := style.NewStyle().
 		Width(w).
 		Height(h).
-		Background(bgColor).
+		Background(style.Color(bgColor)).
 		MarginTop(y).
 		MarginLeft(x)
 	return s.Render(content)
@@ -32,7 +32,7 @@ func (b *BubbleRenderer) RenderBox(x, y, w, h int, bgColor string) string {
 
 func (b *BubbleRenderer) RenderText(text string, x, y int, fgColor string) string {
 	s := style.NewStyle().
-		Foreground(fgColor).
+		Foreground(style.Color(fgColor)).
 		MarginTop(y).
 		MarginLeft(x)
 	return s.Render(text)
@@ -46,7 +46,7 @@ func (b *BubbleRenderer) RenderBorder(x, y, w, h int, fgColor string) string {
 		Width(w).
 		Height(h).
 		BorderStyle(style.Rounded()).
-		BorderForeground(fgColor).
+		BorderForeground(style.Color(fgColor)).
 		MarginTop(y).
 		MarginLeft(x)
 	return s.Render("")
@@ -58,8 +58,8 @@ func (b *BubbleRenderer) RenderSelected(text string, x, y, w int, fg, bg string)
 	}
 	s := style.NewStyle().
 		Width(w).
-		Foreground(fg).
-		Background(bg).
+		Foreground(style.Color(fg)).
+		Background(style.Color(bg)).
 		MarginTop(y).
 		MarginLeft(x)
 	return s.Render(text)

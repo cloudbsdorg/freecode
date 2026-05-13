@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 
 	"github.com/freecode/freecode/internal/ui/dialog"
 )
@@ -125,8 +125,8 @@ func (h *HelpDialog) Render() string {
 	lines = append(lines, dialog.Muted("Press q, esc, or enter to close", h.colors))
 
 	content := strings.Join(lines, "\n")
-	return lipgloss.NewStyle().
-		Background(lipgloss.Color(h.colors.Background)).
+	return style.NewStyle().
+		Background(style.Color(h.colors.Background)).
 		Width(h.width).
 		Height(h.height).
 		Render(content)

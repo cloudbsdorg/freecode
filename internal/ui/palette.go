@@ -3,28 +3,28 @@ package ui
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 	"github.com/charmbracelet/bubbletea"
 )
 
-var PaletteContainerStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#1E1E1E")).
-	BorderStyle(lipgloss.HiddenBorder())
+var PaletteContainerStyle = style.NewStyle().
+	Background(style.Color("#1E1E1E")).
+	BorderStyle(style.HiddenBorder())
 
-var PaletteHeaderStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#007ACC")).
+var PaletteHeaderStyle = style.NewStyle().
+	Foreground(style.Color("#007ACC")).
 	Bold(true).
 	Padding(0, 1)
 
-var PaletteItemStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#E0E0E0"))
+var PaletteItemStyle = style.NewStyle().
+	Foreground(style.Color("#E0E0E0"))
 
-var PaletteSelectedStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#007ACC")).
-	Foreground(lipgloss.Color("#FFFFFF"))
+var PaletteSelectedStyle = style.NewStyle().
+	Background(style.Color("#007ACC")).
+	Foreground(style.Color("#FFFFFF"))
 
-var PaletteDescriptionStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#808080"))
+var PaletteDescriptionStyle = style.NewStyle().
+	Foreground(style.Color("#808080"))
 
 type PaletteCommand struct {
 	Name        string
@@ -159,7 +159,7 @@ func (c *CommandPalette) Render() string {
 
 	header := PaletteHeaderStyle.Render("Command Palette")
 	if c.query != "" {
-		header += " " + lipgloss.NewStyle().Foreground(lipgloss.Color("#808080")).Render(c.query)
+		header += " " + style.NewStyle().Foreground(style.Color("#808080")).Render(c.query)
 	}
 
 	lines := []string{header, ""}
@@ -198,7 +198,7 @@ func (c *CommandPalette) Render() string {
 			cat = "Other"
 		}
 		if !seenCats[cat] {
-			lines = append(lines, lipgloss.NewStyle().Foreground(lipgloss.Color("#606060")).Render(cat))
+			lines = append(lines, style.NewStyle().Foreground(style.Color("#606060")).Render(cat))
 			seenCats[cat] = true
 		}
 
@@ -218,7 +218,7 @@ func (c *CommandPalette) Render() string {
 	}
 
 	if len(c.filtered) == 0 {
-		lines = append(lines, lipgloss.NewStyle().Foreground(lipgloss.Color("#808080")).Render("  No commands found"))
+		lines = append(lines, style.NewStyle().Foreground(style.Color("#808080")).Render("  No commands found"))
 	}
 
 	content := strings.Join(lines, "\n")
@@ -231,11 +231,11 @@ func (c *CommandPalette) Render() string {
 		paletteWidth = 40
 	}
 
-	return lipgloss.NewStyle().
+	return style.NewStyle().
 		Width(paletteWidth).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("#3B3B3B")).
-		Background(lipgloss.Color("#1E1E1E")).
+		BorderStyle(style.RoundedBorder()).
+		BorderForeground(style.Color("#3B3B3B")).
+		Background(style.Color("#1E1E1E")).
 		Padding(1).
 		Render(content)
 }
@@ -251,16 +251,25 @@ func (c *CommandPalette) RenderCentered(termWidth, termHeight int) string {
 	content := c.Render()
 	c.width = oldWidth
 
-	paletteHeight := len(strings.Split(content, "\n")) + 2
+	lines := strings.Split(content, "\n")
+	paletteHeight := len(lines)
 	topMargin := (termHeight - paletteHeight) / 2
 	if topMargin < 0 {
 		topMargin = 0
 	}
 
-	return lipgloss.Place(termWidth, termHeight,
-		lipgloss.Center, lipgloss.Center,
-		content,
-		lipgloss.WithWhitespaceForeground(lipgloss.Color("#1E1E1E")),
-		lipgloss.WithWhitespaceBackground(lipgloss.Color("#1E1E1E")),
-	)
+	var result strings.Builder
+	for i := 0; i < topMargin; i++ {
+		result.WriteString("\n")
+	}
+	for _, line := range lines {
+		leftPad := (termWidth - len(line)) / 2
+		if leftPad < 0 {
+			leftPad = 0
+		}
+		result.WriteString(strings.Repeat(" ", leftPad))
+		result.WriteString(line)
+		result.WriteString("\n")
+	}
+	return result.String()
 }

@@ -4,32 +4,32 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
-var SidebarStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#252525")).
-	Foreground(lipgloss.Color("#E0E0E0")).
+var SidebarStyle = style.NewStyle().
+	Background(style.Color("#252525")).
+	Foreground(style.Color("#E0E0E0")).
 	Width(42).
 	Padding(1, 2)
 
-var SidebarHeaderStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#007ACC")).
+var SidebarHeaderStyle = style.NewStyle().
+	Foreground(style.Color("#007ACC")).
 	Bold(true)
 
-var SidebarItemStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#E0E0E0"))
+var SidebarItemStyle = style.NewStyle().
+	Foreground(style.Color("#E0E0E0"))
 
-var SidebarSelectedStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#007ACC")).
-	Foreground(lipgloss.Color("#FFFFFF")).
+var SidebarSelectedStyle = style.NewStyle().
+	Background(style.Color("#007ACC")).
+	Foreground(style.Color("#FFFFFF")).
 	Bold(true)
 
-var SidebarTimestampStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#606060"))
+var SidebarTimestampStyle = style.NewStyle().
+	Foreground(style.Color("#606060"))
 
-var SidebarDirtyIndicator = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#FFCC00")).
+var SidebarDirtyIndicator = style.NewStyle().
+	Foreground(style.Color("#FFCC00")).
 	Bold(true)
 
 type SidebarItem struct {
@@ -190,10 +190,10 @@ func (s *Sidebar) Render() string {
 	}
 
 	if len(s.items) == 0 {
-		lines = append(lines, lipgloss.NewStyle().Foreground(lipgloss.Color("#606060")).Render("  No sessions"))
+		lines = append(lines, style.NewStyle().Foreground(style.Color("#606060")).Render("  No sessions"))
 	}
 
-	footer := lipgloss.NewStyle().Foreground(lipgloss.Color("#606060")).Render("  Ctrl+T: New | Enter: Select")
+	footer := style.NewStyle().Foreground(style.Color("#606060")).Render("  Ctrl+T: New | Enter: Select")
 	lines = append(lines, "", footer)
 
 	result := strings.Join(lines, "\n")

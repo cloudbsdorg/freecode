@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 const (
@@ -398,9 +398,9 @@ func (a *AutocompleteDialog) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#2D2D2D")).
-		Border(lipgloss.HiddenBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#2D2D2D")).
+		BorderStyle(style.HiddenBorder()).
 		Width(a.width)
 
 	return dialogStyle.Render(a.renderContent())
@@ -419,27 +419,27 @@ func (a *AutocompleteDialog) renderContent() string {
 func (a *AutocompleteDialog) renderItem(item AutocompleteItem, selected bool) string {
 	prefix := "  "
 	if selected {
-		prefix = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFCC00")).
+		prefix = style.NewStyle().
+			Foreground(style.Color("#FFCC00")).
 			Render("▶")
 	}
 
-	var labelStyle lipgloss.Style
+	var labelStyle style.Style
 	if selected {
-		labelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#FFFFFF"))
+		labelStyle = style.NewStyle().Foreground(style.Color("#FFFFFF"))
 	} else {
-		labelStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#D0D0D0"))
+		labelStyle = style.NewStyle().Foreground(style.Color("#D0D0D0"))
 	}
 
 	line := prefix + " " + labelStyle.Render(item.Label)
 
 	if item.Category != "" {
-		catStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#007ACC"))
+		catStyle := style.NewStyle().Foreground(style.Color("#007ACC"))
 		line += " " + catStyle.Render("["+item.Category+"]")
 	}
 
 	if item.Description != "" {
-		descStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+		descStyle := style.NewStyle().Foreground(style.Color("#808080"))
 		line += " — " + descStyle.Render(item.Description)
 	}
 
@@ -463,8 +463,8 @@ func HighlightMatch(label, partial string) string {
 	match := label[idx : idx+len(partial)]
 	after := label[idx+len(partial):]
 
-	highlightStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#FFCC00")).
+	highlightStyle := style.NewStyle().
+		Foreground(style.Color("#FFCC00")).
 		Bold(true)
 
 	return before + highlightStyle.Render(match) + after

@@ -1,31 +1,21 @@
 package style
 
+import "github.com/charmbracelet/lipgloss"
+
 type Style interface {
 	Render(text string) string
-	Foreground(color string) Style
-	Background(color string) Style
+	Foreground(color lipgloss.Color) Style
+	Background(color lipgloss.Color) Style
 	Bold(v ...bool) Style
 	Italic(v ...bool) Style
+	Reverse(v ...bool) Style
+	Underline(v ...bool) Style
 	Width(w int) Style
 	Height(h int) Style
 	Padding(values ...int) Style
 	Margin(values ...int) Style
 	MarginTop(v int) Style
 	MarginLeft(v int) Style
-	BorderStyle(b Border) Style
-	BorderForeground(color string) Style
+	BorderStyle(b lipgloss.Border) Style
+	BorderForeground(color lipgloss.Color) Style
 }
-
-type Border interface{}
-
-type NormalBorder struct{}
-type RoundedBorder struct{}
-type HiddenBorder struct{}
-
-var NormalBorderType NormalBorder
-var RoundedBorderType RoundedBorder
-var HiddenBorderType HiddenBorder
-
-func Normal() Border   { return NormalBorderType }
-func Rounded() Border  { return RoundedBorderType }
-func Hidden() Border   { return HiddenBorderType }

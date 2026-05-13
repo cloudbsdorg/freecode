@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type StatusDialog struct {
@@ -66,9 +66,9 @@ func (s *StatusDialog) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#1E1E1E")).
-		Border(lipgloss.HiddenBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#1E1E1E")).
+		BorderStyle(style.HiddenBorder()).
 		Width(s.width)
 
 	return dialogStyle.Render(s.renderContent())
@@ -89,19 +89,19 @@ func (s *StatusDialog) renderContent() string {
 }
 
 func (s *StatusDialog) renderHeader() string {
-	headerStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#E0E0E0")).
+	headerStyle := style.NewStyle().
+		Foreground(style.Color("#E0E0E0")).
 		Bold(true)
 	return headerStyle.Render("Status")
 }
 
 func (s *StatusDialog) renderSection(title, value string) string {
-	titleStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
-	valueStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#4EC9B0"))
+	titleStyle := style.NewStyle().Foreground(style.Color("#808080"))
+	valueStyle := style.NewStyle().Foreground(style.Color("#4EC9B0"))
 	return "  " + titleStyle.Render(title+":") + " " + valueStyle.Render(value)
 }
 
 func (s *StatusDialog) renderHints() string {
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	hintStyle := style.NewStyle().Foreground(style.Color("#808080"))
 	return hintStyle.Render("press esc or enter to close")
 }

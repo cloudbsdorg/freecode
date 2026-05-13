@@ -1,25 +1,25 @@
 package ui
 
 import (
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 	"github.com/charmbracelet/bubbletea"
 )
 
-var InputContainerStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color("#1E1E1E")).
-	Foreground(lipgloss.Color("#E0E0E0")).
-	BorderForeground(lipgloss.Color("#3D3D3D")).
-	BorderStyle(lipgloss.NormalBorder()).
+var InputContainerStyle = style.NewStyle().
+	Background(style.Color("#1E1E1E")).
+	Foreground(style.Color("#E0E0E0")).
+	BorderForeground(style.Color("#3D3D3D")).
+	BorderStyle(style.NormalBorder()).
 	Padding(0, 1)
 
-var InputStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#FFFFFF"))
+var InputStyle = style.NewStyle().
+	Foreground(style.Color("#FFFFFF"))
 
-var PlaceholderStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#606060"))
+var PlaceholderStyle = style.NewStyle().
+	Foreground(style.Color("#606060"))
 
-var PromptStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#4EC9B0")).
+var PromptStyle = style.NewStyle().
+	Foreground(style.Color("#4EC9B0")).
 	Bold(true)
 
 type InputArea struct {
@@ -162,8 +162,8 @@ func (in *InputArea) Render() string {
 
 	display := in.value
 	if display == "" {
-		placeholder := lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#606060")).
+		placeholder := style.NewStyle().
+			Foreground(style.Color("#606060")).
 			Italic(true).
 			Render(in.placeholder)
 		display = placeholder
@@ -177,9 +177,9 @@ func (in *InputArea) Render() string {
 
 	var cursor string
 	if in.focused {
-		cursor = lipgloss.NewStyle().
-			Background(lipgloss.Color("#007ACC")).
-			Foreground(lipgloss.Color("#FFFFFF")).
+		cursor = style.NewStyle().
+			Background(style.Color("#007ACC")).
+			Foreground(style.Color("#FFFFFF")).
 			Render(" ")
 	} else {
 		cursor = " "

@@ -3,7 +3,7 @@ package ui
 import (
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type ToastVariant string
@@ -108,24 +108,24 @@ func (t *ToastManager) Render() string {
 		return ""
 	}
 
-	variantColor := lipgloss.Color("#007ACC")
+	variantColor := style.Color("#007ACC")
 	switch toast.Variant {
 	case ToastVariantSuccess:
-		variantColor = lipgloss.Color("#4EC9B0")
+		variantColor = style.Color("#4EC9B0")
 	case ToastVariantWarning:
-		variantColor = lipgloss.Color("#DCDCAA")
+		variantColor = style.Color("#DCDCAA")
 	case ToastVariantError:
-		variantColor = lipgloss.Color("#F44747")
+		variantColor = style.Color("#F44747")
 	}
 
-	borderStyle := lipgloss.NewStyle().
+	borderStyle := style.NewStyle().
 		BorderForeground(variantColor).
 		Width(t.width).
 		Padding(1, 2)
 
 	content := ""
 	if toast.Title != "" {
-		titleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#FFFFFF"))
+		titleStyle := style.NewStyle().Bold(true).Foreground(style.Color("#FFFFFF"))
 		content += titleStyle.Render(toast.Title) + "\n"
 	}
 	content += toast.Message

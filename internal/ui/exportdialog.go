@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type ExportFormat string
@@ -142,9 +142,9 @@ func (e *ExportDialog) Render() string {
 		return ""
 	}
 
-	dialogStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("#1E1E1E")).
-		Border(lipgloss.HiddenBorder()).
+	dialogStyle := style.NewStyle().
+		Background(style.Color("#1E1E1E")).
+		BorderStyle(style.HiddenBorder()).
 		Width(e.width)
 
 	return dialogStyle.Render(e.renderContent())
@@ -167,8 +167,8 @@ func (e *ExportDialog) renderContent() string {
 }
 
 func (e *ExportDialog) renderHeader() string {
-	return lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#E0E0E0")).
+	return style.NewStyle().
+		Foreground(style.Color("#E0E0E0")).
 		Bold(true).
 		Render("Export Session")
 }
@@ -177,13 +177,13 @@ func (e *ExportDialog) renderOption(title, value string, idx int) string {
 	selected := e.selected == idx
 	prefix := "  "
 	if selected {
-		prefix = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFCC00")).
+		prefix = style.NewStyle().
+			Foreground(style.Color("#FFCC00")).
 			Render("▶")
 	}
 
-	titleStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
-	valueStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#4EC9B0"))
+	titleStyle := style.NewStyle().Foreground(style.Color("#808080"))
+	valueStyle := style.NewStyle().Foreground(style.Color("#4EC9B0"))
 
 	return prefix + " " + titleStyle.Render(title+":") + " " + valueStyle.Render(value)
 }
@@ -192,14 +192,14 @@ func (e *ExportDialog) renderToggle(title string, enabled bool, idx int) string 
 	selected := e.selected == idx
 	prefix := "  "
 	if selected {
-		prefix = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFCC00")).
+		prefix = style.NewStyle().
+			Foreground(style.Color("#FFCC00")).
 			Render("▶")
 	}
 
-	titleStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
-	checkStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#4EC9B0"))
-	disabledStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#F44747"))
+	titleStyle := style.NewStyle().Foreground(style.Color("#808080"))
+	checkStyle := style.NewStyle().Foreground(style.Color("#4EC9B0"))
+	disabledStyle := style.NewStyle().Foreground(style.Color("#F44747"))
 
 	check := "✗"
 	valueStyle := disabledStyle
@@ -213,7 +213,7 @@ func (e *ExportDialog) renderToggle(title string, enabled bool, idx int) string 
 
 func (e *ExportDialog) renderPreview() []string {
 	var lines []string
-	previewStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	previewStyle := style.NewStyle().Foreground(style.Color("#808080"))
 	lines = append(lines, "  "+previewStyle.Render("Preview:"))
 
 	switch e.format {
@@ -233,6 +233,6 @@ func (e *ExportDialog) renderPreview() []string {
 }
 
 func (e *ExportDialog) renderHints() string {
-	hintStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
+	hintStyle := style.NewStyle().Foreground(style.Color("#808080"))
 	return hintStyle.Render("↑↓ select  ←→ change  enter export  esc cancel")
 }
