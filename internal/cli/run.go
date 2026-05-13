@@ -1,9 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/freecode/freecode/internal/args"
 	"github.com/freecode/freecode/internal/ui"
 	"github.com/spf13/cobra"
@@ -68,18 +65,8 @@ func runRun(cmd *cobra.Command, cmdArgs []string) error {
 	}
 
 	if prompt != "" {
-		return runHeadless(tuiArgs, cmdArgs)
+		return ui.RunHeadless(tuiArgs)
 	}
 
-	p := tea.NewProgram(ui.NewModel(tuiArgs), tea.WithAltScreen())
-	if _, err := p.Run(); err != nil {
-		return fmt.Errorf("failed to start TUI: %w", err)
-	}
-	return nil
-}
-
-func runHeadless(tuiArgs args.Args, cmdArgs []string) error {
-	fmt.Println("Headless mode with prompt is not yet implemented")
-	fmt.Println("Prompt:", tuiArgs.Prompt)
-	return nil
+	return ui.Run(tuiArgs)
 }
