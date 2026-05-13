@@ -1,8 +1,47 @@
 # Freecode TUI Gap Analysis vs OpenCode
 
-**Status**: Research Complete
-**Last Updated**: 2026-05-09
+**Status**: Research Complete, Partial Implementation Done
+**Last Updated**: 2026-05-10
 **Related Document**: [0212-Freecode-TUI-Analysis.md](./0212-Freecode-TUI-Analysis.md) - Implementation status
+
+## Update 2026-05-10: Reactive Template Engine Implemented
+
+Since this analysis, significant work has been completed on the TUI rendering system:
+
+### Completed Work
+- ✅ **Reactive Template Engine** (`internal/ui/template/reactive_engine.go`)
+  - React-like state management with `Set(key, value)` and dirty tracking
+  - `MustRender()` for full re-render
+  - `RenderDirty()` for selective re-render of changed components
+  - State interpolation with `${var}` and `${var:default}` syntax
+  - `OnStateChange()` callback for reactive updates
+
+- ✅ **Template Loader** (`internal/ui/template/loader.go`)
+  - Loads templates from external `.tmpl` files
+  - `LoadViews()`, `LoadComponents()`, `LoadRoot()`
+  - Templates stored in `templates/` directory
+
+- ✅ **External Templates Created**
+  - 25 template files across `templates/components/` and `templates/views/`
+  - Components: text, button, input, list, window, vbox, hbox, grid, spacer, divider, progress, toast, tabbar, messagelist, selectionlist, dialog
+  - Views: home, session, setup, commandpalette
+
+- ✅ **ResponsiveEngine** (`internal/ui/template/responsive.go`)
+  - Size observers for responsive layout
+  - `show-if` and `hide-if` constraints
+  - `Hide()`, `Show()`, `Toggle()` visibility control
+
+- ✅ **Model Integration** (`internal/ui/model.go`)
+  - `syncStateToTemplate()` pushes model state to engine
+  - Uses `RenderTemplate("home")` etc instead of hardcoded layouts
+
+### Remaining Work (per gap analysis below)
+- Message rendering (tool calls, syntax highlighting)
+- Tool display components
+- Dialog backdrop/focus management
+- Session review UI
+
+---
 
 ## Executive Summary
 

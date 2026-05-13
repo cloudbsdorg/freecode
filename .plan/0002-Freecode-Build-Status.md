@@ -1,8 +1,8 @@
 # Freecode — Build Status
 
 **Document ID:** Freecode-BuildStatus
-**Version:** 1.1
-**Last Updated:** 2026-05-06
+**Version:** 2.0
+**Last Updated:** 2026-05-10
 **Maintainer:** Mark LaPointe <mark@cloudbsd.org>
 **Status:** ACTIVE
 **Classification:** INTERNAL
@@ -12,11 +12,7 @@
 ## ✅ CURRENT BUILD STATUS: PASSING
 
 **Overall Status:** ✅ PROJECT COMPILES
-
-**Fixed Issues:** `internal/lsp/lsp.go` syntax errors resolved (2026-05-06)
-- Fixed `map[string]any{}{` → `map[string]any{` on 7 lines
-- Added proper jsonrpc2 bidirectional handlers
-- Added stdin/stdout wrapper for LSP stdio communication
+**Last Verified:** 2026-05-10
 
 ---
 
@@ -24,20 +20,22 @@
 
 | Component | Build | Test | Lint | Status |
 |-----------|-------|------|------|--------|
-| CLI (cmd/freecode) | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| Server (cmd/freecode-server) | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/agent | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/cli | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/config | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/hook | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/session | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/tool | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/ui | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/server | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/fleet | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/mcp | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| internal/provider | ✅ PASS | ⚠️ N/A | ⚠️ N/A | Working |
-| **internal/lsp** | **✅ PASS** | **N/A** | **N/A** | **✅ COMPLETE** |
+| CLI (cmd/freecode) | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| Server (cmd/freecode-server) | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/agent | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/cli | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/config | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/hook | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/session | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/tool | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/ui | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/template | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/server | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/fleet | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/mcp | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/provider | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/lsp | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
+| internal/skill | ✅ PASS | ✅ PASS | ⚠️ N/A | Working |
 
 ---
 
@@ -100,6 +98,7 @@ make test && make fmt && make tidy && golangci-lint run
 |------------|--------|----------|----------|
 | Unit Tests | ✅ PASS | ~30s | 68% |
 | Integration Tests | ⚠️ PARTIAL | N/A | Limited API keys |
+| Template Tests | ✅ PASS | <5s | N/A |
 | Fuzzing | ⏳ PENDING | N/A | Not started |
 
 ---
@@ -108,8 +107,9 @@ make test && make fmt && make tidy && golangci-lint run
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
+| 2.0 | 2026-05-10 | Sisyphus | Updated to reflect current state: all packages build and test pass |
 | 1.1 | 2026-05-06 | Sisyphus | Updated to reflect actual state: project does NOT compile due to LSP syntax errors |
 | 1.0 | 2026-05-02 | Mark LaPointe | Initial build status document |
 
-**Last Updated:** 2026-05-06
+**Last Updated:** 2026-05-10
 **Classification:** INTERNAL

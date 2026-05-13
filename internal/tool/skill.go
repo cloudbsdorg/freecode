@@ -70,6 +70,16 @@ func (t *SkillTool) Execute(ctx context.Context, req Request) (*Response, error)
 }
 
 func (t *SkillTool) listSkills() (*Response, error) {
+	index, err := skill.ReadIndex(t.homeDir)
+	if err == nil && len(index) > 0 {
+		var lines []string
+		lines = append(lines, "Available skills (lightning index):")
+		for name, desc := range index {
+			lines = append(lines, fmt.Sprintf("  %s: %s", name, desc))
+		}
+		return &Response{Result: join(lines, "\n")}, nil
+	}
+
 	skills, err := skill.Discover(t.homeDir)
 	if err != nil {
 		return &Response{
@@ -83,7 +93,8 @@ func (t *SkillTool) listSkills() (*Response, error) {
 				"  ~/.config/freecode/skills/<name>/SKILL.md\n" +
 				"  ~/.config/claude/skills/<name>/SKILL.md\n" +
 				"  ~/.agents/skills/<name>/SKILL.md\n\n" +
-				"Skill files should have YAML frontmatter with 'name' and 'description'.",
+				"Or create a lightning index at:\n" +
+				"  ~/.config/freecode/skills/INDEX.md",
 		}, nil
 	}
 

@@ -145,3 +145,30 @@ func GetSkill(skills []SkillInfo, name string) *SkillInfo {
 	}
 	return nil
 }
+
+func ReadIndex(homeDir string) (map[string]string, error) {
+	index := make(map[string]string)
+	for _, dir := range DefaultSkillDirs {
+		indexPath := filepath.Join(homeDir, dir, "INDEX.md")
+		data, err := os.ReadFile(indexPath)
+		if err != nil {
+			continue
+		}
+		lines := strings.Split(string(data), "\n")
+		for _, line := range lines {
+			line = strings.TrimSpace(line)
+			if line == "" || strings.HasPrefix(line, "#") {
+				continue
+			}
+			parts := strings.SplitN(line, ":", 2)
+			if len(parts) == 2 {
+				name := strings.TrimSpace(parts[0])
+				desc := strings.TrimSpace(parts[1])
+				if name != "" {
+					index[name] = desc
+				}
+			}
+		}
+	}
+	return index, nil
+}

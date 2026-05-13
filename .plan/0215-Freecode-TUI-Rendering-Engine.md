@@ -1,10 +1,15 @@
 # Freecode TUI Rendering Engine
 
+**Document ID:** TUI-001
+**Version:** 2.0
+**Last Updated:** 2026-05-10
+**Status:** IMPLEMENTED
+
 ## Overview
 
-The TUI rendering engine provides a declarative, component-based UI system with HTML/XML-like templates, responsive sizing, and dynamic show/hide capabilities. It supports multiple renderers (Bubble/lipgloss, LCD, Headless) through a generic interface.
+The TUI rendering engine provides a reactive, component-based UI system with external templates, state-driven rendering, and dynamic interpolation. It supports multiple renderers (Bubble/lipgloss, LCD, Headless) through a generic interface.
 
-## Architecture
+## Implemented Architecture
 
 ```
 templates/
@@ -32,56 +37,57 @@ templates/
     └── commandpalette/
 ```
 
-## Lipgloss Compatibility
+## Core Implementation
 
-The template engine is designed to work with lipgloss-style positioning. Multi-line text (like banners) is properly rendered by splitting into individual lines at successive y positions:
+### ReactiveEngine[R Renderer]
 
-```go
-func (e *Engine[R]) renderMultiLineText(text string, x int, y int, color string, r R) string {
-    lines := strings.Split(text, "\n")
-    var result string
-    for i, line := range lines {
-        result += r.RenderText(line, x, y+i, color)
-    }
-    return result
-}
-```
-
-## Core Interfaces
-
-### Renderer Interface
+The `ReactiveEngine` provides React-like state management:
 
 ```go
-type Renderer interface {
-    RenderBox(x, y, w, h int, bgColor string) string
-    RenderText(text string, x, y int, fgColor string) string
-    RenderBorder(x, y, w, h int, fgColor string) string
-    RenderSelected(text string, x, y, w int, fg, bg string) string
-    Width() int
-    Height() int
-}
+engine := template.NewReactiveEngine[BubbleRenderer]()
+
+// Set state - automatically marks components dirty
+engine.Set("username", "Alice")
+engine.Set("messages", []string{"Hi", "Hello"})
+engine.Set("showDialog", true)
+
+// Interpolate template with state
+result := engine.Interpolate(`<text value="Hello ${username}!" />`)
+
+// Full render with layout calculation
+output := engine.MustRender(templateSrc, width, height, renderer)
+
+// Or render from external template file
+output := engine.RenderTemplate("home", width, height, renderer)
 ```
 
-**Implementations:**
-- `BubbleRenderer` - lipgloss-based styling for rich terminals
-- `LCDRenderer` - simple terminal rendering
-- `HeadlessRenderer` - testing/no-op
-
-### Component Interface
+### State-Driven Rendering
 
 ```go
-type Component[R renderer.Renderer] struct {
-    X, Y       int
-    Width, Height int
-    Visible    bool
+// Subscribe to state changes
+for change := range engine.Subscribe() {
+    fmt.Printf("State changed: %s = %v\n", change.Key, change.Value)
 }
 
-func (c *Component[R]) Render(r R) string
+// Render only dirty components for efficiency
+output := engine.RenderDirty(src, width, height, renderer)
 ```
 
-## Template System
+### Template Loading
 
-### Syntax
+```go
+// Load templates from external files
+engine := template.NewReactiveEngineWithLoader[BubbleRenderer]("./templates")
+
+// Or manually load specific templates
+engine.LoadTemplate("home")
+engine.LoadComponent("button")
+
+// Get raw template content
+src := engine.GetTemplate("home")
+```
+
+## Template Syntax
 
 Templates use HTML/XML-like syntax with `${variable}` interpolation:
 
@@ -101,9 +107,13 @@ Templates use HTML/XML-like syntax with `${variable}` interpolation:
 </window>
 ```
 
-### Available Components
+### Interpolation Features
 
-#### Containers
+- `${key}` - Simple variable substitution
+- `${key:default}` - With default value if empty
+- Arrays joined with commas: `${messages}` → "msg1,msg2,msg3"
+
+## Implemented Components
 
 | Component | Description | Key Attributes |
 |-----------|-------------|----------------|
@@ -111,11 +121,6 @@ Templates use HTML/XML-like syntax with `${variable}` interpolation:
 | `<vbox>` | Vertical box layout | `gap`, `align` (left/center/right) |
 | `<hbox>` | Horizontal box layout | `gap`, `align` (top/center/bottom) |
 | `<grid>` | Grid layout | `cols`, `rows`, `gap` |
-
-#### Elements
-
-| Component | Description | Key Attributes |
-|-----------|-------------|----------------|
 | `<text>` | Static text | `value`, `color`, `bold` |
 | `<list>` | Bulleted list | `items` (comma-separated) |
 | `<button>` | Clickable button | `id`, `label`, `primary` |
@@ -129,125 +134,53 @@ Templates use HTML/XML-like syntax with `${variable}` interpolation:
 | `<selectionlist>` | Selectable list | `items`, `selected` |
 | `<dialog>` | Modal dialog | `title`, `content` |
 
-### Constraints & Conditions
-
-```xml
-<!-- Size constraints -->
-<text min-width="50" max-width="100" />
-
-<!-- Percentage of parent -->
-<text width="50%" />
-
-<!-- Conditional visibility -->
-<sidebar show-if="width>=100" />
-<panel hide-if="height<40" />
-```
-
-Supported conditions: `width>=N`, `width<=N`, `width>N`, `width<N`, `width==N` (same for `height`)
-
-## Engine Classes
-
-### Engine[R Renderer]
-
-Core template parser and renderer:
-
-```go
-engine := NewEngine[BubbleRenderer]()
-
-// Parse and render in one step
-result, err := engine.ParseAndRender(src, 80, 24, renderer)
-
-// Get component by ID after rendering
-btn := engine.GetComponent("submit")
-```
-
-### ResponsiveEngine[R Renderer]
+## ResponsiveEngine[R Renderer]
 
 Adds responsive sizing and visibility management:
 
 ```go
-re := NewResponsiveEngine[BubbleRenderer]()
+re := template.NewResponsiveEngine[BubbleRenderer]()
 
 // Size observation
-re.AddSizeObserver(SizeObserverFunc(func(w, h int) {
+re.AddSizeObserver(func(w, h int) {
     fmt.Printf("Size: %dx%d\n", w, h)
-}))
+})
 
 // Visibility control
 re.Hide("sidebar")
 re.Show("dialog")
 re.Toggle("panel")
 
-// Check visibility
-if re.IsVisible("dialog") { ... }
-
-// Conditional rendering
-re.RenderAt(src, width, height, renderer)
+// Conditional rendering with constraints
+// <text show-if="width>=80" />
+// <panel hide-if="height<30" />
 ```
 
-### DialogPresenter
+## Integration with Model
 
-For dynamic dialog content:
-
-```go
-// Alert dialog
-alert := NewAlertPresenter(re, "alert", "msg")
-alert.ShowError("File not found!")
-alert.ShowSuccess("Saved!")
-alert.ShowWarning("Low memory")
-alert.ShowInfo("Update available")
-
-// Confirm dialog
-confirm := NewConfirmPresenter(re, "confirm", "msg", "ok", "cancel")
-confirm.SetConfirmHandler(func() { fmt.Println("OK!") })
-confirm.SetCancelHandler(func() { fmt.Println("Cancelled") })
-confirm.ShowConfirm("Delete?", "Remove this file?", "Delete", "Cancel")
-```
-
-## Usage Patterns
-
-### Basic View
-
-```go
-engine := template.NewEngine[BubbleRenderer]()
-src := `
-<window title="My App" width="80" height="24">
-  <vbox padding="1">
-    <text value="Hello World" bold="true" />
-    <spacer height="1" />
-    <list items="Option A,Option B,Option C" />
-  </vbox>
-</window>`
-
-output, err := engine.ParseAndRender(src, 80, 24, renderer)
-```
-
-### Dynamic Content
-
-```go
-engine := template.NewResponsiveEngine[BubbleRenderer]()
-
-// Set variables before rendering
-tmpl, _ := template.Parse(src)
-tmpl.Set("username", "Alice")
-tmpl.Set("items", "a,b,c,d")
-
-// Or use component manipulation
-engine.SetComponentAttr("title", "value", "New Title")
-engine.SetComponentContent("list", []string{"x", "y", "z"})
-```
-
-### Integration with Bubble Tea
+The TUI model uses the reactive engine:
 
 ```go
 type Model struct {
-    engine *template.ResponsiveEngine[BubbleRenderer]
+    engine *template.ReactiveEngine[BubbleRenderer]
     view   string
+    width  int
+    height int
 }
 
 func (m Model) View() string {
-    output, _ := m.engine.RenderAt(m.view, m.width, m.height, renderer)
-    return output
+    // Sync state to engine
+    m.engine.Set("messages", m.messages)
+    m.engine.Set("input", m.inputText)
+
+    // Render current view template
+    return m.engine.RenderTemplate(m.view, m.width, m.height, renderer)
+}
+
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    // On state change, mark engine dirty
+    m.engine.Set("session", m.sessionName)
+    return m, nil
 }
 ```
 
@@ -255,55 +188,31 @@ func (m Model) View() string {
 
 ```
 internal/ui/
+├── template/
+│   ├── parser.go        # Template parser, interpolates ${var} syntax
+│   ├── engine.go        # Engine[R] - core template rendering
+│   ├── responsive.go    # ResponsiveEngine - sizing, visibility constraints
+│   ├── reactive_engine.go # ReactiveEngine - state management, dirty tracking
+│   ├── loader.go        # Loads templates from filesystem
+│   └── reactive_engine_test.go
 ├── renderer/
-│   ├── renderer.go       # Renderer interface
-│   ├── bubble.go         # BubbleRenderer (lipgloss)
+│   ├── renderer.go      # Renderer interface
+│   ├── bubble.go        # BubbleRenderer (lipgloss)
 │   ├── lcd.go           # LCDRenderer
-│   └── headless.go       # HeadlessRenderer
-├── component/
-│   ├── component.go      # Base Component[R]
-│   ├── statusbar.go     # StatusBar
-│   ├── button.go        # Button
-│   ├── textinput.go     # TextInput
-│   ├── selectionlist.go  # SelectionList
-│   ├── list.go          # List
-│   ├── dialog.go        # Dialog
-│   ├── window.go        # Window
-│   ├── toast.go         # Toast
-│   ├── messagelist.go   # MessageList
-│   ├── tabbar.go        # TabBar
-│   └── inputarea.go     # InputArea
-└── template/
-    ├── parser.go        # Template parser
-    ├── engine.go        # Engine[R]
-    ├── responsive.go    # ResponsiveEngine
-    ├── dialog_presenter.go # Dialog/Alert/Confirm
-    └── README.md        # Template documentation
+│   └── headless.go      # HeadlessRenderer
+└── model.go             # Main TUI model, uses ReactiveEngine
 ```
 
 ## Testing
 
 ```bash
 go test ./internal/ui/template/... -v
-go test ./internal/ui/component/... -v
-```
-
-Mock renderer for testing:
-
-```go
-type mockRenderer struct{}
-func (m mockRenderer) RenderBox(x, y, w, h int, bgColor string) string { return "" }
-func (m mockRenderer) RenderText(text string, x, y int, fgColor string) string { return text }
-func (m mockRenderer) RenderBorder(x, y, w, h int, fgColor string) string { return "" }
-func (m mockRenderer) RenderSelected(text string, x, y, w int, fg, bg string) string { return text }
-func (m mockRenderer) Width() int { return 80 }
-func (m mockRenderer) Height() int { return 24 }
 ```
 
 ## Design Decisions
 
-1. **Generic over Renderer** - Components and engines are generic `type Component[R Renderer]` allowing same code to work with different renderers
-2. **Interface-based DialogEngine** - Allows presenters to work with any engine implementing Show/Hide/SetComponentAttr
-3. **String-based attributes** - Template attributes stored as strings, parsed at render time for flexibility
-4. **Responsive via observers** - Size changes propagate through observer pattern, not direct coupling
-5. **ID-based component access** - Components accessed by string ID for loose coupling between template and code
+1. **Generic over Renderer** - Components work with any renderer implementation
+2. **State-driven** - React-like `Set(key, value)` triggers re-render
+3. **Dirty tracking** - Only re-render changed components for performance
+4. **External templates** - Templates stored as files, not hardcoded
+5. **Thread-safe** - RWMutex protects state access
