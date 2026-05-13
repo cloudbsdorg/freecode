@@ -144,3 +144,43 @@ func RenderBoxCentered(lines []string, colors Colors, width, height, containerW,
 		MarginLeft(x).
 		Render(content)
 }
+
+func RenderBackdrop(containerW, containerH int) string {
+	return lipgloss.NewStyle().
+		Width(containerW).
+		Height(containerH).
+		Background(lipgloss.Color("#000000")).
+		Foreground(lipgloss.Color("#000000")).
+		Render(" ")
+}
+
+func RenderWithBackdrop(backdrop, content string) string {
+	return backdrop + "\n" + content
+}
+
+func RenderBackdropCentered(containerW, containerH int, content string) string {
+	backdrop := RenderBackdrop(containerW, containerH)
+	return backdrop + "\n" + content
+}
+
+func RenderDialogWithBackdrop(content string, colors Colors, containerW, containerH int) string {
+	backdrop := lipgloss.NewStyle().
+		Width(containerW).
+		Height(containerH).
+		Background(lipgloss.Color("#000000"))
+
+	x := (containerW - 50) / 2
+	y := (containerH - 15) / 2
+
+	dialog := lipgloss.NewStyle().
+		Width(50).
+		MarginTop(y).
+		MarginLeft(x).
+		Background(lipgloss.Color(colors.Background)).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(colors.Border)).
+		Padding(1).
+		Render(content)
+
+	return backdrop.Render(" ") + "\n" + dialog
+}

@@ -88,17 +88,17 @@ func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, 
 		return nil, nil
 
 	case TypeWindow:
-		winW := e.getInt(elem.Attributes, "width", w)
-		winH := e.getInt(elem.Attributes, "height", h)
-		winX := e.getInt(elem.Attributes, "x", x)
-		winY := e.getInt(elem.Attributes, "y", y)
+		winW := getAttrInt(elem.Attributes, "width", w)
+		winH := getAttrInt(elem.Attributes, "height", h)
+		winX := getAttrInt(elem.Attributes, "x", x)
+		winY := getAttrInt(elem.Attributes, "y", y)
 
-		if e.getBool(elem.Attributes, "center", false) {
+		if getAttrBool(elem.Attributes, "center", false) {
 			winX = x + (w-winW)/2
 			winY = y + (h-winH)/2
 		}
 
-		padding := e.getInt(elem.Attributes, "padding", 0)
+		padding := getAttrInt(elem.Attributes, "padding", 0)
 		children, err := e.BuildTreeFromElements(elem.Children, winX+padding, winY+padding, winW-2*padding, winH-2*padding)
 		if err != nil {
 			return nil, err
@@ -120,8 +120,8 @@ func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, 
 		return []*ComponentNode{node}, nil
 
 	case TypeVBox:
-		padding := e.getInt(elem.Attributes, "padding", 0)
-		gap := e.getInt(elem.Attributes, "gap", 0)
+		padding := getAttrInt(elem.Attributes, "padding", 0)
+		gap := getAttrInt(elem.Attributes, "gap", 0)
 		align := elem.Attributes["align"]
 
 		children, err := e.BuildTreeFromElements(elem.Children, x+padding, y+padding, w-2*padding, h-2*padding)
@@ -134,8 +134,8 @@ func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, 
 		return children, nil
 
 	case TypeHBox:
-		padding := e.getInt(elem.Attributes, "padding", 0)
-		gap := e.getInt(elem.Attributes, "gap", 0)
+		padding := getAttrInt(elem.Attributes, "padding", 0)
+		gap := getAttrInt(elem.Attributes, "gap", 0)
 		align := elem.Attributes["align"]
 
 		children, err := e.BuildTreeFromElements(elem.Children, x+padding, y+padding, w-2*padding, h-2*padding)
@@ -148,9 +148,9 @@ func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, 
 		return children, nil
 
 	case TypeGrid:
-		cols := e.getInt(elem.Attributes, "cols", 2)
-		rows := e.getInt(elem.Attributes, "rows", 0)
-		gap := e.getInt(elem.Attributes, "gap", 0)
+		cols := getAttrInt(elem.Attributes, "cols", 2)
+		rows := getAttrInt(elem.Attributes, "rows", 0)
+		gap := getAttrInt(elem.Attributes, "gap", 0)
 
 		children, err := e.BuildTreeFromElements(elem.Children, x, y, w, h)
 		if err != nil {
@@ -162,9 +162,9 @@ func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, 
 		return children, nil
 
 	case TypeSpacer:
-		spacerW := e.getInt(elem.Attributes, "width", w)
-		spacerH := e.getInt(elem.Attributes, "height", 1)
-		flex := e.getInt(elem.Attributes, "flex", 1)
+		spacerW := getAttrInt(elem.Attributes, "width", w)
+		spacerH := getAttrInt(elem.Attributes, "height", 1)
+		flex := getAttrInt(elem.Attributes, "flex", 1)
 
 		return []*ComponentNode{{
 			ID:     elem.ID,
@@ -198,7 +198,7 @@ func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, 
 			value = elem.Attributes["value"]
 		}
 		color := elem.Attributes["color"]
-		bold := e.getBool(elem.Attributes, "bold", false)
+		bold := getAttrBool(elem.Attributes, "bold", false)
 
 		return []*ComponentNode{{
 			ID:      elem.ID,
@@ -234,7 +234,7 @@ func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, 
 		if label == "" {
 			label = elem.Content
 		}
-		primary := e.getBool(elem.Attributes, "primary", false)
+		primary := getAttrBool(elem.Attributes, "primary", false)
 
 		node := &ComponentNode{
 			ID:      elem.ID,
@@ -253,7 +253,7 @@ func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, 
 
 	case TypeInput:
 		placeholder := elem.Attributes["placeholder"]
-		hidden := e.getBool(elem.Attributes, "hidden", false)
+		hidden := getAttrBool(elem.Attributes, "hidden", false)
 
 		node := &ComponentNode{
 			ID:      elem.ID,
@@ -271,8 +271,8 @@ func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, 
 		return []*ComponentNode{node}, nil
 
 	case TypeProgress:
-		value := e.getInt(elem.Attributes, "value", 0)
-		width := e.getInt(elem.Attributes, "width", w)
+		value := getAttrInt(elem.Attributes, "value", 0)
+		width := getAttrInt(elem.Attributes, "width", w)
 
 		return []*ComponentNode{{
 			ID:      elem.ID,
@@ -283,6 +283,92 @@ func (e *Engine[R]) BuildTree(elem *Element, x, y, w, h int) ([]*ComponentNode, 
 			Height:  1,
 			Content: value,
 			Attrs:   elem.Attributes,
+		}}, nil
+
+	case TypeTabbar:
+		tabs := getAttrString(elem.Attributes, "tabs", "")
+		active := getAttrInt(elem.Attributes, "active", 0)
+		return []*ComponentNode{{
+			ID:      elem.ID,
+			Type:    TypeTabbar,
+			X:       x,
+			Y:       y,
+			Width:   w,
+			Height:  1,
+			Content: tabs,
+			Attrs:   map[string]string{"tabs": tabs, "active": strconv.Itoa(active)},
+		}}, nil
+
+	case TypeStatusbar:
+		model := getAttrString(elem.Attributes, "model", "")
+		agent := getAttrString(elem.Attributes, "agent", "")
+		provider := getAttrString(elem.Attributes, "provider", "")
+		yolo := getAttrString(elem.Attributes, "yolo", "off")
+		return []*ComponentNode{{
+			ID:      elem.ID,
+			Type:    TypeStatusbar,
+			X:       x,
+			Y:       y,
+			Width:   w,
+			Height:  1,
+			Content: map[string]string{"model": model, "agent": agent, "provider": provider, "yolo": yolo},
+			Attrs:   elem.Attributes,
+		}}, nil
+
+	case TypeMessageList:
+		messages := getAttrString(elem.Attributes, "messages", "")
+		return []*ComponentNode{{
+			ID:      elem.ID,
+			Type:    TypeMessageList,
+			X:       x,
+			Y:       y,
+			Width:   w,
+			Height:  h,
+			Content: messages,
+			Attrs:   elem.Attributes,
+		}}, nil
+
+	case TypeSelectionList:
+		items := getAttrString(elem.Attributes, "items", "")
+		selected := getAttrInt(elem.Attributes, "selected", 0)
+		return []*ComponentNode{{
+			ID:      elem.ID,
+			Type:    TypeSelectionList,
+			X:       x,
+			Y:       y,
+			Width:   w,
+			Height:  h,
+			Content: strings.Split(items, ","),
+			Attrs:   map[string]string{"items": items, "selected": strconv.Itoa(selected)},
+		}}, nil
+
+	case TypeToast:
+		message := getAttrString(elem.Attributes, "message", "")
+		toastType := getAttrString(elem.Attributes, "type", "info")
+		return []*ComponentNode{{
+			ID:      elem.ID,
+			Type:    TypeToast,
+			X:       x,
+			Y:       y,
+			Width:   w,
+			Height:  1,
+			Content: message,
+			Attrs:   map[string]string{"type": toastType},
+		}}, nil
+
+	case TypeDialog:
+		title := getAttrString(elem.Attributes, "title", "")
+		content := getAttrString(elem.Attributes, "content", "")
+		dialogType := getAttrString(elem.Attributes, "dialog-type", "alert")
+		return []*ComponentNode{{
+			ID:      elem.ID,
+			Type:    TypeDialog,
+			X:       x,
+			Y:       y,
+			Width:   w,
+			Height:  h,
+			Content: content,
+			Attrs:   map[string]string{"title": title, "dialog-type": dialogType},
 		}}, nil
 
 	default:
@@ -300,7 +386,7 @@ func (e *Engine[R]) BuildTreeFromElements(elems []*Element, x, y, w, h int) ([]*
 			return nil, err
 		}
 		for _, n := range elemNodes {
-			if n.Type != TypeSpacer || e.getInt(n.Attrs, "flex", 1) == 0 {
+			if n.Type != TypeSpacer || getAttrInt(n.Attrs, "flex", 1) == 0 {
 				n.X = x
 				n.Y = cury
 			}
@@ -317,31 +403,12 @@ func (e *Engine[R]) BuildTreeFromElements(elems []*Element, x, y, w, h int) ([]*
 
 func (e *Engine[R]) layoutVBox(nodes []*ComponentNode, width, gap int, align string) {
 	cury := 0
-	flexTotal := 0
-	fixedTotal := 0
+	flexUnit := e.calculateFlexUnit(nodes, width, gap, true)
 
-	for _, n := range nodes {
-		if n.Type == TypeSpacer {
-			flex := e.getInt(n.Attrs, "flex", 1)
-			flexTotal += flex
-		} else {
-			fixedTotal += n.Height
-		}
-	}
-
-	flexUnit := 0
-	if flexTotal > 0 {
-		flexUnit = (width - fixedTotal - gap*(len(nodes)-1)) / flexTotal
-		if flexUnit < 0 {
-			flexUnit = 0
-		}
-	}
-
-	cury = 0
 	for _, n := range nodes {
 		n.Y = cury
 		if n.Type == TypeSpacer {
-			flex := e.getInt(n.Attrs, "flex", 1)
+			flex := getAttrInt(n.Attrs, "flex", 1)
 			n.Height = flex * flexUnit
 			if n.Height < 1 {
 				n.Height = 1
@@ -362,31 +429,12 @@ func (e *Engine[R]) layoutVBox(nodes []*ComponentNode, width, gap int, align str
 
 func (e *Engine[R]) layoutHBox(nodes []*ComponentNode, height, gap int, align string) {
 	curx := 0
-	flexTotal := 0
-	fixedTotal := 0
+	flexUnit := e.calculateFlexUnit(nodes, height, gap, false)
 
-	for _, n := range nodes {
-		if n.Type == TypeSpacer {
-			flex := e.getInt(n.Attrs, "flex", 1)
-			flexTotal += flex
-		} else {
-			fixedTotal += n.Width
-		}
-	}
-
-	flexUnit := 0
-	if flexTotal > 0 {
-		flexUnit = (height - fixedTotal - gap*(len(nodes)-1)) / flexTotal
-		if flexUnit < 0 {
-			flexUnit = 0
-		}
-	}
-
-	curx = 0
 	for _, n := range nodes {
 		n.X = curx
 		if n.Type == TypeSpacer {
-			flex := e.getInt(n.Attrs, "flex", 1)
+			flex := getAttrInt(n.Attrs, "flex", 1)
 			n.Width = flex * flexUnit
 			if n.Width < 1 {
 				n.Width = 1
@@ -403,6 +451,30 @@ func (e *Engine[R]) layoutHBox(nodes []*ComponentNode, height, gap int, align st
 			n.Y = 0
 		}
 	}
+}
+
+func (e *Engine[R]) calculateFlexUnit(nodes []*ComponentNode, total, gap int, isVertical bool) int {
+	flexTotal := 0
+	fixedTotal := 0
+
+	for _, n := range nodes {
+		if n.Type == TypeSpacer {
+			flexTotal += getAttrInt(n.Attrs, "flex", 1)
+		} else if isVertical {
+			fixedTotal += n.Height
+		} else {
+			fixedTotal += n.Width
+		}
+	}
+
+	if flexTotal == 0 {
+		return 0
+	}
+	flexUnit := (total - fixedTotal - gap*(len(nodes)-1)) / flexTotal
+	if flexUnit < 0 {
+		return 0
+	}
+	return flexUnit
 }
 
 func (e *Engine[R]) layoutGrid(nodes []*ComponentNode, cols, rows, width, height, gap int) {
@@ -437,18 +509,18 @@ func (e *Engine[R]) renderNodes(nodes []*ComponentNode, r R) string {
 func (e *Engine[R]) renderNode(n *ComponentNode, r R) string {
 	switch n.Type {
 	case TypeWindow:
-		border := r.RenderBorder(n.X, n.Y, n.Width, n.Height, e.getColor(n.Attrs, "border", ""))
+		border := r.RenderBorder(n.X, n.Y, n.Width, n.Height, getAttrColor(n.Attrs, "border", ""))
 		content := e.renderNodes(n.Children, r)
 		title := n.Attrs["title"]
 		if title != "" {
-			titleStr := r.RenderText(title, n.X+1, n.Y, e.getColor(n.Attrs, "title-color", ""))
+			titleStr := r.RenderText(title, n.X+1, n.Y, getAttrColor(n.Attrs, "title-color", ""))
 			return border + titleStr + content
 		}
 		return border + content
 
 	case TypeText:
 		text := fmt.Sprintf("%v", n.Content)
-		return e.renderMultiLineText(text, n.X, n.Y, e.getColor(n.Attrs, "color", ""), r)
+		return e.renderMultiLineText(text, n.X, n.Y, getAttrColor(n.Attrs, "color", ""), r)
 
 	case TypeList:
 		items, ok := n.Content.([]string)
@@ -456,16 +528,16 @@ func (e *Engine[R]) renderNode(n *ComponentNode, r R) string {
 			return ""
 		}
 		content := strings.Join(items, "\n")
-		return e.renderMultiLineText(content, n.X, n.Y, e.getColor(n.Attrs, "color", ""), r)
+		return e.renderMultiLineText(content, n.X, n.Y, getAttrColor(n.Attrs, "color", ""), r)
 
 	case TypeButton:
 		label := fmt.Sprintf("%v", n.Content)
 		primary := n.Attrs["primary"] == "true"
-		fg := e.getColor(n.Attrs, "color", "")
-		bg := e.getColor(n.Attrs, "bg", "")
+		fg := getAttrColor(n.Attrs, "color", "")
+		bg := getAttrColor(n.Attrs, "bg", "")
 		if primary {
-			bg = e.getColor(n.Attrs, "primary-bg", "#0099ff")
-			fg = e.getColor(n.Attrs, "primary-fg", "#ffffff")
+			bg = getAttrColor(n.Attrs, "primary-bg", "#0099ff")
+			fg = getAttrColor(n.Attrs, "primary-fg", "#ffffff")
 		}
 		return r.RenderSelected(" "+label+" ", n.X, n.Y, n.Width, fg, bg)
 
@@ -487,7 +559,7 @@ func (e *Engine[R]) renderNode(n *ComponentNode, r R) string {
 			char = c
 		}
 		line := strings.Repeat(char, n.Width)
-		return r.RenderText(line, n.X, n.Y, e.getColor(n.Attrs, "color", ""))
+		return r.RenderText(line, n.X, n.Y, getAttrColor(n.Attrs, "color", ""))
 
 	case TypeProgress:
 		val := 0
@@ -500,7 +572,47 @@ func (e *Engine[R]) renderNode(n *ComponentNode, r R) string {
 			filled = barLen
 		}
 		bar := "[" + strings.Repeat("=", filled) + strings.Repeat(" ", barLen-filled) + "]"
-		return r.RenderText(bar, n.X, n.Y, e.getColor(n.Attrs, "color", ""))
+		return r.RenderText(bar, n.X, n.Y, getAttrColor(n.Attrs, "color", ""))
+
+	case TypeTabbar:
+		tabs := n.Attrs["tabs"]
+		active := 0
+		if a, err := strconv.Atoi(n.Attrs["active"]); err == nil {
+			active = a
+		}
+		return e.renderTabbar(tabs, active, r)
+
+	case TypeStatusbar:
+		content, ok := n.Content.(map[string]string)
+		if !ok {
+			content = make(map[string]string)
+		}
+		return e.renderStatusbar(content, r)
+
+	case TypeMessageList:
+		return e.renderMessageList(n, r)
+
+	case TypeSelectionList:
+		items, ok := n.Content.([]string)
+		if !ok {
+			items = []string{}
+		}
+		selected := 0
+		if s, err := strconv.Atoi(n.Attrs["selected"]); err == nil {
+			selected = s
+		}
+		return e.renderSelectionList(items, selected, n, r)
+
+	case TypeToast:
+		message := fmt.Sprintf("%v", n.Content)
+		toastType := n.Attrs["type"]
+		return e.renderToast(message, toastType, r)
+
+	case TypeDialog:
+		title := n.Attrs["title"]
+		content := fmt.Sprintf("%v", n.Content)
+		dialogType := n.Attrs["dialog-type"]
+		return e.renderDialog(title, content, dialogType, n, r)
 
 	default:
 		return e.renderNodes(n.Children, r)
@@ -516,27 +628,80 @@ func (e *Engine[R]) renderMultiLineText(text string, x int, y int, color string,
 	return result
 }
 
-func (e *Engine[R]) getInt(attrs map[string]string, key string, def int) int {
-	if v, ok := attrs[key]; ok {
-		if i, err := strconv.Atoi(v); err == nil {
-			return i
+func (e *Engine[R]) renderTabbar(tabs string, active int, r R) string {
+	tabList := strings.Split(tabs, ",")
+	var result string
+	for i, tab := range tabList {
+		tab = strings.TrimSpace(tab)
+		if i == active {
+			result += r.RenderSelected("["+tab+"]", 0, 0, 0, "", "")
+		} else {
+			result += r.RenderText("["+tab+"]", 0, 0, "")
 		}
 	}
-	return def
+	return result
 }
 
-func (e *Engine[R]) getBool(attrs map[string]string, key string, def bool) bool {
-	if v, ok := attrs[key]; ok {
-		return v == "true" || v == "1" || v == "yes"
+func (e *Engine[R]) renderStatusbar(content map[string]string, r R) string {
+	model := content["model"]
+	agent := content["agent"]
+	provider := content["provider"]
+	yolo := content["yolo"]
+
+	var result string
+	if provider != "" {
+		result += "● " + provider + "  "
 	}
-	return def
+	if yolo == "on" {
+		result += "YOLO: ON  "
+	}
+	if model != "" {
+		result += "Model: " + model + "  "
+	}
+	if agent != "" {
+		result += "Agent: " + agent
+	}
+	return result
 }
 
-func (e *Engine[R]) getColor(attrs map[string]string, key, def string) string {
-	if v, ok := attrs[key]; ok {
-		return v
+func (e *Engine[R]) renderMessageList(n *ComponentNode, r R) string {
+	messages := getAttrString(n.Attrs, "messages", "")
+	return r.RenderText(messages, n.X, n.Y, "")
+}
+
+func (e *Engine[R]) renderSelectionList(items []string, selected int, n *ComponentNode, r R) string {
+	var result string
+	for i, item := range items {
+		item = strings.TrimSpace(item)
+		if i == selected {
+			result += r.RenderSelected(item, n.X, n.Y+i, n.Width, "", "")
+		} else {
+			result += r.RenderText(item, n.X, n.Y+i, "")
+		}
 	}
-	return def
+	return result
+}
+
+func (e *Engine[R]) renderToast(message string, toastType string, r R) string {
+	var color string
+	switch toastType {
+	case "success":
+		color = "#4EC9B0"
+	case "warning":
+		color = "#FFCC00"
+	case "error":
+		color = "#F44747"
+	default:
+		color = "#007ACC"
+	}
+	return r.RenderText(message, 0, 0, color)
+}
+
+func (e *Engine[R]) renderDialog(title, content, dialogType string, n *ComponentNode, r R) string {
+	border := r.RenderBorder(n.X, n.Y, n.Width, n.Height, "#3D3D3D")
+	titleStr := r.RenderText(title, n.X+1, n.Y, "#007ACC")
+	contentStr := r.RenderText(content, n.X+1, n.Y+1, "#E0E0E0")
+	return border + titleStr + contentStr
 }
 
 func (e *Engine[R]) GetComponent(id string) *ComponentNode {
@@ -545,4 +710,41 @@ func (e *Engine[R]) GetComponent(id string) *ComponentNode {
 
 func (e *Engine[R]) RegisterComponent(id string, node *ComponentNode) {
 	e.components[id] = node
+}
+
+func getAttr(attrs map[string]string, key, def string) string {
+	if v, ok := attrs[key]; ok {
+		return v
+	}
+	return def
+}
+
+func getAttrInt(attrs map[string]string, key string, def int) int {
+	if v, ok := attrs[key]; ok {
+		if i, err := strconv.Atoi(v); err == nil {
+			return i
+		}
+	}
+	return def
+}
+
+func getAttrBool(attrs map[string]string, key string, def bool) bool {
+	if v, ok := attrs[key]; ok {
+		return v == "true" || v == "1" || v == "yes"
+	}
+	return def
+}
+
+func getAttrString(attrs map[string]string, key, def string) string {
+	if v, ok := attrs[key]; ok {
+		return v
+	}
+	return def
+}
+
+func getAttrColor(attrs map[string]string, key, def string) string {
+	if v, ok := attrs[key]; ok {
+		return v
+	}
+	return def
 }

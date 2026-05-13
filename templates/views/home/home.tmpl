@@ -1,9 +1,16 @@
-<window title="Freecode" width="80" height="24" padding="1">
-  <vbox gap="0">
-    <text value="Welcome to Freecode" bold="true" />
-    <spacer height="1" />
-    <list id="options" items="New Session,Continue Last,Providers,Settings,Help" />
+<window title="Freecode" width="${width}" height="${height}" padding="${padding:0}">
+  <vbox gap="0" align="center">
     <spacer flex="1" />
-    <text value="Press Enter to select" color="#888888" />
+    <text id="banner" value="${banner}" color="${bannerColor:#4EC9B0}" bold="true" />
+    <spacer height="2" />
+    <text value="${tagline:Unified AI Coding Assistant}" color="${taglineColor:#808080}" />
+    <spacer height="3" />
+    <vbox width="${inputWidth:60}" gap="0">
+      <inputarea id="input" value="${inputValue}" placeholder="${inputPlaceholder:Ask anything...}" />
+    </vbox>
+    <spacer height="2" />
+    <text value="${hint:Press Enter to start | Ctrl+P: Command Palette | Ctrl+H: Home | Ctrl+Q: Quit}" color="${hintColor:#606060}" />
+    <spacer flex="1" />
+    <statusbar id="statusbar" model="${model}" agent="${agent}" provider="${provider}" yolo="${yolo:off}" />
   </vbox>
 </window>

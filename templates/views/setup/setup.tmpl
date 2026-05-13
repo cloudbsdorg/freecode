@@ -1,16 +1,27 @@
-<window title="Setup" width="60" height="20" center="true" padding="2">
+<window title="Freecode Setup" width="${width:60}" height="${height:20}" center="true" padding="2">
   <vbox gap="1">
-    <text value="Welcome to Freecode Setup" bold="true" />
+    <text value="${title:Welcome to Freecode Setup}" bold="true" color="${titleColor:#4EC9B0}" />
     <divider />
-    <vbox gap="0">
-      <text value="Provider:" />
-      <input id="provider" placeholder="Select a provider..." />
+    <text value="Step ${step:1} of ${totalSteps:3}" color="${stepColor:#808080}" />
+    <spacer height="1" />
+    <vbox gap="0" visible="${showProvider:true}">
+      <text value="Select Provider:" />
+      <selectionlist id="providerList" items="${providers}" selected="${providerSelected:0}" />
+    </vbox>
+    <vbox gap="0" visible="${showModel:false}">
+      <text value="Select Model:" />
+      <selectionlist id="modelList" items="${models}" selected="${modelSelected:0}" />
+    </vbox>
+    <vbox gap="0" visible="${showAPIKey:false}">
+      <text value="API Key:" />
+      <input id="apiKey" placeholder="${apiKeyPlaceholder:Enter your API key...}" hidden="${apiKeyHidden:false}" />
     </vbox>
     <spacer flex="1" />
     <hbox gap="2">
+      <button id="back" label="Back" visible="${showBack:false}" />
       <spacer flex="1" />
       <button id="cancel" label="Cancel" />
-      <button id="next" label="Next" primary="true" />
+      <button id="next" label="${nextLabel:Next}" primary="true" />
     </hbox>
   </vbox>
 </window>

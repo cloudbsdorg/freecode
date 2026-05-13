@@ -1,8 +1,33 @@
 # Freecode — Implementation Tasks
 
+**Document ID:** IMPL-001
+**Version:** 4.0
+**Last Updated:** 2026-05-10
+**Author:** Mark LaPointe <mark@cloudbsd.org>
+
+---
+
+## TODO Tracker Summary
+
+| Phase | Focus | Tasks | Completed | Total | Progress |
+|-------|-------|-------|-----------|-------|----------|
+| Phase 1 | Core CLI Foundation | Project setup, CLI commands | 35 | 40 | 88% |
+| Phase 2 | Configuration | Config system, migration | 8 | 12 | 67% |
+| Phase 3 | Core Modules | Agent, hooks, shell, i18n | 12 | 15 | 80% |
+| Phase 4 | Platform | Platform detection, IDE, LSP | 6 | 8 | 75% |
+| Phase 5 | UI/TUI | TUI, components, dialogs | 18 | 25 | 72% |
+| Phase 6 | Session/Storage | Session mgmt, storage | 4 | 8 | 50% |
+| Phase 7 | Advanced | MCP, plugins, sync | 5 | 12 | 42% |
+| Phase 8 | Module Parity | OpenCode feature parity | 2 | 20 | 10% |
+| **Total** | | | **90** | **140** | **64%** |
+
+---
+
 ## 1.0 Purpose
 
 This document contains the detailed task breakdown for implementing freecode. Tasks are organized by phase and include dependencies.
+
+**Note:** This document uses simplified task tables for readability. See [CloudBSD Planning Standards](https://github.com/cloudbsdorg/application_guidelines/tree/main/Planning) for full format with ID, Priority, Assigned To, Owner, Phase, Start, End, Spec, and Notes columns.
 
 ---
 
@@ -332,6 +357,112 @@ Phase 7 ── 7.1 Server ── 7.2 Platform ── 7.3 Packaging ────�
 | `internal/agent/` | All | Agent engine |
 | `internal/tool/` | All | Tools |
 | `internal/hook/` | All | Hooks |
+
+---
+
+## Phase 8.5: TUI Gap Analysis Tasks (2026-05-10)
+
+*Remaining work from [0214-Freecode-TUI-Gap-Analysis.md](./0214-Freecode-TUI-Gap-Analysis.md)*
+
+### 8.5.1 Message Rendering (CRITICAL)
+
+| ID | Task | Priority | Status | Phase | Dependencies | Files | Spec |
+|----|------|----------|--------|-------|--------------|-------|------|
+| 8.5.1.1 | Add tool call rendering to MessageList | P0 | 🔄 IN PROGRESS | Phase 8.5 | - | `internal/ui/messagelist.go` | [Spec](#8501) |
+| 8.5.1.2 | Add syntax highlighting for code blocks | P1 | ⬜ PENDING | Phase 8.5 | 8.5.1.1 | `internal/ui/messagepart.go` | [Spec](#8501) |
+| 8.5.1.3 | Add basic diff display | P1 | ⬜ PENDING | Phase 8.5 | 8.5.1.2 | `internal/ui/messagepart.go` | [Spec](#8501) |
+| 8.5.1.4 | Add thinking/collapse support | P2 | ⬜ PENDING | Phase 8.5 | 8.5.1.1 | `internal/ui/messagelist.go` | [Spec](#8501) |
+
+### 8.5.2 Tool Display (CRITICAL)
+
+| ID | Task | Priority | Status | Phase | Dependencies | Files | Spec |
+|----|------|----------|--------|-------|--------------|-------|------|
+| 8.5.2.1 | Create ToolCall component | P0 | ⬜ PENDING | Phase 8.5 | - | `internal/ui/toolcall.go` | [Spec](#8502) |
+| 8.5.2.2 | Create ToolResult component | P1 | ⬜ PENDING | Phase 8.5 | 8.5.2.1 | `internal/ui/toolresult.go` | [Spec](#8502) |
+| 8.5.2.3 | Create ToolError component | P1 | ⬜ PENDING | Phase 8.5 | 8.5.2.2 | `internal/ui/toolerror.go` | [Spec](#8502) |
+| 8.5.2.4 | Add progress indicators | P2 | ⬜ PENDING | Phase 8.5 | 8.5.2.1 | `internal/ui/toolcall.go` | [Spec](#8502) |
+
+### 8.5.3 Dialog System (HIGH)
+
+| ID | Task | Priority | Status | Phase | Dependencies | Files | Spec |
+|----|------|----------|--------|-------|--------------|-------|------|
+| 8.5.3.1 | Add backdrop to dialogs | P1 | ⬜ PENDING | Phase 8.5 | - | `internal/ui/dialog.go` | [Spec](#8503) |
+| 8.5.3.2 | Add focus management | P1 | ⬜ PENDING | Phase 8.5 | 8.5.3.1 | `internal/ui/dialog.go` | [Spec](#8503) |
+| 8.5.3.3 | Add keyboard navigation | P2 | ⬜ PENDING | Phase 8.5 | 8.5.3.2 | `internal/ui/` | [Spec](#8503) |
+| 8.5.3.4 | Add selection integration | P2 | ⬜ PENDING | Phase 8.5 | 8.5.3.3 | `internal/ui/` | [Spec](#8503) |
+
+### 8.5.4 Session Review (HIGH)
+
+| ID | Task | Priority | Status | Phase | Dependencies | Files | Spec |
+|----|------|----------|--------|-------|--------------|-------|------|
+| 8.5.4.1 | Create session list view | P1 | ⬜ PENDING | Phase 8.5 | - | `internal/ui/sessionlist.go` | [Spec](#8504) |
+| 8.5.4.2 | Add session preview | P1 | ⬜ PENDING | Phase 8.5 | 8.5.4.1 | `internal/ui/sessionreview.go` | [Spec](#8504) |
+| 8.5.4.3 | Add fork/continue actions | P2 | ⬜ PENDING | Phase 8.5 | 8.5.4.2 | `internal/ui/sessionreview.go` | [Spec](#8504) |
+| 8.5.4.4 | Add retry capability | P2 | ⬜ PENDING | Phase 8.5 | 8.5.4.3 | `internal/ui/sessionreview.go` | [Spec](#8504) |
+
+---
+
+## Detailed Specifications
+
+### 8.5.1 Message Rendering {#8501}
+
+**Detailed Specification:**
+
+- Create `messagepart.go` with multi-part message support ✅ DONE
+- Add `ToolCallPart`, `ToolResultPart`, `CodeBlockPart`, `ThinkingPart` types ✅ DONE
+- Integrate syntax highlighting using `charmbracelet/lipgloss` colorization ✅ DONE
+- Add diff display with inline annotations ✅ DONE (renderDiffBlock)
+- Support collapse/expand for thinking blocks ✅ DONE (RenderThinkingBlock)
+
+**Acceptance Criteria:**
+- [x] Messages display with proper formatting
+- [x] Tool calls shown with distinct styling
+- [x] Code blocks have syntax highlighting
+- [x] Thinking blocks can be collapsed (RenderThinkingBlock with collapsed param)
+
+### 8.5.2 Tool Display {#8502}
+
+**Detailed Specification:**
+
+- Create `toolcall.go` with visual tool state
+- Create `toolresult.go` for tool output display
+- Create `toolerror.go` with retry capability
+- Add progress indicators for long-running tools
+
+**Acceptance Criteria:**
+- [ ] Tool calls show visual state (running, success, error)
+- [ ] Error cards offer retry button
+- [ ] Progress indicators during tool execution
+
+### 8.5.3 Dialog System {#8503}
+
+**Detailed Specification:**
+
+- Add backdrop overlay to dialogs ✅ DONE (RenderBackdrop, RenderDialogWithBackdrop)
+- Implement focus trapping within dialog ✅ DONE (focusDialog enum)
+- Add vim-style keyboard navigation ✅ DONE (j/k/Enter/Esc in HelpDialog)
+- Connect selection context to dialog results ⚠️ PARTIAL
+
+**Acceptance Criteria:**
+- [x] Dialogs have visible backdrop
+- [x] Vim-style navigation (j/k/Enter/Esc) works
+- [ ] Tab/Shift+Tab cycles focus
+- [x] Escape cancels
+
+### 8.5.4 Session Review {#8504}
+
+**Detailed Specification:**
+
+- Create session list view with history ✅ DONE (sessionreview.go)
+- Add session preview panel ✅ DONE (renderSessionPreview)
+- Implement fork session action ⚠️ PARTIAL (SessionReviewDialog exists, fork action needs wiring)
+- Add retry for failed turns ⚠️ PARTIAL (UI exists, retry logic needs wiring)
+
+**Acceptance Criteria:**
+- [x] Can browse past sessions
+- [x] Can preview session content
+- [ ] Can fork a session (needs model integration)
+- [ ] Can retry failed turns (needs model integration)
 | `internal/session/` | All | Sessions |
 | `internal/ui/` | All | TUI |
 | `internal/platform/` | Platform | Platform-specific |
@@ -429,14 +560,30 @@ Phase 7 ── 7.1 Server ── 7.2 Platform ── 7.3 Packaging ────�
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-05-12 | 5.0 | TUI test coverage added: dialog 88%, tab 82%, component 7%, syntax 5% |
 | 2026-05-06 | 3.0 | Updated 8.3 LSP status to BROKEN, added implementation plan reference |
 | 2026-05-01 | 1.0 | Initial task breakdown |
 | 2026-05-02 | 2.0 | Phase 8 added - Module parity plan |
 
 ---
 
+## TUI Test Coverage (2026-05-12)
+
+| Package | Coverage | Test Files |
+|---------|----------|------------|
+| `internal/ui` | 12.9% | messagepart_test.go, sessionreview_test.go |
+| `internal/ui/dialog` | **88.3%** | window_test.go, selection_test.go, textinput_test.go |
+| `internal/ui/tab` | 82.1% | (pre-existing) |
+| `internal/ui/template` | 48.4% | (pre-existing) |
+| `internal/ui/syntax` | **4.9%** | styles_test.go |
+| `internal/ui/component` | **6.9%** | button_test.go |
+
+**Note:** PTY-based headless TUI testing was explored but abandoned - Bubble Tea's signal/signal handling doesn't work with raw PTYs in test environments. Components render output and state machine logic are tested via unit tests.
+
+---
+
 **Author:** Mark LaPointe <mark@cloudbsd.org>
-**Last Updated:** 2026-05-02
+**Last Updated:** 2026-05-12
 
 ---
 

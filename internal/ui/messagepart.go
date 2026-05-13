@@ -49,6 +49,15 @@ var (
 
 	ContextGroupStyle = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#C586C0"))
+
+	DiffAddStyle = lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#4EC9B0"))
+
+	DiffRemoveStyle = lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#F14C4C"))
+
+	DiffHeaderStyle = lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#808080"))
 )
 
 func RenderPart(part MessagePart, width int) string {
@@ -85,7 +94,11 @@ func RenderTextPart(content string, width int) string {
 			result.WriteString("\n")
 		}
 		if block.isCode {
-			result.WriteString(renderCodeBlock(block.content, block.lang, width))
+			if block.lang == "diff" || isDiffContent(block.content) {
+				result.WriteString(renderDiffBlock(block.content, block.lang, width))
+			} else {
+				result.WriteString(renderCodeBlock(block.content, block.lang, width))
+			}
 		} else {
 			result.WriteString(renderTextWithInlineCode(block.content, width))
 		}
@@ -140,6 +153,25 @@ func parseCodeBlocks(content string) []codeBlock {
 	return blocks
 }
 
+func isDiffContent(content string) bool {
+	lines := strings.Split(content, "\n")
+	hasPlus := false
+	hasMinus := false
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "+") && !strings.HasPrefix(trimmed, "+++") {
+			hasPlus = true
+		}
+		if strings.HasPrefix(trimmed, "-") && !strings.HasPrefix(trimmed, "---") {
+			hasMinus = true
+		}
+		if hasPlus && hasMinus {
+			return true
+		}
+	}
+	return false
+}
+
 func renderCodeBlock(code, lang string, width int) string {
 	lines := strings.Split(code, "\n")
 	var result strings.Builder
@@ -165,6 +197,85 @@ func renderCodeBlock(code, lang string, width int) string {
 		result.WriteString("\n")
 	}
 
+	result.WriteString(borderStyle.Render("└─"))
+	for i := 0; i < width-4; i++ {
+		result.WriteString(borderStyle.Render("─"))
+	}
+	result.WriteString(borderStyle.Render("┘"))
+
+	return result.String()
+}
+
+type diffLine struct {
+	prefix string
+	content string
+}
+
+func renderDiffBlock(code, lang string, width int) string {
+	lines := strings.Split(code, "\n")
+	var diffLines []diffLine
+	var headerLines []string
+	inDiff := false
+
+	for _, line := range lines {
+		trimmed := strings.TrimPrefix(line, " ")
+		if strings.HasPrefix(trimmed, "+++") || strings.HasPrefix(trimmed, "---") {
+			headerLines = append(headerLines, line)
+			inDiff = true
+			continue
+		}
+		if strings.HasPrefix(trimmed, "+") && !strings.HasPrefix(trimmed, "+++") {
+			diffLines = append(diffLines, diffLine{prefix: "+", content: strings.TrimPrefix(trimmed, "+")})
+			inDiff = true
+		} else if strings.HasPrefix(trimmed, "-") && !strings.HasPrefix(trimmed, "---") {
+			diffLines = append(diffLines, diffLine{prefix: "-", content: strings.TrimPrefix(trimmed, "-")})
+			inDiff = true
+		} else if inDiff && (strings.HasPrefix(trimmed, " ") || trimmed == "") {
+			diffLines = append(diffLines, diffLine{prefix: " ", content: strings.TrimPrefix(trimmed, " ")})
+		} else if inDiff {
+			diffLines = append(diffLines, diffLine{prefix: " ", content: line})
+		} else {
+			diffLines = append(diffLines, diffLine{prefix: " ", content: line})
+		}
+	}
+
+	var result strings.Builder
+
+	borderStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#3A3A3A"))
+
+	result.WriteString(borderStyle.Render("┌─"))
+	result.WriteString(InlineCodeStyle.Render(lang))
+	if len(headerLines) > 0 {
+		result.WriteString(DiffHeaderStyle.Render(" (diff)"))
+	}
+	result.WriteString(borderStyle.Render("─"))
+	for i := 0; i < width-20-len(lang) && i < 10; i++ {
+		result.WriteString(borderStyle.Render("─"))
+	}
+	result.WriteString(borderStyle.Render("┐"))
+	result.WriteString("\n")
+
+	for i, dl := range diffLines {
+		if i > 0 {
+			result.WriteString("\n")
+		}
+		result.WriteString(borderStyle.Render("│ "))
+		prefix := dl.prefix
+		content := dl.content
+		if len(content) > width-8 {
+			content = content[:width-11] + " ..."
+		}
+		switch prefix {
+		case "+":
+			result.WriteString(DiffAddStyle.Render("+ " + content))
+		case "-":
+			result.WriteString(DiffRemoveStyle.Render("- " + content))
+		default:
+			result.WriteString(InlineCodeStyle.Render("  " + content))
+		}
+	}
+
+	result.WriteString("\n")
 	result.WriteString(borderStyle.Render("└─"))
 	for i := 0; i < width-4; i++ {
 		result.WriteString(borderStyle.Render("─"))
@@ -258,27 +369,11 @@ func renderInlineCode(line string) string {
 }
 
 func RenderReasoningPart(content string, width int) string {
-	var result strings.Builder
+	return RenderThinkingBlock(content, false, width)
+}
 
-	result.WriteString("\n")
-	result.WriteString(ThinkingPrefixStyle.Render("🤔 Thinking"))
-	result.WriteString("\n")
-
-	lines := strings.Split(content, "\n")
-	for i, line := range lines {
-		if i > 0 {
-			result.WriteString("\n")
-		}
-		indent := "  "
-		if len(line) > width-6 {
-			line = line[:width-9] + "..."
-		}
-		result.WriteString(indent)
-		result.WriteString(ThinkingContentStyle.Render(line))
-	}
-
-	result.WriteString("\n")
-	return result.String()
+func RenderReasoningPartCollapsed(content string, collapsed bool, width int) string {
+	return RenderThinkingBlock(content, collapsed, width)
 }
 
 type MessageToolInfo struct {

@@ -1,9 +1,17 @@
-<window title="Session" width="80" height="24">
-  <vbox padding="1" gap="0">
-    <text value="${model}" bold="true" />
+<window title="${title}" width="${width}" height="${height}" center="${center:true}" padding="${padding:1}">
+  <vbox gap="0">
+    <tabbar id="tabbar" tabs="${tabs}" active="${activeTab:0}" />
     <spacer height="1" />
-    <list id="messages" items="${messages}" />
-    <spacer flex="1" />
-    <input id="input" placeholder="Type your message..." />
+    <hbox gap="0" flex="1">
+      <vbox width="${sidebarWidth:0}" visible="${sidebarOpen:false}">
+        <sidebar id="sidebar" items="${sidebarItems}" />
+      </vbox>
+      <vbox flex="1" gap="0">
+        <messagelist id="messages" messages="${messages}" />
+      </vbox>
+    </hbox>
+    <spacer height="1" />
+    <inputarea id="input" value="${inputValue}" placeholder="${inputPlaceholder:Ask anything...}" />
+    <toast id="toast" message="${toastMessage}" type="${toastType:info}" visible="${toastVisible:false}" />
   </vbox>
 </window>

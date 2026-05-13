@@ -9,19 +9,27 @@ import (
 type ElementType string
 
 const (
-	TypeWindow  ElementType = "window"
-	TypeVBox    ElementType = "vbox"
-	TypeHBox    ElementType = "hbox"
-	TypeGrid    ElementType = "grid"
-	TypeText    ElementType = "text"
-	TypeList    ElementType = "list"
-	TypeButton  ElementType = "button"
-	TypeInput   ElementType = "input"
-	TypeSpacer  ElementType = "spacer"
-	TypeDivider ElementType = "divider"
-	TypeImage   ElementType = "image"
-	TypeProgress ElementType = "progress"
+	TypeWindow         ElementType = "window"
+	TypeVBox           ElementType = "vbox"
+	TypeHBox           ElementType = "hbox"
+	TypeGrid           ElementType = "grid"
+	TypeText           ElementType = "text"
+	TypeList           ElementType = "list"
+	TypeButton         ElementType = "button"
+	TypeInput          ElementType = "input"
+	TypeSpacer         ElementType = "spacer"
+	TypeDivider        ElementType = "divider"
+	TypeImage          ElementType = "image"
+	TypeProgress       ElementType = "progress"
+	TypeTabbar         ElementType = "tabbar"
+	TypeStatusbar      ElementType = "statusbar"
+	TypeMessageList    ElementType = "messagelist"
+	TypeSelectionList   ElementType = "selectionlist"
+	TypeToast          ElementType = "toast"
+	TypeDialog         ElementType = "dialog"
 )
+
+var varPattern = regexp.MustCompile(`\$\{([^}:]+)(?::([^}]*))?\}`)
 
 type Element struct {
 	Type           ElementType
@@ -304,19 +312,42 @@ func (t *Template) SetMap(vars map[string]interface{}) {
 }
 
 func interpolate(text string, vars map[string]interface{}) string {
-	re := regexp.MustCompile(`\$\{([^}]+)\}`)
-	return re.ReplaceAllStringFunc(text, func(match string) string {
-		key := match[2 : len(match)-1]
+	return varPattern.ReplaceAllStringFunc(text, func(match string) string {
+		key := extractVarKey(match)
 		if val, ok := vars[key]; ok {
 			return fmt.Sprintf("%v", val)
+		}
+		if defaultVal := extractVarDefault(match); defaultVal != "" {
+			return defaultVal
 		}
 		return match
 	})
 }
 
+func extractVarKey(match string) string {
+	if len(match) < 4 {
+		return ""
+	}
+	key := match[2 : len(match)-1]
+	if idx := strings.Index(key, ":"); idx != -1 {
+		return key[:idx]
+	}
+	return key
+}
+
+func extractVarDefault(match string) string {
+	if len(match) < 4 {
+		return ""
+	}
+	key := match[2 : len(match)-1]
+	if idx := strings.Index(key, ":"); idx != -1 && idx < len(key)-1 {
+		return key[idx+1:]
+	}
+	return ""
+}
+
 func (p *Parser) extractAttributeVars(elem *Element, attrName, attrVal string) {
-	re := regexp.MustCompile(`\$\{([^}]+)\}`)
-	matches := re.FindAllStringSubmatch(attrVal, -1)
+	matches := varPattern.FindAllStringSubmatch(attrVal, -1)
 	for _, match := range matches {
 		if len(match) > 1 {
 			elem.AttributeVars[attrName] = append(elem.AttributeVars[attrName], match[1])

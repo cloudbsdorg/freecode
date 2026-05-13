@@ -68,7 +68,7 @@ type Model struct {
 	currentSession    *session.Session
 	theme             Theme
 	themeName         string
-	templateEngine   *template.ResponsiveEngine[*renderer.BubbleRenderer]
+	templateEngine   *template.ReactiveEngine[*renderer.BubbleRenderer]
 }
 
 type focusArea int
@@ -77,6 +77,7 @@ const (
 	focusInput focusArea = iota
 	focusPalette
 	focusSidebar
+	focusDialog
 )
 
 type TabState struct {
@@ -126,8 +127,16 @@ func NewModel(args args.Args) *Model {
 		engine:           engine,
 		theme:            DarkTheme(),
 		themeName:        "dark",
-		templateEngine:   template.NewResponsiveEngine[*renderer.BubbleRenderer](),
+		templateEngine:   template.NewReactiveEngineWithLoader[*renderer.BubbleRenderer](getTemplatesDir()),
 	}
+
+	m.templateEngine.LoadTemplate("home")
+	m.templateEngine.LoadTemplate("session")
+	m.templateEngine.LoadTemplate("setup")
+
+	m.templateEngine.LoadTemplate("home")
+	m.templateEngine.LoadTemplate("session")
+	m.templateEngine.LoadTemplate("setup")
 
 	m.tabBar.AddTab("main", "main")
 	m.tabs = append(m.tabs, &TabState{ID: uuid.New().String(), Name: "main", SessionID: ""})
@@ -717,8 +726,12 @@ func (m *Model) inferBaseURL(providerID string) string {
 
 func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	if m.helpDialog.IsOpen() {
+		wasOpen := m.helpDialog.IsOpen()
 		handled := m.helpDialog.HandleKey(msg.String())
 		if handled {
+			if wasOpen && !m.helpDialog.IsOpen() {
+				m.focus = focusInput
+			}
 			return m, nil
 		}
 	}
@@ -836,6 +849,9 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 	case "?":
 		m.helpDialog.Toggle()
+		if m.helpDialog.IsOpen() {
+			m.focus = focusDialog
+		}
 
 	case "ctrl+h":
 		m.route = RouteHome
@@ -929,16 +945,107 @@ func (m *Model) View() string {
 			Render("Goodbye!\n")
 	}
 
+	m.syncStateToTemplate()
+
 	switch m.route {
 	case RouteHome:
-		return m.renderHome()
+		return m.templateEngine.RenderTemplate("home", m.width, m.height, renderer.NewBubbleRenderer(m.width, m.height))
 	case RouteSession:
-		return m.renderSession()
+		return m.templateEngine.RenderTemplate("session", m.width, m.height, renderer.NewBubbleRenderer(m.width, m.height))
 	case RouteSetup:
-		return m.renderSetup()
+		return m.templateEngine.RenderTemplate("setup", m.width, m.height, renderer.NewBubbleRenderer(m.width, m.height))
 	default:
-		return m.renderHome()
+		return m.templateEngine.RenderTemplate("home", m.width, m.height, renderer.NewBubbleRenderer(m.width, m.height))
 	}
+}
+
+func (m *Model) syncStateToTemplate() {
+	e := m.templateEngine
+
+	e.Set("width", m.width)
+	e.Set("height", m.height)
+	e.Set("title", "Freecode")
+
+	e.Set("route", string(m.route))
+	e.Set("yolo", boolToString(m.yolo))
+
+	e.Set("model", m.cliArgs.Model)
+	e.Set("agent", m.cliArgs.Agent)
+	e.Set("provider", m.statusBar.provider)
+
+	e.Set("banner", m.banner)
+
+	tabNames := make([]string, len(m.tabs))
+	for i, t := range m.tabs {
+		tabNames[i] = t.Name
+	}
+	e.Set("tabs", strings.Join(tabNames, ","))
+	e.Set("activeTab", m.activeTabIdx)
+
+	e.Set("sidebarOpen", m.sidebar.IsOpen())
+	e.Set("sidebarWidth", 0)
+	if m.sidebar.IsOpen() {
+		e.Set("sidebarWidth", 42)
+	}
+
+	e.Set("showTabbar", true)
+	e.Set("showSidebar", m.sidebar.IsOpen())
+	e.Set("showMessages", true)
+	e.Set("showInput", true)
+	e.Set("showStatusbar", true)
+
+	e.Set("inputValue", m.inputArea.GetValue())
+	e.Set("inputPlaceholder", "Ask anything...")
+
+	messages := m.messageList.GetMessages()
+	var msgStrs []string
+	for _, msg := range messages {
+		msgStrs = append(msgStrs, formatMessageForTemplate(msg))
+	}
+	e.Set("messages", strings.Join(msgStrs, "\n"))
+
+	e.Set("toastVisible", false)
+	e.Set("toastMessage", "")
+	e.Set("toastType", "info")
+
+	e.Set("showDialog", false)
+	e.Set("dialogTitle", "")
+	e.Set("dialogContent", "")
+	e.Set("dialogType", "alert")
+
+	if m.helpDialog.IsOpen() {
+		e.Set("showDialog", true)
+		e.Set("dialogTitle", "Help")
+		e.Set("dialogContent", m.helpDialog.Render())
+		e.Set("dialogType", "help")
+	}
+
+	if m.statusDialog.IsOpen() {
+		e.Set("showDialog", true)
+		e.Set("dialogTitle", "Status")
+		e.Set("dialogContent", m.statusDialog.Render())
+		e.Set("dialogType", "status")
+	}
+
+	if m.commandPalette.IsOpen() {
+		e.Set("showDialog", true)
+		e.Set("dialogTitle", "Command Palette")
+		e.Set("dialogContent", m.commandPalette.Render())
+		e.Set("dialogType", "palette")
+	}
+}
+
+func boolToString(b bool) string {
+	if b {
+		return "on"
+	}
+	return "off"
+}
+
+func formatMessageForTemplate(msg Message) string {
+	role := strings.ToUpper(msg.Role)
+	content := msg.Content
+	return role + ": " + content
 }
 
 func (m *Model) renderToast() string {
@@ -1573,4 +1680,13 @@ func (m *Model) getAvailableModels() []string {
 	}
 
 	return models
+}
+
+func getTemplatesDir() string {
+	execPath, err := os.Executable()
+	if err != nil {
+		return "templates"
+	}
+	dir := filepath.Dir(execPath)
+	return filepath.Join(dir, "templates")
 }

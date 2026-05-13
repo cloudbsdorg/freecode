@@ -653,31 +653,27 @@ func TestEngineRegisterComponent(t *testing.T) {
 }
 
 func TestGetInt(t *testing.T) {
-	engine := NewEngine[mockRenderer]()
-
 	attrs := map[string]string{
 		"width":  "100",
 		"height": "50",
 		"empty":  "",
 	}
 
-	if got := engine.getInt(attrs, "width", 0); got != 100 {
+	if got := getAttrInt(attrs, "width", 0); got != 100 {
 		t.Errorf("getInt width = %d, want 100", got)
 	}
-	if got := engine.getInt(attrs, "height", 0); got != 50 {
+	if got := getAttrInt(attrs, "height", 0); got != 50 {
 		t.Errorf("getInt height = %d, want 50", got)
 	}
-	if got := engine.getInt(attrs, "missing", 42); got != 42 {
+	if got := getAttrInt(attrs, "missing", 42); got != 42 {
 		t.Errorf("getInt missing = %d, want 42", got)
 	}
-	if got := engine.getInt(attrs, "empty", 99); got != 99 {
+	if got := getAttrInt(attrs, "empty", 99); got != 99 {
 		t.Errorf("getInt empty = %d, want 99", got)
 	}
 }
 
 func TestGetBool(t *testing.T) {
-	engine := NewEngine[mockRenderer]()
-
 	attrs := map[string]string{
 		"true1":  "true",
 		"true2":  "yes",
@@ -688,35 +684,33 @@ func TestGetBool(t *testing.T) {
 		"empty":  "",
 	}
 
-	if !engine.getBool(attrs, "true1", false) {
+	if !getAttrBool(attrs, "true1", false) {
 		t.Error("getBool true1 should be true")
 	}
-	if !engine.getBool(attrs, "true2", false) {
+	if !getAttrBool(attrs, "true2", false) {
 		t.Error("getBool true2 should be true")
 	}
-	if !engine.getBool(attrs, "true3", false) {
+	if !getAttrBool(attrs, "true3", false) {
 		t.Error("getBool true3 should be true")
 	}
-	if engine.getBool(attrs, "false1", true) {
+	if getAttrBool(attrs, "false1", true) {
 		t.Error("getBool false1 should be false")
 	}
-	if engine.getBool(attrs, "false2", true) {
+	if getAttrBool(attrs, "false2", true) {
 		t.Error("getBool false2 should be false")
 	}
-	if engine.getBool(attrs, "false3", true) {
+	if getAttrBool(attrs, "false3", true) {
 		t.Error("getBool false3 should be false")
 	}
-	if engine.getBool(attrs, "empty", true) {
+	if getAttrBool(attrs, "empty", true) {
 		t.Error("getBool empty should return default")
 	}
-	if !engine.getBool(attrs, "missing", true) {
+	if !getAttrBool(attrs, "missing", true) {
 		t.Error("getBool missing should return default")
 	}
 }
 
 func TestGetColor(t *testing.T) {
-	engine := NewEngine[mockRenderer]()
-
 	attrs := map[string]string{
 		"fg":     "#ffffff",
 		"bg":     "#000000",
@@ -724,13 +718,13 @@ func TestGetColor(t *testing.T) {
 		"empty":  "",
 	}
 
-	if got := engine.getColor(attrs, "fg", ""); got != "#ffffff" {
+	if got := getAttrColor(attrs, "fg", ""); got != "#ffffff" {
 		t.Errorf("getColor fg = %q, want %q", got, "#ffffff")
 	}
-	if got := engine.getColor(attrs, "bg", ""); got != "#000000" {
+	if got := getAttrColor(attrs, "bg", ""); got != "#000000" {
 		t.Errorf("getColor bg = %q, want %q", got, "#000000")
 	}
-	if got := engine.getColor(attrs, "missing", "default"); got != "default" {
+	if got := getAttrColor(attrs, "missing", "default"); got != "default" {
 		t.Errorf("getColor missing = %q, want %q", got, "default")
 	}
 }

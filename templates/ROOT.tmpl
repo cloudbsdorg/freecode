@@ -1,14 +1,18 @@
-<window id="root" title="Freecode" center="true" padding="2">
-  <vbox gap="1">
-    <spacer height="${bannerSpacer}" />
-    <text id="banner" value="${banner}" bold="true" />
-    <spacer height="1" />
-    <hbox>
-      <spacer width="${inputPadding}" />
-      <input id="prompt" placeholder="Ask anything..." width="${inputWidth}" />
+<window id="root" title="${title:Freecode}" width="${width:80}" height="${height:24}" center="${center:false}" padding="${padding:0}">
+  <vbox gap="0">
+    <tabbar id="tabbar" tabs="${tabs}" active="${activeTab:0}" visible="${showTabbar:true}" />
+    <hbox gap="0" flex="1" visible="${showContent:true}">
+      <vbox width="${sidebarWidth:0}" visible="${showSidebar:false}">
+        <sidebar id="sidebar" items="${sidebarItems}" />
+      </vbox>
+      <vbox flex="1">
+        <messagelist id="messages" messages="${messages}" visible="${showMessages:true}" />
+        <spacer flex="1" />
+      </vbox>
     </hbox>
-    <spacer flex="1" />
-    <text id="hints" value="Ctrl+P: Command Palette | Ctrl+B: Toggle Sidebar | Ctrl+H: Home | Ctrl+Q: Quit" color="#606060" />
-    <text id="statusbar" value="${statusBar}" />
+    <inputarea id="input" value="${inputValue}" placeholder="${inputPlaceholder:Ask anything...}" visible="${showInput:true}" />
+    <statusbar id="statusbar" model="${model}" agent="${agent}" provider="${provider}" yolo="${yolo:off}" visible="${showStatusbar:true}" />
+    <dialog id="dialog" title="${dialogTitle}" content="${dialogContent}" dialog-type="${dialogType}" visible="${showDialog:false}" />
+    <toast id="toast" message="${toastMessage}" type="${toastType:info}" visible="${showToast:false}" />
   </vbox>
 </window>
