@@ -9,4 +9,5 @@ type Args struct {
 	Fork      bool
 	Setup     bool
 	Renderer  string
+	Headless  bool
 }

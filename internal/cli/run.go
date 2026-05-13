@@ -1,9 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/freecode/freecode/internal/args"
 	"github.com/freecode/freecode/internal/ui"
 	"github.com/spf13/cobra"
@@ -66,9 +63,10 @@ func runRun(cmd *cobra.Command, cmdArgs []string) error {
 		Prompt:    prompt,
 		Fork:      forkSession,
 	}
-	p := tea.NewProgram(ui.NewModel(tuiArgs), tea.WithAltScreen())
-	if _, err := p.Run(); err != nil {
-		return fmt.Errorf("failed to start TUI: %w", err)
+
+	if prompt != "" {
+		return ui.RunHeadless(tuiArgs)
 	}
-	return nil
+
+	return ui.Run(tuiArgs)
 }

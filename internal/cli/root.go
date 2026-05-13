@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/freecode/freecode/internal/args"
 	"github.com/freecode/freecode/internal/config"
 	"github.com/freecode/freecode/internal/ui"
@@ -43,11 +42,7 @@ Built with Go for FreeBSD, Linux, macOS, and IllumOS.`,
 			Setup:     setupRun,
 			Renderer:  tuiRenderer,
 		}
-		p := tea.NewProgram(ui.NewModel(tuiArgs), tea.WithAltScreen())
-		if _, err := p.Run(); err != nil {
-			return fmt.Errorf("failed to start TUI: %w", err)
-		}
-		return nil
+		return ui.Run(tuiArgs)
 	},
 }
 
