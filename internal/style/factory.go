@@ -1,13 +1,10 @@
 package style
 
+var defaultType = TypeLipgloss
+
 type Type string
 
-const (
-	TypeLipgloss Type = "lipgloss"
-	TypeGlyph    Type = "glyph"
-)
-
-var defaultType = TypeLipgloss
+const TypeLipgloss Type = "lipgloss"
 
 func SetDefault(t Type) {
 	defaultType = t
@@ -18,21 +15,12 @@ func GetDefault() Type {
 }
 
 func NewStyle() Style {
-	switch defaultType {
-	case TypeGlyph:
-		return NewGlyphStyle()
-	default:
-		return NewLipglossStyle()
-	}
+	return NewLipglossStyle()
 }
 
 func Parse(s string) Type {
-	switch s {
-	case "lipgloss":
+	if s == "lipgloss" {
 		return TypeLipgloss
-	case "glyph":
-		return TypeGlyph
-	default:
-		return defaultType
 	}
+	return defaultType
 }
