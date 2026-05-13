@@ -66,9 +66,20 @@ func runRun(cmd *cobra.Command, cmdArgs []string) error {
 		Prompt:    prompt,
 		Fork:      forkSession,
 	}
+
+	if prompt != "" {
+		return runHeadless(tuiArgs, cmdArgs)
+	}
+
 	p := tea.NewProgram(ui.NewModel(tuiArgs), tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
 		return fmt.Errorf("failed to start TUI: %w", err)
 	}
+	return nil
+}
+
+func runHeadless(tuiArgs args.Args, cmdArgs []string) error {
+	fmt.Println("Headless mode with prompt is not yet implemented")
+	fmt.Println("Prompt:", tuiArgs.Prompt)
 	return nil
 }
