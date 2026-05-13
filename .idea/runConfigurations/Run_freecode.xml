@@ -6,6 +6,7 @@
     <package value="github.com/freecode/freecode/cmd/freecode" />
     <directory value="$PROJECT_DIR$" />
     <filePath value="$PROJECT_DIR$/cmd/freecode/main.go" />
+    <pty_enabled value="true" />
     <method v="2" />
   </configuration>
 </component>
