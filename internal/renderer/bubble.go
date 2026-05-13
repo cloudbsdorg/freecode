@@ -3,7 +3,7 @@ package renderer
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/freecode/freecode/internal/style"
 )
 
 type BubbleRenderer struct {
@@ -21,48 +21,48 @@ func (b *BubbleRenderer) RenderBox(x, y, w, h int, bgColor string) string {
 		lines[i] = strings.Repeat(" ", w)
 	}
 	content := strings.Join(lines, "\n")
-	style := lipgloss.NewStyle().
+	s := style.NewStyle().
 		Width(w).
 		Height(h).
-		Background(lipgloss.Color(bgColor)).
+		Background(bgColor).
 		MarginTop(y).
 		MarginLeft(x)
-	return style.Render(content)
+	return s.Render(content)
 }
 
 func (b *BubbleRenderer) RenderText(text string, x, y int, fgColor string) string {
-	style := lipgloss.NewStyle().
-		Foreground(lipgloss.Color(fgColor)).
+	s := style.NewStyle().
+		Foreground(fgColor).
 		MarginTop(y).
 		MarginLeft(x)
-	return style.Render(text)
+	return s.Render(text)
 }
 
 func (b *BubbleRenderer) RenderBorder(x, y, w, h int, fgColor string) string {
 	if w < 2 || h < 2 {
 		return ""
 	}
-	style := lipgloss.NewStyle().
+	s := style.NewStyle().
 		Width(w).
 		Height(h).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(fgColor)).
+		BorderStyle(style.Rounded()).
+		BorderForeground(fgColor).
 		MarginTop(y).
 		MarginLeft(x)
-	return style.Render("")
+	return s.Render("")
 }
 
 func (b *BubbleRenderer) RenderSelected(text string, x, y, w int, fg, bg string) string {
 	if len(text) > w {
 		text = text[:w-3] + "..."
 	}
-	style := lipgloss.NewStyle().
+	s := style.NewStyle().
 		Width(w).
-		Foreground(lipgloss.Color(fg)).
-		Background(lipgloss.Color(bg)).
+		Foreground(fg).
+		Background(bg).
 		MarginTop(y).
 		MarginLeft(x)
-	return style.Render(text)
+	return s.Render(text)
 }
 
 func (b *BubbleRenderer) Width() int  { return b.width }
